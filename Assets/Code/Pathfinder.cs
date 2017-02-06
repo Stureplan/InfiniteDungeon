@@ -6,7 +6,6 @@ public class Pathfinder : MonoBehaviour
 {
     Map map;
 
-    Vector3 debugPos1 = Vector3.zero;
     Vector3 targetPos = Vector3.zero;
 
     Cell[] path;
@@ -25,12 +24,12 @@ public class Pathfinder : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            int x1 = Random.Range(0, map.sizeX);
+            /*int x1 = Random.Range(0, map.sizeX);
             int y1 = Random.Range(0, map.sizeY);
 
             int x2 = Random.Range(0, map.sizeY);
             int y2 = Random.Range(0, map.sizeY);
-
+            */
             //path = FindPath(map.CellAt(x1, y1), map.CellAt(x2, y2));
 
             //debugPos1 = map.PositionAt(x1, y1);
