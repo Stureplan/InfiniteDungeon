@@ -69,7 +69,7 @@ public class Pathfinder : MonoBehaviour
             }
         }
     }
-
+    
     List<Cell> RetracePath(Cell start, Cell end)
     {
         List<Cell> retracedPath = new List<Cell>();

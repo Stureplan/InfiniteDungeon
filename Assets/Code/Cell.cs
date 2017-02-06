@@ -4,7 +4,7 @@ using System.Collections;
 public class Cell
 {
     public int type;            //TYPES: 0 = Empty, 1 = Obstacle, 2 = Pathfinder, 3 = NoCell
-    public Vector3 position;
+    public Vector3 position;    //TYPES: 4 = Start, 5 = End
     public int x, y;
     public Cell parent;
 

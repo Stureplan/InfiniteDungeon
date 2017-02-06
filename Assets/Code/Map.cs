@@ -14,7 +14,7 @@ public class Miner
     }
     public static DIR RDIR()
     {
-        return (DIR)Random.Range(0, 4);
+        return (DIR)RNG.Range(0, 4);
     }
 
     public int x;
@@ -22,6 +22,7 @@ public class Miner
     DIR direction;
     bool active;
     Map map;
+    
 
     public Miner(int _x, int _y, DIR _direction, Map _map)
     {
@@ -87,6 +88,8 @@ public class Map : MonoBehaviour
     public float space;
     public int minerCount;
     public int cleanupIterations;
+    public int seed;
+    public bool randomSeed = false;
 
     Cell[,] grid;
     public GameObject cellPrefab;
@@ -96,6 +99,17 @@ public class Map : MonoBehaviour
     List<Miner> miners;
     List<GameObject> allSceneObjects;
     //Miner m01, m02, m03...
+
+    public static Map map;
+    public static void Recreate()
+    {
+        if (map == null)
+        {
+            map = (Map)FindObjectOfType(typeof(Map));
+        }
+
+        map.Generate(true);
+    }
 
     public void CleanAndPrepare()
     {
@@ -113,6 +127,9 @@ public class Map : MonoBehaviour
         // 4. Cleanup
         // N. Spawn Prefabs
 
+        
+        if (randomSeed) { seed = Mathf.FloorToInt(Time.time * 1000); }
+        RNG.Init(seed);
 
 
         if (gridHasChanged)
@@ -148,7 +165,8 @@ public class Map : MonoBehaviour
         {
             if (y != 0 && y != sizeY-1)
             {
-                SetHorizontalNeighbors(sizeX / 2, y, 0);
+                // This creates a 3 square line around the Critical Path.
+                //SetHorizontalNeighbors(sizeX / 2, y, 0);
             }
             SetCell(sizeX / 2, y, 0);
         }
@@ -165,7 +183,6 @@ public class Map : MonoBehaviour
 
         for (int i = 0; i < amount; i++)
         {
-            settler.Mine(true);
             miners.Add(new Miner(settler.x, settler.y, Miner.RDIR(), this));
         }
     }
@@ -174,6 +191,7 @@ public class Map : MonoBehaviour
     {
         for (int i = 0; i < amount; i++)
         {
+            settler.Mine(true);
             miners[i].Mine(false);
         }
     }
@@ -232,7 +250,6 @@ public class Map : MonoBehaviour
         }
     }
 
-    //turn everything to static later
     public Cell CellAtPoint(int x, int y)
     {
         return grid[x, y];
@@ -253,6 +270,11 @@ public class Map : MonoBehaviour
         }
 
         return Cell.NoCell();
+    }
+
+    public int TypeAtPoint(int x, int y)
+    {
+        return grid[x, y].type;
     }
 
     public bool CellIsEdge(int x, int y)
@@ -433,6 +455,8 @@ public class MapEditor : Editor
         map.space = EditorGUILayout.FloatField("Space between Cells", map.space);
         map.minerCount = EditorGUILayout.IntField("Miner Count", map.minerCount);
         map.cleanupIterations = EditorGUILayout.IntField("Cleanup Iterations", map.cleanupIterations);
+        map.seed = EditorGUILayout.IntField("Seed", map.seed);
+        map.randomSeed = EditorGUILayout.Toggle("Random Seed", map.randomSeed);
 
         map.cellPrefab = EditorGUILayout.ObjectField("Cell Prefab", map.cellPrefab, typeof(GameObject), false) as GameObject;
         map.obstaclePrefab = EditorGUILayout.ObjectField("Obstacle Prefab", map.obstaclePrefab, typeof(GameObject), false) as GameObject;
