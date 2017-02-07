@@ -47,7 +47,7 @@ public class Pathfinder : MonoBehaviour
                 primitiveSphere.transform.localPosition = targetPos + Vector3.up;
 
                 Cell tCell = map.CellAtPosition(hit.transform.parent.position);
-                if (tCell.type != 3)
+                if (tCell.type == 0)
                 {
                     path = FindPath(map.CellAtPoint(0, 0), tCell);
                 }

@@ -68,8 +68,12 @@ public class Miner
 
 public class Map : MonoBehaviour
 {
+    [Range(4, 32)]
     public int sizeX;
+
+    [Range(4, 32)]
     public int sizeY;
+
     public float space;
     public int minerCount;
     public int cleanupIterations;
@@ -79,6 +83,9 @@ public class Map : MonoBehaviour
     Cell[,] grid;
     public GameObject cellPrefab;
     public GameObject obstaclePrefab;
+    public GameObject startPrefab;
+    public GameObject endPrefab;
+
 
     Miner settler;
     List<Miner> miners;
@@ -113,7 +120,7 @@ public class Map : MonoBehaviour
         // N. Spawn Prefabs
 
         
-        if (randomSeed) { seed = Mathf.FloorToInt(Time.time * 1000); }
+        if (randomSeed) { seed = Random.Range(0, 9999); }
         RNG.Init(seed);
 
 
@@ -146,21 +153,6 @@ public class Map : MonoBehaviour
         }
     }
 
-    void CreateCriticalPath()
-    {
-        for (int y = 0; y < sizeY; y++)
-        {
-            if (y != 0 && y != sizeY-1)
-            {
-                // This creates a 3 square line around the Critical Path.
-                //SetHorizontalNeighbors(sizeX / 2, y, 0);
-            }
-
-            // A straight line (Critical Path)
-            SetCell(sizeX / 2, y, 0);
-        }
-    }
-
     void CreateMiners(int amount)
     {
         int midX = sizeX / 2;
@@ -182,7 +174,7 @@ public class Map : MonoBehaviour
         {
             settler.Mine(true);
 
-            for(int j = 0; j < miners.Count; j++)
+            for (int j = 0; j < miners.Count; j++)
             {
                 miners[j].Mine(false);
             }
@@ -205,10 +197,25 @@ public class Map : MonoBehaviour
                     }
                 }
             }
-
-
-
         }
+    }
+
+    void CreateCriticalPath()
+    {
+        for (int y = 0; y < sizeY; y++)
+        {
+            if (y != 0 && y != sizeY - 1)
+            {
+                // This creates a 3 square line around the Critical Path.
+                //SetHorizontalNeighbors(sizeX / 2, y, 0);
+            }
+
+            // A straight line (Critical Path)
+            SetCell(sizeX / 2, y, 0);
+        }
+
+        SetCell(sizeX / 2, 0, 4);
+        SetCell(sizeX / 2, sizeY-1, 5);
     }
 
     void SpawnPrefabs()
@@ -219,6 +226,8 @@ public class Map : MonoBehaviour
             {
                 if (grid[x, y].type == 0)
                 {
+                    // EMPTY SPACE (ROAD)
+
                     Vector3 pos = new Vector3((x - sizeX / 2) * space, 0, (y - sizeY / 2) * space);
                     GameObject c = Instantiate(cellPrefab, pos, Quaternion.identity);
                     c.transform.parent = transform;
@@ -227,11 +236,53 @@ public class Map : MonoBehaviour
                 }
                 if (grid[x, y].type == 1)
                 {
+                    // OBSTACLE I
+
                     //Vector3 pos = new Vector3((x - sizeX / 2) * space, 0, (y - sizeY / 2) * space);
                     //GameObject c = Instantiate(obstaclePrefab, pos, Quaternion.identity);
                     //c.transform.parent = transform;
 
                     //allSceneObjects.Add(c);
+                }
+                if (grid[x, y].type == 2)
+                {
+                    // OBSTACLE II
+
+                    //Vector3 pos = new Vector3((x - sizeX / 2) * space, 0, (y - sizeY / 2) * space);
+                    //GameObject c = Instantiate(obstaclePrefab, pos, Quaternion.identity);
+                    //c.transform.parent = transform;
+
+                    //allSceneObjects.Add(c);
+                }
+                if (grid[x, y].type == 3)
+                {
+                    // OBSTACLE III
+
+                    //Vector3 pos = new Vector3((x - sizeX / 2) * space, 0, (y - sizeY / 2) * space);
+                    //GameObject c = Instantiate(obstaclePrefab, pos, Quaternion.identity);
+                    //c.transform.parent = transform;
+
+                    //allSceneObjects.Add(c);
+                }
+                if (grid[x, y].type == 4)
+                {
+                    // START
+
+                    Vector3 pos = new Vector3((x - sizeX / 2) * space, 0, (y - sizeY / 2) * space);
+                    GameObject c = Instantiate(startPrefab, pos, Quaternion.identity);
+                    c.transform.parent = transform;
+
+                    allSceneObjects.Add(c);
+                }
+                if (grid[x, y].type == 5)
+                {
+                    // END
+
+                    Vector3 pos = new Vector3((x - sizeX / 2) * space, 0, (y - sizeY / 2) * space);
+                    GameObject c = Instantiate(endPrefab, pos, Quaternion.identity);
+                    c.transform.parent = transform;
+
+                    allSceneObjects.Add(c);
                 }
             }
         }
@@ -341,11 +392,6 @@ public class Map : MonoBehaviour
             return grid[x, y];
         }
     }
-
-    /*public Cell RandomNeighbor3x3(int x, int y)
-    {
-
-    }*/
 
     public void SetCell(int x, int y, int type)
     {
@@ -460,17 +506,18 @@ public class MapEditor : Editor
 
 
 
-
-        map.sizeX = EditorGUILayout.IntField("Size X", map.sizeX);
-        map.sizeY = EditorGUILayout.IntField("Size Y", map.sizeY);
+        map.sizeX = Mathf.Clamp(EditorGUILayout.IntField("Size X", map.sizeX), 4, 32);
+        map.sizeY = Mathf.Clamp(EditorGUILayout.IntField("Size Y", map.sizeY), 4, 32);
         map.space = EditorGUILayout.FloatField("Space between Cells", map.space);
         map.minerCount = EditorGUILayout.IntField("Miner Count", map.minerCount);
         map.cleanupIterations = EditorGUILayout.IntField("Cleanup Iterations", map.cleanupIterations);
-        map.seed = EditorGUILayout.IntField("Seed", map.seed);
+        Mathf.Clamp(map.seed = EditorGUILayout.IntField("Seed", map.seed), 0, 10000);
         map.randomSeed = EditorGUILayout.Toggle("Random Seed", map.randomSeed);
 
         map.cellPrefab = EditorGUILayout.ObjectField("Cell Prefab", map.cellPrefab, typeof(GameObject), false) as GameObject;
         map.obstaclePrefab = EditorGUILayout.ObjectField("Obstacle Prefab", map.obstaclePrefab, typeof(GameObject), false) as GameObject;
+        map.startPrefab = EditorGUILayout.ObjectField("Start Prefab", map.startPrefab, typeof(GameObject), false) as GameObject;
+        map.endPrefab = EditorGUILayout.ObjectField("End Prefab", map.endPrefab, typeof(GameObject), false) as GameObject;
 
 
         if (GUILayout.Button("Generate"))
