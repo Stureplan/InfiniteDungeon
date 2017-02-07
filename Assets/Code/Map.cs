@@ -68,10 +68,7 @@ public class Miner
 
 public class Map : MonoBehaviour
 {
-    [Range(4, 32)]
     public int sizeX;
-
-    [Range(4, 32)]
     public int sizeY;
 
     public float space;
@@ -82,14 +79,16 @@ public class Map : MonoBehaviour
 
     Cell[,] grid;
     public GameObject cellPrefab;
-    public GameObject obstaclePrefab;
+    public GameObject obstaclePrefabI;
+    public GameObject obstaclePrefabII;
+    public GameObject obstaclePrefabIII;
     public GameObject startPrefab;
     public GameObject endPrefab;
 
 
     Miner settler;
     List<Miner> miners;
-    List<GameObject> allSceneObjects;
+    List<GameObject> allSceneObjects = new List<GameObject>();
     //Miner m01, m02, m03...
 
     public static Map map;
@@ -189,11 +188,33 @@ public class Map : MonoBehaviour
             {
                 for (int y = 0; y < sizeY; y++)
                 {
-                    if (!CellIsEdge(x, y) &&  Obstacles(x, y) < 2)
+                    if (!CellIsEdge(x, y))
                     {
-                        // All Cells around (in a plus) were empty.
-                        // We clean this Cell up.
-                        SetCell(x, y, 0);
+                        if (Obstacles(x, y) < 2)
+                        {
+                            // All Cells around (in a plus) were empty.
+                            // We clean this Cell up.
+                            SetCell(x, y, 0);
+                        }
+
+                        if (Obstacles3x3(x, y, 1) > 4 && Obstacles3x3(x, y, 0) > 2 && grid[x, y].type == 1)
+                        {
+                            SetCell(x, y, 2);
+                        }
+                    }
+                }
+            }
+        }
+
+        for (int x = 0; x < sizeX; x++)
+        {
+            for (int y = 0; y < sizeY; y++)
+            {
+                if (!CellIsEdge(x, y))
+                {
+                    if (Obstacles3x3(x, y, 2) > 1 && grid[x, y].type == 2)
+                    {
+                        SetCell(x, y, 1);
                     }
                 }
             }
@@ -239,7 +260,7 @@ public class Map : MonoBehaviour
                     // OBSTACLE I
 
                     //Vector3 pos = new Vector3((x - sizeX / 2) * space, 0, (y - sizeY / 2) * space);
-                    //GameObject c = Instantiate(obstaclePrefab, pos, Quaternion.identity);
+                    //GameObject c = Instantiate(obstaclePrefabI, pos, Quaternion.identity);
                     //c.transform.parent = transform;
 
                     //allSceneObjects.Add(c);
@@ -248,18 +269,18 @@ public class Map : MonoBehaviour
                 {
                     // OBSTACLE II
 
-                    //Vector3 pos = new Vector3((x - sizeX / 2) * space, 0, (y - sizeY / 2) * space);
-                    //GameObject c = Instantiate(obstaclePrefab, pos, Quaternion.identity);
-                    //c.transform.parent = transform;
+                    Vector3 pos = new Vector3((x - sizeX / 2) * space, 0, (y - sizeY / 2) * space);
+                    GameObject c = Instantiate(obstaclePrefabII, pos, Quaternion.identity);
+                    c.transform.parent = transform;
 
-                    //allSceneObjects.Add(c);
+                    allSceneObjects.Add(c);
                 }
                 if (grid[x, y].type == 3)
                 {
                     // OBSTACLE III
 
                     //Vector3 pos = new Vector3((x - sizeX / 2) * space, 0, (y - sizeY / 2) * space);
-                    //GameObject c = Instantiate(obstaclePrefab, pos, Quaternion.identity);
+                    //GameObject c = Instantiate(obstaclePrefabIII, pos, Quaternion.identity);
                     //c.transform.parent = transform;
 
                     //allSceneObjects.Add(c);
@@ -349,7 +370,7 @@ public class Map : MonoBehaviour
         return amount;
     }
 
-    public int Obstacles3x3(int x, int y)
+    public int Obstacles3x3(int x, int y, int type)
     {
         int obstacles = 0;
 
@@ -357,7 +378,7 @@ public class Map : MonoBehaviour
         {
             for (int v = -1; v < 2; v++)
             {
-                if (grid[x + h, x + v].type == 1)
+                if (grid[x + h, y + v].type == type)
                 {
                     obstacles++;
                     if (h == 0 && v == 0) { obstacles--; }
@@ -515,7 +536,10 @@ public class MapEditor : Editor
         map.randomSeed = EditorGUILayout.Toggle("Random Seed", map.randomSeed);
 
         map.cellPrefab = EditorGUILayout.ObjectField("Cell Prefab", map.cellPrefab, typeof(GameObject), false) as GameObject;
-        map.obstaclePrefab = EditorGUILayout.ObjectField("Obstacle Prefab", map.obstaclePrefab, typeof(GameObject), false) as GameObject;
+        map.obstaclePrefabI = EditorGUILayout.ObjectField("Obstacle Prefab I", map.obstaclePrefabI, typeof(GameObject), false) as GameObject;
+        map.obstaclePrefabII = EditorGUILayout.ObjectField("Obstacle Prefab II", map.obstaclePrefabII, typeof(GameObject), false) as GameObject;
+        map.obstaclePrefabIII = EditorGUILayout.ObjectField("Obstacle Prefab III", map.obstaclePrefabIII, typeof(GameObject), false) as GameObject;
+
         map.startPrefab = EditorGUILayout.ObjectField("Start Prefab", map.startPrefab, typeof(GameObject), false) as GameObject;
         map.endPrefab = EditorGUILayout.ObjectField("End Prefab", map.endPrefab, typeof(GameObject), false) as GameObject;
 
