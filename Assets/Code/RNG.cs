@@ -1,4 +1,6 @@
-﻿public static class RNG
+﻿using UnityEngine;
+
+public static class RNG
 {
     static int value = 0;
     private static int Next()
@@ -9,7 +11,7 @@
 
     public static int Range(int a, int b)
     {
-        return a + Next() % (b - a);
+        return Mathf.Abs(a + Next() % (b - a));
     }
 
     public static void Init(int seed)

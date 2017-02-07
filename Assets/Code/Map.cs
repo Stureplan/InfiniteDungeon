@@ -5,30 +5,16 @@ using UnityEditor;
 
 public class Miner
 {
-    public enum DIR
-    {
-        UP = 0,
-        DOWN,
-        LEFT,
-        RIGHT
-    }
-    public static DIR RDIR()
-    {
-        return (DIR)RNG.Range(0, 4);
-    }
-
     public int x;
     public int y;
-    DIR direction;
     bool active;
     Map map;
-    
+    public int debug = 0;
 
-    public Miner(int _x, int _y, DIR _direction, Map _map)
+    public Miner(int _x, int _y, Map _map)
     {
         x = _x;
         y = _y;
-        direction = _direction;
         map = _map;
 
         active = true;
@@ -36,49 +22,48 @@ public class Miner
 
     public void Mine(bool settler)
     {
+        debug++;
         // We've already done our duty.
         if (!active && !settler) { return; }
 
-        switch (direction)
-        {
-            case DIR.UP:
-                y += 1;
-                break;
+        int nX = x;
+        int nY = y;
 
-            case DIR.DOWN:
-                y -= 1;
-                break;
+        RNGDir(ref nX, ref nY);
 
-            case DIR.LEFT:
-                x -= 1;
-                break;
-
-            case DIR.RIGHT:
-                x += 1;
-                break;
-        }
-
-        if (map.CellIsEdge(x, y))
+        if (map.CellIsEdge(nX, nY))
         {
             active = false;
             return;
         }
 
-        if (map.CellAtPoint(x, y).type == 1)
-        {
-            // We hit a wall
-            // We're clearing the wall.
-            map.SetCell(x, y, 0);
-        }
-        else
-        {
-            // The tile was: 0 (Empty), 2 (Pathfinder), 3 (NoCell)
-            active = false;
-        }
+        x = nX;
+        y = nY;
 
-        direction = RDIR();
+        map.SetCell(x, y, 0);
     }
 
+    public static void RNGDir(ref int x, ref int y)
+    {
+        int r = RNG.Range(0, 4);
+        if (r == 0)
+        {
+            //L
+            x -= 1;
+        }
+        if (r == 1)
+        {
+            y += 1;
+        }
+        if (r == 2)
+        {
+            x += 1;
+        }
+        if (r == 3)
+        {
+            y -= 1;
+        }
+    }
 }
 
 public class Map : MonoBehaviour
@@ -139,10 +124,12 @@ public class Map : MonoBehaviour
             CreateArea();
         }
 
-        CreateCriticalPath();
         CreateMiners(minerCount);
         Mine(minerCount);
+
         CleanupCrew(cleanupIterations);
+        CreateCriticalPath();
+
         SpawnPrefabs();
     }
 
@@ -168,6 +155,8 @@ public class Map : MonoBehaviour
                 // This creates a 3 square line around the Critical Path.
                 //SetHorizontalNeighbors(sizeX / 2, y, 0);
             }
+
+            // A straight line (Critical Path)
             SetCell(sizeX / 2, y, 0);
         }
     }
@@ -178,12 +167,12 @@ public class Map : MonoBehaviour
         int midY = sizeY / 2;
         SetCell(midX, midY, 0);
 
-        settler = new Miner(midX, midY, Miner.RDIR(), this);
+        settler = new Miner(midX, midY, this);
         miners = new List<Miner>();
 
         for (int i = 0; i < amount; i++)
         {
-            miners.Add(new Miner(settler.x, settler.y, Miner.RDIR(), this));
+            miners.Add(new Miner(settler.x, settler.y, this));
         }
     }
 
@@ -192,7 +181,11 @@ public class Map : MonoBehaviour
         for (int i = 0; i < amount; i++)
         {
             settler.Mine(true);
-            miners[i].Mine(false);
+
+            for(int j = 0; j < miners.Count; j++)
+            {
+                miners[j].Mine(false);
+            }
         }
     }
 
@@ -204,16 +197,10 @@ public class Map : MonoBehaviour
             {
                 for (int y = 0; y < sizeY; y++)
                 {
-                    if (!CellIsEdge(x, y) &&  Neighborhood(x, y) == 0)
+                    if (!CellIsEdge(x, y) &&  Obstacles(x, y) < 2)
                     {
                         // All Cells around (in a plus) were empty.
                         // We clean this Cell up.
-                        SetCell(x, y, 0);
-                    }
-
-                    //More cleanup
-                    if (!CellIsEdge(x, y) && Obstacles(x, y) == 2)
-                    {
                         SetCell(x, y, 0);
                     }
                 }
@@ -242,7 +229,7 @@ public class Map : MonoBehaviour
                 {
                     //Vector3 pos = new Vector3((x - sizeX / 2) * space, 0, (y - sizeY / 2) * space);
                     //GameObject c = Instantiate(obstaclePrefab, pos, Quaternion.identity);
-                   // c.transform.parent = transform;
+                    //c.transform.parent = transform;
 
                     //allSceneObjects.Add(c);
                 }
@@ -279,41 +266,16 @@ public class Map : MonoBehaviour
 
     public bool CellIsEdge(int x, int y)
     {
-        if (x <= 0 || x >= sizeX-1 || y <= 0 || y >= sizeY-1)
+        if (x <= 0       || 
+            x >= sizeX-1 || 
+            y <= 0       || 
+            y >= sizeY-1)
         {
             return true;
         }
         else
         {
             return false;
-        }
-    }
-
-    public int Neighborhood(int x, int y)
-    {
-        int[] types = new int[4];
-
-        int x1, x2, y1, y2;
-
-        x1 = x - 1;
-        x2 = x + 1;
-
-        y1 = y - 1;
-        y2 = y + 1;
-
-        types[0] = grid[x1, y].type;
-        types[1] = grid[x2, y].type;
-        types[2] = grid[x, y1].type;
-        types[3] = grid[x, y2].type;
-
-        if (types[0] == types[1] && types[1] == types[2] && types[2] == types[3])
-        {
-            return types[0];
-        }
-        else
-        {
-            // We're in hell (they weren't equal)
-            return 666;
         }
     }
 
@@ -335,6 +297,55 @@ public class Map : MonoBehaviour
 
         return amount;
     }
+
+    public int Obstacles3x3(int x, int y)
+    {
+        int obstacles = 0;
+
+        for(int h = -1; h < 2; h++)
+        {
+            for (int v = -1; v < 2; v++)
+            {
+                if (grid[x + h, x + v].type == 1)
+                {
+                    obstacles++;
+                    if (h == 0 && v == 0) { obstacles--; }
+                }
+            }
+        }
+
+        return obstacles;
+    }
+
+    public Cell RandomNeighbor(int x, int y)
+    {
+        int r = RNG.Range(0, 4);
+        if (r == 0)
+        {
+            return grid[x - 1, y];
+        }
+        if(r == 1)
+        {
+            return grid[x, y + 1];
+        }
+        if (r == 2)
+        {
+            return grid[x + 1, y];
+        }
+        if (r == 3)
+        {
+            return grid[x, y - 1];
+        }
+        else
+        {
+            return grid[x, y];
+        }
+    }
+
+    /*public Cell RandomNeighbor3x3(int x, int y)
+    {
+
+    }*/
 
     public void SetCell(int x, int y, int type)
     {
