@@ -31,6 +31,8 @@ struct ColorKey
     public Color c;
     public float t;
     public float a;
+
+    public Vector2 p;
 }
 
 public class GradientPopup : EditorWindow
@@ -41,9 +43,12 @@ public class GradientPopup : EditorWindow
     /* COLOR DATA */
     private Gradient gradient;
     private Texture2D tex;
-    private Color[] colors;
     private ColorKey[] colorKeys;
     private int amtOfColors = 3;
+
+    /* GUI CONTENT */
+    private Texture GUI_btn;
+    private int GUI_btn_w;
 
     static public void InitPopup(ColorRampShaderGUI materialGUI, Rect rect)
     {
@@ -51,8 +56,8 @@ public class GradientPopup : EditorWindow
         //GradientPopup popup = (GradientPopup)EditorWindow.GetWindow(typeof(GradientPopup));
         materialInstance = materialGUI;
 
-        
-        popup.Initialize();
+        popup.InitializeGUI();
+        popup.InitializeColors();
 
         popup.name = "ASDChildren";
         popup.titleContent.text = "ffff";
@@ -61,13 +66,13 @@ public class GradientPopup : EditorWindow
 
     }
 
-    private void Initialize()
+    private void InitializeGUI()
     {
-        colors = new Color[amtOfColors];
-        colors[0] = Color.red;
-        colors[1] = Color.green;
-        colors[2] = Color.blue;
+        GUI_btn = (Texture)Resources.Load("Editor/Button01");
+    }
 
+    private void InitializeColors()
+    {
         colorKeys = new ColorKey[amtOfColors];
         colorKeys[0].c = Color.red;
         colorKeys[0].a = 1.0f;
@@ -80,6 +85,10 @@ public class GradientPopup : EditorWindow
         colorKeys[2].c = Color.blue;
         colorKeys[2].a = 1.0f;
         colorKeys[2].t = 1.0f;
+
+        colorKeys[0].p = Vector2.zero;
+        colorKeys[1].p = Vector2.zero;
+        colorKeys[2].p = Vector2.zero;
 
 
 
@@ -124,12 +133,32 @@ public class GradientPopup : EditorWindow
 
     private void OnGUI()
     {
+        // Setup Rect
+        Rect rampPos = new Rect(20, 100, Screen.width - 40, 25);
+        Rect addedPos = rampPos;
+        addedPos.position += new Vector2(-(GUI_btn.width / 2), 27);
+
+        Rect m = rampPos;
+        m.position = m.position + new Vector2(-(GUI_btn.width / 2), 27);
+
+
         EditorGUILayout.LabelField("Gradient");
 
         EditorGUI.BeginChangeCheck();
-        for(int i = 0; i < amtOfColors; i++)
+        for(int i = 0; i < colorKeys.Length; i++)
         {
-            colors[i] = EditorGUILayout.ColorField("Color " + i, colors[i]);
+            colorKeys[i].c = EditorGUILayout.ColorField("Color " + i, colorKeys[i].c);
+
+            Rect tmp = new Rect(addedPos);
+            tmp.position += colorKeys[i].p;
+
+            float x = rampPos.size.x;
+
+            Vector2 pos = new Vector2(colorKeys[i].t * x, 0);
+            tmp.position += pos;
+            
+
+            GUI.Button(tmp, GUI_btn, GUIStyle.none);
         }
         if (EditorGUI.EndChangeCheck())
         {
@@ -138,13 +167,22 @@ public class GradientPopup : EditorWindow
         }
 
 
-        Rect texRect = new Rect(20, 100, Screen.width - 40, 25);
+        // Draw BG
+        EditorGUI.DrawRect(new Rect(rampPos.position.x-2, rampPos.position.y-2, rampPos.size.x+4, rampPos.size.y+4), Color.grey);
 
-        EditorGUI.DrawRect(new Rect(texRect.position.x-2, texRect.position.y-2, texRect.size.x+4, texRect.size.y+4), Color.grey);
+        // Draw Color Ramp
         EditorGUI.DrawPreviewTexture(new Rect(20, 100, Screen.width - 40, 25), tex);
 
 
-        GUILayout.BeginArea(new Rect(10, Screen.height - 30, Screen.width-20, Screen.height));
+
+        GUILayout.BeginArea(new Rect(10, Screen.height - 60, Screen.width-20, Screen.height));
+        if (GUILayout.Button("Add Color Key"))
+        {
+            AddColorKey();
+            SetupColorKeys();
+            DrawColorTexture();
+        }
+
         if (GUILayout.Button("Nevermind")) { Close(); }
         GUILayout.EndArea();
 
@@ -152,18 +190,30 @@ public class GradientPopup : EditorWindow
 
     private void SetupColorKeys()
     {
-        GradientColorKey[] cK = new GradientColorKey[colors.Length];
-        GradientAlphaKey[] aK = new GradientAlphaKey[colors.Length];
+        GradientColorKey[] cK = new GradientColorKey[colorKeys.Length];
+        GradientAlphaKey[] aK = new GradientAlphaKey[colorKeys.Length];
 
-        for (int i = 0; i < colors.Length; i++)
+        for (int i = 0; i < colorKeys.Length; i++)
         {
-            cK[i].color = colors[i];
-            aK[i].alpha = 1.0f;
+            cK[i].color = colorKeys[i].c;
+            cK[i].time  = colorKeys[i].t;
+            aK[i].alpha = colorKeys[i].a;
         }
 
 
-        gradient.SetKeys(cK, gradient.alphaKeys);
+        gradient.SetKeys(cK, aK);
 
+    }
+
+    private void AddColorKey()
+    {
+        ColorKey tmp;
+        tmp.c = Color.white;
+        tmp.a = 1.0f;
+        tmp.t = 0.2f;
+        tmp.p = Vector2.zero;
+
+        ArrayUtility.Add(ref colorKeys, tmp);
     }
 
     private void DrawColorTexture()
