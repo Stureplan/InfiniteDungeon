@@ -8,18 +8,21 @@ public class ColorRampShaderGUI : ShaderGUI
 
     public override void OnGUI(MaterialEditor materialEditor, MaterialProperty[] properties)
     {
-        //base.OnGUI(materialEditor, properties);
+        base.OnGUI(materialEditor, properties);
         
         Material targetMat = (Material)materialEditor.target;
 
-
-
-        tex = Texture2D.blackTexture;
-        EditorGUI.DrawPreviewTexture(new Rect(0, 200, 100, 50), tex);
-
-        if(GUILayout.Button("Gradient Editor"))
+        if (tex != null)
         {
-            Rect rect = new Rect(GUIUtility.GUIToScreenPoint(Event.current.mousePosition), Vector2.one * 100);
+            targetMat.SetTexture("_MainTex", tex);
+            EditorGUI.DrawPreviewTexture(new Rect(20, 200, 100, 50), tex);
+
+        }
+
+
+        if (GUILayout.Button("Gradient Editor"))
+        {
+            Rect rect = new Rect(GUIUtility.GUIToScreenPoint(Event.current.mousePosition), new Vector2(100, 200));
             GradientPopup.InitPopup(this, rect);
         }
     }
@@ -31,8 +34,6 @@ struct ColorKey
     public Color c;
     public float t;
     public float a;
-
-    public Vector2 p;
 }
 
 public class GradientPopup : EditorWindow
@@ -48,7 +49,9 @@ public class GradientPopup : EditorWindow
 
     /* GUI CONTENT */
     private Texture GUI_btn;
-    private int GUI_btn_w;
+    private Texture GUI_btn_sel;
+    private Vector2 GUI_btn_size;
+    int selected = 110;
 
     static public void InitPopup(ColorRampShaderGUI materialGUI, Rect rect)
     {
@@ -68,7 +71,10 @@ public class GradientPopup : EditorWindow
 
     private void InitializeGUI()
     {
-        GUI_btn = (Texture)Resources.Load("Editor/Button01");
+        GUI_btn     = (Texture)Resources.Load("Editor/Button01");
+        GUI_btn_sel = (Texture)Resources.Load("Editor/Button02");
+
+        GUI_btn_size = new Vector2(GUI_btn.width, GUI_btn.height);
     }
 
     private void InitializeColors()
@@ -85,10 +91,6 @@ public class GradientPopup : EditorWindow
         colorKeys[2].c = Color.blue;
         colorKeys[2].a = 1.0f;
         colorKeys[2].t = 1.0f;
-
-        colorKeys[0].p = Vector2.zero;
-        colorKeys[1].p = Vector2.zero;
-        colorKeys[2].p = Vector2.zero;
 
 
 
@@ -134,45 +136,57 @@ public class GradientPopup : EditorWindow
     private void OnGUI()
     {
         // Setup Rect
-        Rect rampPos = new Rect(20, 100, Screen.width - 40, 25);
-        Rect addedPos = rampPos;
-        addedPos.position += new Vector2(-(GUI_btn.width / 2), 27);
-
-        Rect m = rampPos;
-        m.position = m.position + new Vector2(-(GUI_btn.width / 2), 27);
+        Rect rampPos = new Rect(20, 45, Screen.width - 40, 25);
+        Rect sliderPos = new Rect(15, 90, rampPos.width+10, 10);
 
 
         EditorGUILayout.LabelField("Gradient");
 
+
         EditorGUI.BeginChangeCheck();
         for(int i = 0; i < colorKeys.Length; i++)
         {
-            colorKeys[i].c = EditorGUILayout.ColorField("Color " + i, colorKeys[i].c);
+            Rect tmp = rampPos;
+            tmp.size = GUI_btn_size;
+            tmp.position += new Vector2(-(GUI_btn_size.x / 2), 27);
+            tmp.position += new Vector2(colorKeys[i].t * rampPos.size.x, 0);
 
-            Rect tmp = new Rect(addedPos);
-            tmp.position += colorKeys[i].p;
 
-            float x = rampPos.size.x;
+            if (tmp.Contains(Event.current.mousePosition))
+            {
+                if (Event.current.type == EventType.MouseDown)
+                {
+                    selected = i;
+                }
+            }
 
-            Vector2 pos = new Vector2(colorKeys[i].t * x, 0);
-            tmp.position += pos;
-            
-
-            GUI.Button(tmp, GUI_btn, GUIStyle.none);
+            if (i == selected)
+            {
+                GUI.Button(tmp, GUI_btn_sel, GUIStyle.none);
+            }
+            else
+            {
+                GUI.Button(tmp, GUI_btn, GUIStyle.none);
+            }
         }
+
+        if (selected < colorKeys.Length)
+        {
+            colorKeys[selected].t = GUI.HorizontalSlider(sliderPos, colorKeys[selected].t, 0.0f, 1.0f);
+            colorKeys[selected].c = EditorGUILayout.ColorField("Color " + selected, colorKeys[selected].c);
+        }
+
         if (EditorGUI.EndChangeCheck())
         {
             SetupColorKeys();
             DrawColorTexture();
         }
 
-
         // Draw BG
         EditorGUI.DrawRect(new Rect(rampPos.position.x-2, rampPos.position.y-2, rampPos.size.x+4, rampPos.size.y+4), Color.grey);
 
         // Draw Color Ramp
-        EditorGUI.DrawPreviewTexture(new Rect(20, 100, Screen.width - 40, 25), tex);
-
+        EditorGUI.DrawPreviewTexture(new Rect(20, 45, Screen.width - 40, 25), tex);
 
 
         GUILayout.BeginArea(new Rect(10, Screen.height - 60, Screen.width-20, Screen.height));
@@ -182,7 +196,7 @@ public class GradientPopup : EditorWindow
             SetupColorKeys();
             DrawColorTexture();
         }
-
+        if (GUILayout.Button("Apply Texture")) { SetTexture(tex); }
         if (GUILayout.Button("Nevermind")) { Close(); }
         GUILayout.EndArea();
 
@@ -197,7 +211,7 @@ public class GradientPopup : EditorWindow
         {
             cK[i].color = colorKeys[i].c;
             cK[i].time  = colorKeys[i].t;
-            aK[i].alpha = colorKeys[i].a;
+            aK[i].alpha = colorKeys[i].c.a;
         }
 
 
@@ -211,7 +225,7 @@ public class GradientPopup : EditorWindow
         tmp.c = Color.white;
         tmp.a = 1.0f;
         tmp.t = 0.2f;
-        tmp.p = Vector2.zero;
+
 
         ArrayUtility.Add(ref colorKeys, tmp);
     }
