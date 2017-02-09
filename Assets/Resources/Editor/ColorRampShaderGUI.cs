@@ -22,7 +22,16 @@ public class ColorRampShaderGUI : ShaderGUI
         if (GUILayout.Button("Gradient Editor"))
         {
             Rect rect = new Rect(GUIUtility.GUIToScreenPoint(Event.current.mousePosition), new Vector2(100, 200));
-            GradientPopup.InitPopup(this, rect, keys, gradient);
+            GradientPopup popup = GradientPopup.InitPopup(this, rect, keys, gradient);
+            
+            if (keys == null || gradient == null)
+            {
+                popup.DefaultRamp();
+            }
+            else
+            {
+                popup.InitializeColors(keys, gradient);
+            }
         }
     }
 }
@@ -44,7 +53,6 @@ public class GradientPopup : EditorWindow
     private Gradient gradient;
     private Texture2D tex;
     private ColorKey[] colorKeys;
-    private int amtOfColors = 3;
 
     /* GUI CONTENT */
     private Texture GUI_btn;
@@ -52,20 +60,21 @@ public class GradientPopup : EditorWindow
     private Vector2 GUI_btn_size;
     int selected = 110;
 
-    static public void InitPopup(ColorRampShaderGUI materialGUI, Rect rect, ColorKey[] k, Gradient g)
+    static public GradientPopup InitPopup(ColorRampShaderGUI materialGUI, Rect rect, ColorKey[] k, Gradient g)
     {
         GradientPopup popup = CreateInstance<GradientPopup>();
         //GradientPopup popup = (GradientPopup)EditorWindow.GetWindow(typeof(GradientPopup));
         materialInstance = materialGUI;
 
         popup.InitializeGUI();
-        popup.InitializeColors(k, g);
+        //popup.InitializeColors(k, g);
 
         popup.name = "ASDChildren";
         popup.titleContent.text = "ffff";
         popup.position = rect;
         popup.ShowUtility();
 
+        return popup;
     }
 
     private void InitializeGUI()
@@ -76,25 +85,30 @@ public class GradientPopup : EditorWindow
         GUI_btn_size = new Vector2(GUI_btn.width, GUI_btn.height);
     }
 
-    private void InitializeColors(ColorKey[] k, Gradient g)
+    public void InitializeColors(ColorKey[] k, Gradient g)
     {
         //load array and gradient here =>
         //remember to null check (first time)
+        colorKeys = new ColorKey[k.Length];
+        gradient = new Gradient();
 
-        colorKeys = k;
+        for (int i = 0; i < k.Length; i++)
+        {
+            colorKeys[i].c = k[i].c;
+            colorKeys[i].a = k[i].a;
+            colorKeys[i].t = k[i].t;
+        }
+
         gradient = g;
 
-        if (colorKeys == null || gradient == null)
-        {
-            DefaultRamp();
-        }
+        SetupColorKeys();
         DrawColorTexture();
     }
 
-    private void DefaultRamp()
+    public void DefaultRamp()
     {
         //Defaults to a three-key R|G|B ramp.
-        colorKeys = new ColorKey[amtOfColors];
+        colorKeys = new ColorKey[3];
         colorKeys[0].c = Color.red;
         colorKeys[0].a = 1.0f;
         colorKeys[0].t = 0.0f;
@@ -120,17 +134,17 @@ public class GradientPopup : EditorWindow
         cK[0].time = colorKeys[0].t;
         aK[0].time = colorKeys[0].t;
 
-        cK[0].color = colorKeys[1].c;
-        aK[0].alpha = colorKeys[1].a;
+        cK[1].color = colorKeys[1].c;
+        aK[1].alpha = colorKeys[1].a;
 
-        cK[0].time = colorKeys[1].t;
-        aK[0].time = colorKeys[1].t;
+        cK[1].time = colorKeys[1].t;
+        aK[1].time = colorKeys[1].t;
 
-        cK[0].color = colorKeys[2].c;
-        aK[0].alpha = colorKeys[2].a;
+        cK[2].color = colorKeys[2].c;
+        aK[2].alpha = colorKeys[2].a;
 
-        cK[0].time = colorKeys[2].t;
-        aK[0].time = colorKeys[2].t;
+        cK[2].time = colorKeys[2].t;
+        aK[2].time = colorKeys[2].t;
 
         gradient.SetKeys(cK, aK);
 

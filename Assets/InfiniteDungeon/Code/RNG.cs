@@ -29,6 +29,7 @@ public static class RNG
         else if (r == 2) { q = Quaternion.AngleAxis(180.0f, axis); }
         else if (r == 3) { q = Quaternion.AngleAxis(270.0f, axis); }
 
+        Debug.Log(r);
         return q;
     }
 }
