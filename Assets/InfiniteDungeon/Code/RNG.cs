@@ -18,4 +18,17 @@ public static class RNG
     {
         value = seed;
     }
+
+    public static Quaternion Q90f(Vector3 axis)
+    {
+        Quaternion q = Quaternion.identity;
+        int r = RNG.Range(0, 4);
+
+        if      (r == 0) { q = Quaternion.AngleAxis(0.0f, axis); }
+        else if (r == 1) { q = Quaternion.AngleAxis(90.0f, axis); }
+        else if (r == 2) { q = Quaternion.AngleAxis(180.0f, axis); }
+        else if (r == 3) { q = Quaternion.AngleAxis(270.0f, axis); }
+
+        return q;
+    }
 }

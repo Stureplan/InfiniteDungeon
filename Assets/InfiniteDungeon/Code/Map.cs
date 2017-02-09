@@ -283,7 +283,7 @@ public class Map : MonoBehaviour
                     // OBSTACLE II (MOUNTAINS)
 
                     Vector3 pos = new Vector3((x - sizeX / 2) * space, 0, (y - sizeY / 2) * space);
-                    GameObject c = Instantiate(mountainPrefabs[RNG.Range(0, 3)], pos, Quaternion.identity);
+                    GameObject c = Instantiate(mountainPrefabs[RNG.Range(0, 3)], pos, RNG.Q90f(Vector3.up));
                     c.transform.parent = transform;
 
                     allSceneObjects.Add(c);

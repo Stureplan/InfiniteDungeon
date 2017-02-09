@@ -5,19 +5,14 @@ Shader "Unlit/Mobile"
 	Properties
 	{
 		_MainTex ("Texture", 2D) = "white" {}
-		
-		[Header(Color Properties)]
-		_TopColor("Top Color", Color) = (1, 1, 1, 1)
-		_MidColor("Mid Color", Color) = (0.2, 0.2, 0, 1)
-		_LowColor("Low Color", Color) = (0, 1, 1, 1)
-		[Space(10)]
-		_TopValue("Top Level", Float) = 0.9
-		_MidValue("Mid Level", Float) = 0.75
+		_SnowTex ("Snow", 2D) = "white" {}
 	}
 
 	SubShader
 	{
-		Tags { "RenderType"="Opaque" }
+		Tags{ "Queue" = "AlphaTest" "RenderType" = "TransparentCutout" "IgnoreProjector" = "True" }
+
+		Blend SrcAlpha OneMinusSrcAlpha
 		LOD 100
 
 		Pass
@@ -45,30 +40,9 @@ Shader "Unlit/Mobile"
 			};
 
 
-			fixed4 _TopColor;
-			fixed4 _MidColor;
-			fixed4 _LowColor;
-
-			fixed _TopValue;
-			fixed _MidValue;
-
-
-
 			sampler2D _MainTex;
+			sampler2D _SnowTex;
 			float4 _MainTex_ST;
-
-			fixed4 heightColor(fixed h)
-			{
-				//fixed4 c1 = _LowColor;
-				//fixed4 c2 = _MidColor * step(_MidValue, h);
-				//fixed4 c3 = _TopColor * step(_TopValue, h);
-
-				fixed4 c1 = _LowColor * (1-h);
-				fixed4 c2 = _MidColor * (_MidValue - h);
-				fixed4 c3 = _TopColor * (_TopValue - h);
-
-				return c1 + c2 + c3;
-			}
 
 			fixed normalize01(fixed v, fixed min, fixed max)
 			{
@@ -90,17 +64,16 @@ Shader "Unlit/Mobile"
 				//c *= 1 * nDot;
 
 				
-				fixed4 c = heightColor(y);
-
 
 				o.normal = v.normal;
 				o.vertex = UnityObjectToClipPos(v.vertex);
 				o.uv = fixed2(y, y);
 
 
-				o.color = c;
+				//useless atm (pass normals?)
+				o.color = fixed4(0, 0 ,0, 0);
 
-				//o.uv = TRANSFORM_TEX(v.uv, _MainTex);
+				o.normal.xy = TRANSFORM_TEX(v.uv, _MainTex);
 				return o;
 			}
 			
@@ -109,11 +82,22 @@ Shader "Unlit/Mobile"
 				// sample the texture
 				//fixed4 col = tex2D(_MainTex, i.uv) * i.color;
 				//fixed4 col = i.color;
+				//fixed2 uv = fixed2(i.vertex.y, i.vertex.y);
+				
+				//TODO: Store normal maps. UVs should be UVs, normals normals etc. Height can be a fixed.
 				//col.xyz *= dot(fixed3(1, 1, 0), i.normal);
 
-				fixed2 uv = fixed2(i.vertex.y, i.vertex.y);
+
 				fixed4 col = tex2D(_MainTex, i.uv);
-				return col;
+				fixed4 col2 = tex2D(_SnowTex, i.normal.xy);
+				
+				
+				fixed h = 0;
+				h = step(0.4, i.uv.x);
+				col2 = step(0.65, col2.a) * h;
+
+
+				return col + col2;
 			}
 			ENDCG
 		}

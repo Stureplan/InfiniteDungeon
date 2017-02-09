@@ -4,7 +4,8 @@ using UnityEditor;
 public class ColorRampShaderGUI : ShaderGUI
 {
     public Texture2D tex;
-
+    public ColorKey[] keys;
+    public Gradient gradient;
 
     public override void OnGUI(MaterialEditor materialEditor, MaterialProperty[] properties)
     {
@@ -15,21 +16,19 @@ public class ColorRampShaderGUI : ShaderGUI
         if (tex != null)
         {
             targetMat.SetTexture("_MainTex", tex);
-            EditorGUI.DrawPreviewTexture(new Rect(20, 200, 100, 50), tex);
-
-        }
+        } 
 
 
         if (GUILayout.Button("Gradient Editor"))
         {
             Rect rect = new Rect(GUIUtility.GUIToScreenPoint(Event.current.mousePosition), new Vector2(100, 200));
-            GradientPopup.InitPopup(this, rect);
+            GradientPopup.InitPopup(this, rect, keys, gradient);
         }
     }
 }
 
 
-struct ColorKey
+public struct ColorKey
 {
     public Color c;
     public float t;
@@ -53,14 +52,14 @@ public class GradientPopup : EditorWindow
     private Vector2 GUI_btn_size;
     int selected = 110;
 
-    static public void InitPopup(ColorRampShaderGUI materialGUI, Rect rect)
+    static public void InitPopup(ColorRampShaderGUI materialGUI, Rect rect, ColorKey[] k, Gradient g)
     {
         GradientPopup popup = CreateInstance<GradientPopup>();
         //GradientPopup popup = (GradientPopup)EditorWindow.GetWindow(typeof(GradientPopup));
         materialInstance = materialGUI;
 
         popup.InitializeGUI();
-        popup.InitializeColors();
+        popup.InitializeColors(k, g);
 
         popup.name = "ASDChildren";
         popup.titleContent.text = "ffff";
@@ -77,8 +76,24 @@ public class GradientPopup : EditorWindow
         GUI_btn_size = new Vector2(GUI_btn.width, GUI_btn.height);
     }
 
-    private void InitializeColors()
+    private void InitializeColors(ColorKey[] k, Gradient g)
     {
+        //load array and gradient here =>
+        //remember to null check (first time)
+
+        colorKeys = k;
+        gradient = g;
+
+        if (colorKeys == null || gradient == null)
+        {
+            DefaultRamp();
+        }
+        DrawColorTexture();
+    }
+
+    private void DefaultRamp()
+    {
+        //Defaults to a three-key R|G|B ramp.
         colorKeys = new ColorKey[amtOfColors];
         colorKeys[0].c = Color.red;
         colorKeys[0].a = 1.0f;
@@ -99,33 +114,35 @@ public class GradientPopup : EditorWindow
         GradientColorKey[] cK = new GradientColorKey[3];
         GradientAlphaKey[] aK = new GradientAlphaKey[3];
 
-        cK[0].color = Color.red;
-        aK[0].alpha = 1.0f;
+        cK[0].color = colorKeys[0].c;
+        aK[0].alpha = colorKeys[0].a;
 
-        cK[0].time = 0.0f;
-        aK[0].time = 0.0f;
+        cK[0].time = colorKeys[0].t;
+        aK[0].time = colorKeys[0].t;
 
-        cK[1].color = Color.green;
-        aK[1].alpha = 1.0f;
+        cK[0].color = colorKeys[1].c;
+        aK[0].alpha = colorKeys[1].a;
 
-        cK[1].time = 0.5f;
-        aK[1].time = 0.5f;
+        cK[0].time = colorKeys[1].t;
+        aK[0].time = colorKeys[1].t;
 
-        cK[2].color = Color.blue;
-        aK[2].alpha = 1.0f;
+        cK[0].color = colorKeys[2].c;
+        aK[0].alpha = colorKeys[2].a;
 
-        cK[2].time = 1.0f;
-        aK[2].time = 1.0f;
+        cK[0].time = colorKeys[2].t;
+        aK[0].time = colorKeys[2].t;
 
         gradient.SetKeys(cK, aK);
 
-        tex = new Texture2D(3, 1);
         DrawColorTexture();
     }
 
-    private void SetTexture(Texture2D tex)
+    private void SaveColorRamp(Texture2D tex)
     {
+        WriteFile(tex);
         materialInstance.tex = tex;
+        materialInstance.keys = colorKeys;
+        materialInstance.gradient = gradient;
     }
 
     private void OnLostFocus()
@@ -189,14 +206,14 @@ public class GradientPopup : EditorWindow
         EditorGUI.DrawPreviewTexture(new Rect(20, 45, Screen.width - 40, 25), tex);
 
 
-        GUILayout.BeginArea(new Rect(10, Screen.height - 60, Screen.width-20, Screen.height));
+        GUILayout.BeginArea(new Rect(10, Screen.height - 70, Screen.width-20, Screen.height));
         if (GUILayout.Button("Add Color Key"))
         {
             AddColorKey();
             SetupColorKeys();
             DrawColorTexture();
         }
-        if (GUILayout.Button("Apply Texture")) { SetTexture(tex); }
+        if (GUILayout.Button("Apply Texture")) { SaveColorRamp(tex); }
         if (GUILayout.Button("Nevermind")) { Close(); }
         GUILayout.EndArea();
 
@@ -232,15 +249,6 @@ public class GradientPopup : EditorWindow
 
     private void DrawColorTexture()
     {
-        /*tex = new Texture2D(amtOfColors, 1);
-        
-        for (int i = 0; i < amtOfColors; i++)
-        {
-            tex.SetPixel(i, 1, colors[i]);
-        }*/
-
-
-
         tex = new Texture2D(100, 1);
         for (int i = 0; i < 100; i++)
         {
@@ -249,8 +257,23 @@ public class GradientPopup : EditorWindow
         }
 
 
-        tex.filterMode = FilterMode.Bilinear;
+        tex.filterMode = FilterMode.Trilinear;
         tex.wrapMode = TextureWrapMode.Clamp;
         tex.Apply();
+
+    }
+
+    private void WriteFile(Texture2D t)
+    {
+        string projectPath = Application.dataPath + "/Resources/Editor/Ramps/";
+        string[] existingFiles = System.IO.Directory.GetFiles(projectPath, "*.png");
+
+        int index = existingFiles.Length;
+
+        string fileName = "ColorRamp" + ".png";
+
+        byte[] bytes = t.EncodeToPNG();
+        Debug.Log(projectPath + fileName);
+        System.IO.File.WriteAllBytes(projectPath + fileName, bytes);
     }
 }
