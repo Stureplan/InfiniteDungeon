@@ -82,6 +82,7 @@ public class Map : MonoBehaviour
     public GameObject obstaclePrefabI;
     public GameObject obstaclePrefabII;
     public GameObject obstaclePrefabIII;
+    public GameObject[] mountainPrefabs = new GameObject[3];
     public GameObject startPrefab;
     public GameObject endPrefab;
 
@@ -199,7 +200,7 @@ public class Map : MonoBehaviour
 
                         if (Obstacles3x3(x, y, 1) > 4 && Obstacles3x3(x, y, 0) > 2 && grid[x, y].type == 1)
                         {
-                            SetCell(x, y, 2);
+                            //SetCell(x, y, 2);
                         }
                     }
                 }
@@ -212,9 +213,21 @@ public class Map : MonoBehaviour
             {
                 if (!CellIsEdge(x, y))
                 {
-                    if (Obstacles3x3(x, y, 2) > 1 && grid[x, y].type == 2)
+                    /*if (Obstacles3x3(x, y, 2) > 1 && grid[x, y].type == 2)
                     {
                         SetCell(x, y, 1);
+                    }*/
+
+                    if (Obstacles3x3(x, y, 0) > 4 && grid[x, y].type == 1)
+                    {
+                        //We are probably in a corner, so a mountain looks nice.
+                        SetCell(x, y, 2);
+                    }
+
+                    if (Obstacles3x3(x, y, 2) > 2)
+                    {
+                        //If we're near 3 or more mountains, make this a mountain range.
+                        SetCell(x, y, 2);
                     }
                 }
             }
@@ -257,7 +270,7 @@ public class Map : MonoBehaviour
                 }
                 if (grid[x, y].type == 1)
                 {
-                    // OBSTACLE I
+                    // OBSTACLE I (EMPTY)
 
                     //Vector3 pos = new Vector3((x - sizeX / 2) * space, 0, (y - sizeY / 2) * space);
                     //GameObject c = Instantiate(obstaclePrefabI, pos, Quaternion.identity);
@@ -267,10 +280,10 @@ public class Map : MonoBehaviour
                 }
                 if (grid[x, y].type == 2)
                 {
-                    // OBSTACLE II
+                    // OBSTACLE II (MOUNTAINS)
 
                     Vector3 pos = new Vector3((x - sizeX / 2) * space, 0, (y - sizeY / 2) * space);
-                    GameObject c = Instantiate(obstaclePrefabII, pos, Quaternion.identity);
+                    GameObject c = Instantiate(mountainPrefabs[RNG.Range(0, 3)], pos, Quaternion.identity);
                     c.transform.parent = transform;
 
                     allSceneObjects.Add(c);
@@ -517,15 +530,20 @@ public class Map : MonoBehaviour
     }
 }
 
+[ExecuteInEditMode]
 [CustomEditor(typeof(Map))]
 public class MapEditor : Editor
 {
+    Map map;
+
+    public void OnEnable()
+    {
+        map = (Map)target;
+    }
+
     public override void OnInspectorGUI()
     {
         //DrawDefaultInspector();
-        Map map = (Map)target;
-
-
 
         map.sizeX = Mathf.Clamp(EditorGUILayout.IntField("Size X", map.sizeX), 4, 32);
         map.sizeY = Mathf.Clamp(EditorGUILayout.IntField("Size Y", map.sizeY), 4, 32);
@@ -539,6 +557,11 @@ public class MapEditor : Editor
         map.obstaclePrefabI = EditorGUILayout.ObjectField("Obstacle Prefab I", map.obstaclePrefabI, typeof(GameObject), false) as GameObject;
         map.obstaclePrefabII = EditorGUILayout.ObjectField("Obstacle Prefab II", map.obstaclePrefabII, typeof(GameObject), false) as GameObject;
         map.obstaclePrefabIII = EditorGUILayout.ObjectField("Obstacle Prefab III", map.obstaclePrefabIII, typeof(GameObject), false) as GameObject;
+
+        map.mountainPrefabs[0] = EditorGUILayout.ObjectField("Mountain 1", map.mountainPrefabs[0], typeof(GameObject), false) as GameObject;
+        map.mountainPrefabs[1] = EditorGUILayout.ObjectField("Mountain 2", map.mountainPrefabs[1], typeof(GameObject), false) as GameObject;
+        map.mountainPrefabs[2] = EditorGUILayout.ObjectField("Mountain 3", map.mountainPrefabs[2], typeof(GameObject), false) as GameObject;
+        
 
         map.startPrefab = EditorGUILayout.ObjectField("Start Prefab", map.startPrefab, typeof(GameObject), false) as GameObject;
         map.endPrefab = EditorGUILayout.ObjectField("End Prefab", map.endPrefab, typeof(GameObject), false) as GameObject;
