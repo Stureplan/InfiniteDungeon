@@ -263,10 +263,11 @@ public class GradientPopup : EditorWindow
 
     private void DrawColorTexture()
     {
-        tex = new Texture2D(100, 1);
-        for (int i = 0; i < 100; i++)
+        int keys = colorKeys.Length;
+        tex = new Texture2D(keys, 1);
+        for (int i = 0; i < keys; i++)
         {
-            float t = (float)i / 100;
+            float t = (float)i / keys;
             tex.SetPixel(i, 1, gradient.Evaluate(t));
         }
 
