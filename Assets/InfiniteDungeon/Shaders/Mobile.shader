@@ -39,7 +39,7 @@ Shader "Unlit/Mobile"
 				fixed3 normal : NORMAL;
 			};
 
-
+			
 			sampler2D _MainTex;
 			sampler2D _SnowTex;
 			float4 _MainTex_ST;
