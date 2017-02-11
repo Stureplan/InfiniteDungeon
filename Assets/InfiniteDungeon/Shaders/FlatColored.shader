@@ -9,6 +9,7 @@ Shader "Unlit/FlatColored"
 	{
 		_MainColor ("Main Color", Color) = (1, 1, 1, 1)
 		_Cube("Cubemap", CUBE) = "" {}
+		_Reflection("Reflection Cutoff", Range(0.0, 1.1)) = 0.7
 	}
 
 	SubShader
@@ -43,6 +44,7 @@ Shader "Unlit/FlatColored"
 
 			fixed4 _MainColor;
 			samplerCUBE _Cube;
+			fixed _Reflection;
 
 			v2f vert (appdata v)
 			{
@@ -82,7 +84,7 @@ Shader "Unlit/FlatColored"
 				cube.a = 1.0;
 
 				fixed amt = (cube.r + cube.g + cube.b) / 3;
-				fixed mult = step(0.7, amt);
+				fixed mult = step(_Reflection, amt);
 				cube *= mult;
 
 				return col + cube;

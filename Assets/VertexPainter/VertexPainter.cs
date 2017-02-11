@@ -49,6 +49,7 @@ public class VertexPainterEditor : Editor
     Color[] colors = new Color[1];
     Vector2[] uvs = new Vector2[1];
 
+
     // Editor-only
     bool paintMode = false;
     int frame = 0;
@@ -195,29 +196,32 @@ public class VertexPainterEditor : Editor
             style.normal.textColor = Color.cyan;
             Handles.Label(point + Vector3.down * 0.075f, brush.mode.ToString(), style);
 
-            Handles.DrawLine(point, point + (dir * 0.1f));
             
             if (brush.mode == BrushMode.Painting)
             {
+                Handles.DrawLine(point, point + (dir * 0.1f));
                 Handles.CircleCap(0, center + point, rot, brush.radius);
             }
 
             else if (brush.mode == BrushMode.Shading)
             {
+
                 float a = 1 - brush.shade.a;
                 Handles.color = new Color(a, a, a, 1.0f);
-                Handles.CircleCap(0, center + point, rot, 0.05f);
+                Handles.DrawLine(point, point + (dir * 0.1f));
+                Handles.CircleCap(0, center + point, rot, brush.radius);
             }
 
             else if (brush.mode == BrushMode.ErasingPaint)
             {
-
+                Handles.DrawDottedLine(point, point + (dir * 0.1f), 5.0f);
             }
 
             else if (brush.mode == BrushMode.ErasingShade)
             {
-
+                Handles.DrawDottedLine(point, point + (dir * 0.1f), 5.0f);
             }
+
         }
     }
 
@@ -259,10 +263,11 @@ public class VertexPainterEditor : Editor
             Mesh mesh = mf.sharedMesh;
 
             int index = hit.triangleIndex * 3;
+            /*hits[0] = mesh.vertices[mesh.triangles[index  ]];
+                hits[1] = mesh.vertices[mesh.triangles[index+1]];
+                hits[2] = mesh.vertices[mesh.triangles[index+2]];
+                */
 
-            //Vector3 hit1 = mesh.vertices[mesh.triangles[index  ]];
-            //Vector3 hit2 = mesh.vertices[mesh.triangles[index+1]];
-            //Vector3 hit3 = mesh.vertices[mesh.triangles[index+2]];
 
             if (mode == BrushMode.Painting)
             {
@@ -286,6 +291,7 @@ public class VertexPainterEditor : Editor
                 colors[mesh.triangles[index + 1]] = Color.clear;
                 colors[mesh.triangles[index + 2]] = Color.clear;
 
+                
                 mesh.colors = colors;
             }
             else if (mode == BrushMode.ErasingShade)
@@ -293,6 +299,7 @@ public class VertexPainterEditor : Editor
                 uvs[mesh.triangles[index]].x     = 0.0f;
                 uvs[mesh.triangles[index + 1]].x = 0.0f;
                 uvs[mesh.triangles[index + 2]].x = 0.0f;
+
 
                 mesh.uv = uvs;
             }
