@@ -49,7 +49,6 @@ public class VertexPainterEditor : Editor
     Color[] colors = new Color[1];
     Vector2[] uvs = new Vector2[1];
 
-
     // Editor-only
     bool paintMode = false;
     int frame = 0;
@@ -184,6 +183,7 @@ public class VertexPainterEditor : Editor
         //if (!ctrlIsDown)
         {
             Handles.color = Color.cyan;
+
 
             Quaternion rot = Quaternion.identity;
             if (dir.magnitude > 0.001f)

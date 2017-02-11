@@ -38,8 +38,7 @@ Shader "Unlit/FlatColored"
 				float4 vertex : SV_POSITION;
 				fixed4 color : COLOR;
 				fixed3 normal : NORMAL;
-				float3 normalDir : TEXCOORD0;
-				float3 viewDir : TEXCOORD1;
+				fixed3 reflectedDir : TEXCOORD0;
 			};
 
 			fixed4 _MainColor;
@@ -52,8 +51,9 @@ Shader "Unlit/FlatColored"
 				o.vertex = UnityObjectToClipPos(v.vertex);
 				o.normal = v.normal;
 
-				o.color.rgb = lerp(_MainColor.rgb, v.color, v.color.a);
-				o.color.a = 1.0;
+
+				o.color = lerp(_MainColor, fixed4(v.color.rgb, 1.0), v.color.a);
+				//o.color.a = 1.0;
 				fixed a = v.uv.x;		// Alpha is in the 0-1 range
 				o.color.rgb *= 1 - a;	// 0 = Fully Light, 1 = Fully Dark
 
@@ -61,9 +61,10 @@ Shader "Unlit/FlatColored"
 
 				float4x4 modelMatrix = unity_ObjectToWorld;
 				float4x4 modelMatrixInverse = unity_WorldToObject;
-				o.normalDir = normalize(mul(float4(v.normal, 0.0), modelMatrixInverse).xyz);
-				o.viewDir = mul(modelMatrix, v.vertex).xyz - _WorldSpaceCameraPos;
-			
+				fixed3 normalDir = normalize(mul(float4(v.normal, 0.0), modelMatrixInverse).xyz);
+				fixed3 viewDir = mul(modelMatrix, v.vertex).xyz - _WorldSpaceCameraPos;
+				fixed3 reflectedDir = reflect(viewDir, normalize(normalDir));
+				o.reflectedDir = reflectedDir;
 
 				return o;
 			}
@@ -77,12 +78,11 @@ Shader "Unlit/FlatColored"
 				//cube.rgb= texCUBE(_Cube, i.normal).rgb;
 				//cube.a = 1.0;
 				
-				float3 reflectedDir = reflect(i.viewDir, normalize(i.normalDir));
-				float4 cube = texCUBE(_Cube, reflectedDir);
+				float4 cube = texCUBE(_Cube, i.reflectedDir);
 				cube.a = 1.0;
 
 				fixed amt = (cube.r + cube.g + cube.b) / 3;
-				fixed mult = step(0.6, amt);
+				fixed mult = step(0.7, amt);
 				cube *= mult;
 
 				return col + cube;
