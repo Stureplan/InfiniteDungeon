@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEditor;
+using System.Collections.Generic;
 
 [RequireComponent(typeof(MeshCollider))]
 public class VertexPainter : MonoBehaviour
@@ -31,6 +32,12 @@ struct Brush
     public float radius;
     public Color color;
     public Color shade;
+}
+
+struct PVertex
+{
+    public Vector3 p;
+    public int i;
 }
 
 [ExecuteInEditMode]
@@ -261,45 +268,54 @@ public class VertexPainterEditor : Editor
         if (hit.collider.name == vp.name)
         {
             Mesh mesh = mf.sharedMesh;
-
             int index = hit.triangleIndex * 3;
-            /*hits[0] = mesh.vertices[mesh.triangles[index  ]];
-                hits[1] = mesh.vertices[mesh.triangles[index+1]];
-                hits[2] = mesh.vertices[mesh.triangles[index+2]];
-                */
+
+            PVertex[] hits = new PVertex[3];
+            hits[0].p = mesh.vertices[mesh.triangles[index]];
+            hits[1].p = mesh.vertices[mesh.triangles[index + 1]];
+            hits[2].p = mesh.vertices[mesh.triangles[index + 2]];
+
+            hits[0].i = mesh.triangles[index];
+            hits[1].i = mesh.triangles[index+1];
+            hits[2].i = mesh.triangles[index+2];
+
+            Vector3 pt = hit.point;
+            float shortest = 999.0f;
+            int vtx = 0;
+
+            for (int i = 0; i < 3; i++)
+            {
+                float d = Vector3.Distance(pt, hits[i].p);
+                if (d < shortest)
+                {
+                    vtx = hits[i].i;
+                    shortest = d;
+                }
+            }    
+
 
 
             if (mode == BrushMode.Painting)
             {
-                colors[mesh.triangles[index]]     = brush.color;
-                colors[mesh.triangles[index + 1]] = brush.color;
-                colors[mesh.triangles[index + 2]] = brush.color;
+                colors[vtx]     = brush.color;
 
                 mesh.colors = colors;
             }
             else if (mode == BrushMode.Shading)
             {
-                uvs[mesh.triangles[index]].x   = brush.shade.a;
-                uvs[mesh.triangles[index+1]].x = brush.shade.a;
-                uvs[mesh.triangles[index+2]].x = brush.shade.a;
+                uvs[vtx].x   = brush.shade.a;
 
                 mesh.uv = uvs;
             }
             else if (mode == BrushMode.ErasingPaint)
             {
-                colors[mesh.triangles[index]]     = Color.clear;
-                colors[mesh.triangles[index + 1]] = Color.clear;
-                colors[mesh.triangles[index + 2]] = Color.clear;
-
+                colors[vtx]     = Color.clear;
                 
                 mesh.colors = colors;
             }
             else if (mode == BrushMode.ErasingShade)
             {
-                uvs[mesh.triangles[index]].x     = 0.0f;
-                uvs[mesh.triangles[index + 1]].x = 0.0f;
-                uvs[mesh.triangles[index + 2]].x = 0.0f;
-
+                uvs[vtx].x     = 0.0f;
 
                 mesh.uv = uvs;
             }
