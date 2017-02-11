@@ -76,7 +76,15 @@ public class VertexPainterEditor : Editor
 
         for (int i = 0; i < colors.Length; i++)
         {
-            colors[i] = mf.sharedMesh.colors[i];
+            if (mf.sharedMesh.colors.Length > 0)
+            {
+                colors[i] = mf.sharedMesh.colors[i];
+
+            }
+            else
+            {
+                colors[i] = Color.clear;
+            }
             uvs[i] = mf.sharedMesh.uv[i];
         }
 
@@ -179,6 +187,8 @@ public class VertexPainterEditor : Editor
 
         brush.color = EditorGUI.ColorField(new Rect(10, 90, 125, 16), brush.color);
         brush.shade = EditorGUI.ColorField(new Rect(10, 110, 125, 16), brush.shade);
+
+        if (GUI.Button(new Rect(10, 141, 130, 20), "Save Prefab")) { SaveMeshData(mf.sharedMesh, vp.name); }
         Handles.EndGUI();
 
 
@@ -245,12 +255,14 @@ public class VertexPainterEditor : Editor
                 point = hit.point;
                 dir = hit.normal;
 
-                if (Event.current.type == EventType.MouseDrag && 
-                    !Event.current.alt &&
-                    !Event.current.control &&
-                    !Event.current.shift)
+                Event e = Event.current;
+
+                if (e.type == EventType.MouseDrag && 
+                    !e.alt &&
+                    !e.control &&
+                    !e.shift)
                 {
-					if (Event.current.button == 0)
+					if (e.button == 0)
 					{
 						PaintVertex(brush.mode, hit);
 					}
@@ -358,5 +370,33 @@ public class VertexPainterEditor : Editor
             brush.mode++;
 
         }
+    }
+
+    private void SaveMeshData(Mesh meshInstance, string name)
+    {
+        string filePath = EditorUtility.SaveFilePanel("Save Asset", "Assets/", name, "asset");
+        if (string.IsNullOrEmpty(filePath)) { return; }
+
+        filePath = FileUtil.GetProjectRelativePath(filePath);
+
+        Mesh temp = (Mesh)Object.Instantiate(meshInstance);
+        AssetDatabase.CreateAsset(temp, filePath);
+        AssetDatabase.SaveAssets();
+        AssetDatabase.Refresh();
+
+        
+    }
+
+    [MenuItem("VertexPainter/Save Prefab")]
+    public static void SavePrefab()
+    {
+        Transform t = Selection.activeTransform;
+        if (t == null) { return; }
+
+        string filePath = EditorUtility.SaveFilePanel("Save Prefab", "Assets/", t.name, "prefab");
+
+        filePath = FileUtil.GetProjectRelativePath(filePath);
+
+        PrefabUtility.CreatePrefab(filePath, t.gameObject);
     }
 }

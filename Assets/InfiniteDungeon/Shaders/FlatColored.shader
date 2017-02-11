@@ -1,4 +1,6 @@
 ﻿// Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
+
+// Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
 // Upgrade NOTE: replaced '_World2Object' with 'unity_WorldToObject'
 
 // Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
@@ -10,11 +12,13 @@ Shader "Unlit/FlatColored"
 		_MainColor ("Main Color", Color) = (1, 1, 1, 1)
 		_Cube("Cubemap", CUBE) = "" {}
 		_Reflection("Reflection Cutoff", Range(0.0, 1.1)) = 0.7
+		_ReflectionColor("Reflection Color", Color) = (0, 1, 1, 0)
+		_ReflectionAlpha("Reflection Strength", Range(0.0, 1.0)) = 1.0
 	}
 
 	SubShader
 	{
-		Tags{ "RenderType" = "TransparentCutout" }
+		Tags{ "RenderType" = "TransparentCutout" "LightMode" = "ForwardBase" }
 
 		Blend SrcAlpha OneMinusSrcAlpha
 
@@ -45,6 +49,12 @@ Shader "Unlit/FlatColored"
 			fixed4 _MainColor;
 			samplerCUBE _Cube;
 			fixed _Reflection;
+			fixed4 _ReflectionColor;
+			fixed _ReflectionAlpha;
+
+			fixed4 _GLOBAL_LIGHT_0 = fixed4(0, 0, 0, 0);
+
+
 
 			v2f vert (appdata v)
 			{
@@ -54,12 +64,20 @@ Shader "Unlit/FlatColored"
 				o.normal = v.normal;
 
 
+
+				fixed3 pos = mul(unity_ObjectToWorld, v.vertex);
+				fixed dist = distance(pos, _GLOBAL_LIGHT_0.xyz);
+
+
 				o.color = lerp(_MainColor, fixed4(v.color.rgb, 1.0), v.color.a);
 				//o.color.a = 1.0;
 				fixed a = v.uv.x;		// Alpha is in the 0-1 range
 				o.color.rgb *= 1 - a;	// 0 = Fully Light, 1 = Fully Dark
 
 
+				half nDot = dot(o.normal, fixed3(1, 1, 0));
+				nDot = clamp(nDot, 0.8, 1);
+				o.color.rgb *= nDot;
 
 				float4x4 modelMatrix = unity_ObjectToWorld;
 				float4x4 modelMatrixInverse = unity_WorldToObject;
@@ -67,7 +85,8 @@ Shader "Unlit/FlatColored"
 				fixed3 viewDir = mul(modelMatrix, v.vertex).xyz - _WorldSpaceCameraPos;
 				fixed3 reflectedDir = reflect(viewDir, normalize(normalDir));
 				o.reflectedDir = reflectedDir;
-
+				
+				o.color += fixed4(1-dist, 1-dist, 1-dist, 1.0);
 				return o;
 			}
 			
@@ -75,19 +94,19 @@ Shader "Unlit/FlatColored"
 			{
 				fixed4 col = i.color;
 				
-				
-				//fixed4 cube;
-				//cube.rgb= texCUBE(_Cube, i.normal).rgb;
-				//cube.a = 1.0;
-				
-				float4 cube = texCUBE(_Cube, i.reflectedDir);
+				fixed4 cube = texCUBE(_Cube, i.reflectedDir);
+				cube *= _ReflectionColor;
+				cube *= _ReflectionAlpha;
+
 				cube.a = 1.0;
+
 
 				fixed amt = (cube.r + cube.g + cube.b) / 3;
 				fixed mult = step(_Reflection, amt);
 				cube *= mult;
 
-				return col + cube;
+				return i.color;
+				//return col + cube;
 			}
 			ENDCG
 		}
