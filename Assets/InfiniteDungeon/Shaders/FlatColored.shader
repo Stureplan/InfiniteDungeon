@@ -52,9 +52,13 @@ Shader "Unlit/FlatColored"
 			fixed4 _ReflectionColor;
 			fixed _ReflectionAlpha;
 
-			fixed4 _GLOBAL_LIGHT_0 = fixed4(0, 0, 0, 0);
+			fixed4 GLOBAL_LIGHT_POS_0 = fixed4(0, 0, 0, 0);
+			fixed4 GLOBAL_LIGHT_COL_0 = fixed4(1, 1, 1, 1);
 
+			fixed4 lighting()
+			{
 
+			}
 
 			v2f vert (appdata v)
 			{
@@ -66,7 +70,7 @@ Shader "Unlit/FlatColored"
 
 
 				fixed3 pos = mul(unity_ObjectToWorld, v.vertex);
-				fixed dist = distance(pos, _GLOBAL_LIGHT_0.xyz);
+				fixed dist = distance(pos, GLOBAL_LIGHT_POS_0.xyz);
 
 
 				o.color = lerp(_MainColor, fixed4(v.color.rgb, 1.0), v.color.a);
@@ -86,7 +90,7 @@ Shader "Unlit/FlatColored"
 				fixed3 reflectedDir = reflect(viewDir, normalize(normalDir));
 				o.reflectedDir = reflectedDir;
 				
-				o.color += fixed4(1-dist, 1-dist, 1-dist, 1.0);
+				o.color += fixed4(1-dist, 1-dist, 1-dist, 1.0) * GLOBAL_LIGHT_COL_0;
 				return o;
 			}
 			
