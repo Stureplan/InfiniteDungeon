@@ -30,8 +30,8 @@ public class VLight : MonoBehaviour
 
     public void UpdateShaderNames()
     {
-        shaderPos = "GLOBAL_LIGHT_POS_" + index.ToString();
-        shaderCol = "GLOBAL_LIGHT_COL_" + index.ToString();
+        shaderPos = "GLOBAL_LIGHT_POS_" + index;
+        shaderCol = "GLOBAL_LIGHT_COL_" + index;
 
         UpdateShaders();
     }
