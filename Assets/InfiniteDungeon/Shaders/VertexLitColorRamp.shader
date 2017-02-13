@@ -1,6 +1,6 @@
 ﻿// Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
 
-Shader "Unlit/Mobile"
+Shader "InfinityDungeon/VertexLitColorRamp"
 {
 	Properties
 	{

@@ -14,73 +14,12 @@ public class VLight : MonoBehaviour
 
     private int frame = 0;
 
-
-
-
     // Shader variables
-    private string shaderPos = "GLOBAL_LIGHT_POS_";
-    private string shaderCol = "GLOBAL_LIGHT_COL_";
+    public string shaderPos = "GLOBAL_LIGHT_POS_";
+    public string shaderCol = "GLOBAL_LIGHT_COL_";
 
 
-    void Start()
-    {
-        if (index > MAX_LIGHTS)
-        {
-            Debug.LogWarning("Too many VLights!");
-            this.enabled = false;
-        }
-
-        UpdateShaderNames();   
-    }
-
-    void OnDestroy()
-    {
-        if (CUR_LIGHTS-1 < 0)
-        {
-            Debug.LogWarning("Somehow deleting this VLight means " + (CUR_LIGHTS - 1).ToString() + " VLights remain.\nSomething's fucked up.");
-            return;
-        }
-
-        CUR_LIGHTS--;
-        transform.position = Vector3.one * 100.0f;        
-        UpdateShaders();
-    }
-
-    void OnDrawGizmosSelected()
-    {
-        Handles.BeginGUI();
-
-        if (DEBUG)
-        {
-            GUI.Label(new Rect(halfScreen.x, halfScreen.y, 200, 400),
-                "CUR_LIGHTS: " + CUR_LIGHTS.ToString());
-            GUI.Label(new Rect(halfScreen.x, halfScreen.y + 20, 200, 400),
-                "MAX_LIGHTS: " + MAX_LIGHTS.ToString());
-        }
-
-        Handles.EndGUI();
-    }
-
-    void OnDrawGizmos()
-    {
-        Vector3 pos = transform.position;
-
-        Gizmos.color = color;
-
-        Gizmos.DrawIcon(pos, "VLight.png", false);
-        Gizmos.DrawWireSphere(pos, range);
-
-        SceneView view = SceneView.currentDrawingSceneView;
-        Vector3 screenPos = view.camera.WorldToScreenPoint(pos);
-        Vector2 size = Vector2.one;
-
-        Handles.BeginGUI();
-        GUI.Label(new Rect(screenPos.x, Screen.height - screenPos.y, 200, 400),
-        "VLight " + index);
-        Handles.EndGUI();
-
-        UpdateShaders();
-    }
+    void Start() { }
 
     void Update()
     {
@@ -89,7 +28,7 @@ public class VLight : MonoBehaviour
         frame++;
     }
 
-    void UpdateShaderNames()
+    public void UpdateShaderNames()
     {
         shaderPos = "GLOBAL_LIGHT_POS_" + index.ToString();
         shaderCol = "GLOBAL_LIGHT_COL_" + index.ToString();
@@ -104,28 +43,91 @@ public class VLight : MonoBehaviour
         Shader.SetGlobalVector(shaderCol, color);
     }
 
-    public void SetLightIndex(int i)
+    private void OnDrawGizmos()
     {
-        index = i;
+        UpdateShaders();
+    }
+}
+
+[ExecuteInEditMode]
+[CustomEditor(typeof(VLight))]
+public class VLightEditor : Editor
+{
+    VLight light;
+    int index;
+
+    public override void OnInspectorGUI()
+    {
+        FindTarget();
+        index = light.index;
+
+        base.OnInspectorGUI();
     }
 
-    public const int MAX_LIGHTS = 4;
-    public static int CUR_LIGHTS;
-    private static bool DEBUG = false;
-    private static Vector2 halfScreen = new Vector2(0 + 20, 0 + 20);
+    private void FindTarget()
+    {
+        light = (VLight)target;
+    }
 
-    [MenuItem("Vertex Lights/Debug VLight Info")]
+    private void OnSceneGUI()
+    {
+        if (light == null) { FindTarget(); }
+        Vector3 pos = Vector3.zero;
+        if (Selection.activeTransform != null)
+        {
+            pos = Selection.activeTransform.position;
+        }
+
+        Handles.color = light.color;
+
+        // Draw Light handles
+        GUIStyle style = new GUIStyle();
+        style.normal.textColor = Color.white;
+        style.alignment = TextAnchor.MiddleCenter;
+
+        Handles.Label(pos + new Vector3(0.0f, -0.1f, 0.0f), "VLight " + light.index, style);
+        Handles.DrawWireDisc(pos, Vector3.right, light.range);
+        Handles.DrawWireDisc(pos, Vector3.up, light.range);
+        Handles.DrawWireDisc(pos, Vector3.forward, light.range);
+
+
+        SceneView view = SceneView.currentDrawingSceneView;
+        Vector3 screenNor = view.rotation * Vector3.forward;
+
+        // Draw icon
+        Handles.DrawWireDisc(pos, screenNor, 0.1f);
+
+
+        SceneView.RepaintAll();
+
+    }
+
+    void OnDestroy()
+    {
+        UPDATE_SHADER_NAME(index);
+    }
+
+    private static void UPDATE_SHADER_NAME(int i)
+    {
+        string name = "GLOBAL_LIGHT_POS_" + i;
+        Shader.SetGlobalVector(name, new Vector4(0.0f, 500.0f, 0.0f, 1.0f));
+    }
+
+
+
+    public const int MAX_LIGHTS = 4;
+    /*[MenuItem("Vertex Lights/Debug VLight Info")]
     public static void DebugInfo()
     {
         DEBUG = !DEBUG;
-    }
+    }*/
 
     [MenuItem("Vertex Lights/Create Light")]
     public static void CreateLight()
     {
         UpdateLights();
 
-        if (CUR_LIGHTS+1 > MAX_LIGHTS)
+        if (GET_LIGHT_AMOUNT() + 1 > MAX_LIGHTS)
         {
             if (!EditorUtility.DisplayDialog(
                 "Too many Vertex Lights",
@@ -141,23 +143,33 @@ public class VLight : MonoBehaviour
 
         VLight vl = go.AddComponent<VLight>();
         vl.color = Color.white;
-        vl.SetLightIndex(CUR_LIGHTS);
+        vl.index = GET_LIGHT_AMOUNT();
         vl.UpdateShaderNames();
-        CUR_LIGHTS++;
 
         Selection.activeGameObject = go;
+    }
+
+    static int GET_LIGHT_AMOUNT()
+    {
+        VLight[] lights = GameObject.FindObjectsOfType<VLight>();
+        return lights.Length;
     }
 
     [MenuItem("Vertex Lights/Update Lights")]
     public static void UpdateLights()
     {
         VLight[] lights = GameObject.FindObjectsOfType<VLight>();
-        CUR_LIGHTS = lights.Length;
 
-        for (int i= 0; i < lights.Length; i++)
+        for (int i = 0; i < 4; i++)
         {
+            Shader.SetGlobalVector("GLOBAL_LIGHT_POS_" + i.ToString(), new Vector4(0.0f, 1000.0f, 0.0f, 1.0f));
+            Shader.SetGlobalVector("GLOBAL_LIGHT_COL_" + i.ToString(), Color.white);
+        }
+
+        for (int i = 0; i < lights.Length; i++)
+        {
+
             lights[i].UpdateShaders();
         }
     }
 }
-
