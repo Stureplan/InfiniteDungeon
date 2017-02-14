@@ -7,7 +7,7 @@
 
 	SubShader
 	{
-		Tags{ "RenderType" = "TransparentCutout" "LightMode" = "ForwardBase" }
+		Tags{ "Queue" = "AlphaTest" "RenderType" = "Transparent" "LightMode" = "ForwardBase" }
 
 		Blend SrcAlpha OneMinusSrcAlpha
 
@@ -110,9 +110,11 @@
 
 				// Apply base color and Vertex color.
 				fixed4 col = lerp(_MainColor, fixed4(v.color.rgb, 1.0), v.color.a);
+				//fixed4 col = _MainColor;
 
 				// Apply lighting.
 				o.color.rgb = col + lights(pos, normal);
+				o.color.a = col.a;
 
 				// Apply Vertex shadows.
 				fixed a = v.uv.x;		// Alpha is in the 0-1 range
@@ -123,7 +125,7 @@
 				half nDot = dot(normal, fixed3(1, 1, 0));
 				nDot = clamp(nDot, 0.8, 1);
 				o.color.rgb *= nDot;
-				o.color.a = 1.0;
+				//o.color.a = 0.5;
 				return o;
 			}
 			
@@ -132,10 +134,11 @@
 				fixed4 col = i.color;
 				fixed3 nor = i.normal;
 				
-				fixed rim = 1.0 - max(dot(normalize(i.view), nor), 0.0);
-				rim = smoothstep(0.8, 1.0, pow(rim, 1.0));
+				fixed rim = 1.0 - max(dot(normalize(i.view), nor), 0.3);
+				rim = smoothstep(0.5, 1.0, pow(rim, 1.0));
 
-				return col += rim;
+				col.rgb += rim;
+				return col;
 			}
 			ENDCG
 		}

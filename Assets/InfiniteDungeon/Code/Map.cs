@@ -71,6 +71,7 @@ public class Map : MonoBehaviour
     public int sizeX;
     public int sizeY;
 
+    public int enemies;
     public float space;
     public int minerCount;
     public int cleanupIterations;
@@ -79,12 +80,10 @@ public class Map : MonoBehaviour
 
     Cell[,] grid;
     public GameObject cellPrefab;
-    public GameObject obstaclePrefabI;
-    public GameObject obstaclePrefabII;
-    public GameObject obstaclePrefabIII;
     public GameObject[] mountainPrefabs = new GameObject[3];
     public GameObject startPrefab;
     public GameObject endPrefab;
+    public GameObject slimePrefab;
 
 
     Miner settler;
@@ -153,6 +152,7 @@ public class Map : MonoBehaviour
         CreateCriticalPath();
 
         SpawnPrefabs();
+        SpawnEnemies();
     }
 
 	void CreateArea()
@@ -340,8 +340,13 @@ public class Map : MonoBehaviour
             }
         }
 
-        //DEBUG
-        grid[sizeX / 2, sizeY - 2].occupant = 1;
+    }
+
+    void SpawnEnemies()
+    {
+        //Instnatitae..
+        //grid[xy].occupant = 1;
+        //grid[xy].enemy = GetCOmponent<agent;
     }
 
     public Cell StartCell()
@@ -610,24 +615,27 @@ public class MapEditor : Editor
 
         map.sizeX = Mathf.Clamp(EditorGUILayout.IntField("Size X", map.sizeX), 4, 32);
         map.sizeY = Mathf.Clamp(EditorGUILayout.IntField("Size Y", map.sizeY), 4, 32);
+        map.enemies = EditorGUILayout.IntField("Enemy Count", map.enemies);
         map.space = EditorGUILayout.FloatField("Space between Cells", map.space);
         map.minerCount = EditorGUILayout.IntField("Miner Count", map.minerCount);
         map.cleanupIterations = EditorGUILayout.IntField("Cleanup Iterations", map.cleanupIterations);
         Mathf.Clamp(map.seed = EditorGUILayout.IntField("Seed", map.seed), 0, 10000);
         map.randomSeed = EditorGUILayout.Toggle("Random Seed", map.randomSeed);
 
+        // Regular ground
         map.cellPrefab = EditorGUILayout.ObjectField("Cell Prefab", map.cellPrefab, typeof(GameObject), false) as GameObject;
-        map.obstaclePrefabI = EditorGUILayout.ObjectField("Obstacle Prefab I", map.obstaclePrefabI, typeof(GameObject), false) as GameObject;
-        map.obstaclePrefabII = EditorGUILayout.ObjectField("Obstacle Prefab II", map.obstaclePrefabII, typeof(GameObject), false) as GameObject;
-        map.obstaclePrefabIII = EditorGUILayout.ObjectField("Obstacle Prefab III", map.obstaclePrefabIII, typeof(GameObject), false) as GameObject;
 
+        // Obstacles
         map.mountainPrefabs[0] = EditorGUILayout.ObjectField("Mountain 1", map.mountainPrefabs[0], typeof(GameObject), false) as GameObject;
         map.mountainPrefabs[1] = EditorGUILayout.ObjectField("Mountain 2", map.mountainPrefabs[1], typeof(GameObject), false) as GameObject;
         map.mountainPrefabs[2] = EditorGUILayout.ObjectField("Mountain 3", map.mountainPrefabs[2], typeof(GameObject), false) as GameObject;
         
-
+        // Specials
         map.startPrefab = EditorGUILayout.ObjectField("Start Prefab", map.startPrefab, typeof(GameObject), false) as GameObject;
         map.endPrefab = EditorGUILayout.ObjectField("End Prefab", map.endPrefab, typeof(GameObject), false) as GameObject;
+
+        // Enemies
+        map.slimePrefab = EditorGUILayout.ObjectField("Slime Prefab", map.slimePrefab, typeof(GameObject), false) as GameObject;
 
 
         if (GUILayout.Button("Generate"))
