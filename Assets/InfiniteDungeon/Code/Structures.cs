@@ -9,10 +9,10 @@ public interface IDamageable<T>
 
 public enum MOVE_DIR
 {
-    LEFT = 0,
+    LEFT    = 0,
     FORWARD = 1,
-    RIGHT = 2,
-    BACK = 3,
+    RIGHT   = 2,
+    BACK    = 3,
 }
 
 public enum MOVE_TYPE

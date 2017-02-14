@@ -17,7 +17,7 @@ public class Cell
 
     public static Cell NoCell()
     {
-        Cell cell = new Cell(Vector3.zero, 3, 0, 0);
+        Cell cell = new Cell(Vector3.zero, 666, 0, 0);
         return cell;
     }
 

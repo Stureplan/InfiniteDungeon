@@ -339,6 +339,9 @@ public class Map : MonoBehaviour
                 }
             }
         }
+
+        //DEBUG
+        grid[sizeX / 2, sizeY - 2].occupant = 1;
     }
 
     public Cell StartCell()
@@ -353,6 +356,10 @@ public class Map : MonoBehaviour
 
     public Cell CellAtPoint(int x, int y)
     {
+        if (x < 0 || x > sizeX-1 || y < 0 || y > sizeY-1)
+        {
+            return Cell.NoCell();
+        }
         return grid[x, y];
     }
 
@@ -371,6 +378,16 @@ public class Map : MonoBehaviour
         }
 
         return Cell.NoCell();
+    }
+
+    public int CellSafeCheck(int x, int y)
+    {
+        if (x < 0 || x > sizeX - 1 || y < 0 || y > sizeY - 1)
+        {
+            return 666;
+        }
+
+        return 1;
     }
 
     public int TypeAtPoint(int x, int y)
@@ -429,6 +446,23 @@ public class Map : MonoBehaviour
         }
 
         return obstacles;
+    }
+
+    public int[] SurroundingOccupants(int x, int y)
+    {
+        int[] o = new int[4];
+        o[0] = 666;
+        o[1] = 666;
+        o[2] = 666;
+        o[3] = 666;
+
+
+        if (CellSafeCheck(x - 1, y) != 666) { o[0] = grid[x - 1, y].occupant; }
+        if (CellSafeCheck(x, y + 1) != 666) { o[1] = grid[x, y + 1].occupant; }
+        if (CellSafeCheck(x + 1, y) != 666) { o[2] = grid[x + 1, y].occupant; }
+        if (CellSafeCheck(x, y - 1) != 666) { o[3] = grid[x, y - 1].occupant; }
+
+        return o;
     }
 
     public Cell RandomNeighbor(int x, int y)

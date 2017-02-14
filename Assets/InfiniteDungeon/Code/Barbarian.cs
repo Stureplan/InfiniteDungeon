@@ -4,11 +4,13 @@ using UnityEngine;
 
 public class Barbarian : MonoBehaviour, IDamageable<int>
 {
+    public Camera cam;
     public Map map;
     public BarbarianUI ui;
     public Cell cell { get; set; }
 
 
+    private Vector3 camOffset;
     private Animation animations;
     private int currentDamage = 1;
     private int currentHealth = 100;
@@ -26,6 +28,7 @@ public class Barbarian : MonoBehaviour, IDamageable<int>
         MOVE_TYPE type = DecideMove(dir, out c);
         ExecuteMove(c, type);
 
+        if (type == MOVE_TYPE.INVALID) { return 666.6f; }
         return VisualTurn(type, c, turn);
     }
 
@@ -56,7 +59,13 @@ public class Barbarian : MonoBehaviour, IDamageable<int>
 
         if (c == null)
         {
-            // Probably outside the map bounds.
+            // Something went wrong.
+            return MOVE_TYPE.INVALID;
+        }
+
+        if (c.type == 666)
+        {
+            // Probably out of bounds.
             return MOVE_TYPE.INVALID;
         }
 
@@ -121,6 +130,7 @@ public class Barbarian : MonoBehaviour, IDamageable<int>
             case MOVE_TYPE.MOVE:
                 PlayAnimation("Barbarian_Move");
                 StartCoroutine(Move(c.position, 0.5f));
+                StartCoroutine(MoveCamera(c.position + camOffset, 0.5f));
                 StartCoroutine(Rotate(QHelp.QDIR(c.position - transform.position), 0.1f));
                 break;
             case MOVE_TYPE.ATTACK:
@@ -131,13 +141,24 @@ public class Barbarian : MonoBehaviour, IDamageable<int>
                 break;
 
             default:
+                return 0.0f;
                 break;
         }
 
 
 
-        return 1.0f;
+        return 0.5f;
     }
+
+    public void CheckSurroundings()
+    {
+        int[] occupants = map.SurroundingOccupants(cell.x, cell.y);
+        for (int i = 0; i < occupants.Length; i++)
+        {
+            ui.ChangeSprite((MOVE_DIR)i, occupants[i]);
+        }
+    }
+
 
     private void PlayAnimation(string anim)
     {
@@ -149,6 +170,7 @@ public class Barbarian : MonoBehaviour, IDamageable<int>
     {
         animations = GetComponent<Animation>();
         cell = map.StartCell();
+        camOffset = cam.transform.position - transform.position;
 
         ui.FadePanelsIn();
     }
@@ -159,6 +181,10 @@ public class Barbarian : MonoBehaviour, IDamageable<int>
         {
             ui.FadePanelsOut();
         }
+
+
+        // TODO: Check for enemies or movement
+        // and change button sprites accordingly.
     }
 
     private IEnumerator Move(Vector3 end, float time)
@@ -181,6 +207,19 @@ public class Barbarian : MonoBehaviour, IDamageable<int>
         while (t < time)
         {
             transform.localRotation = Quaternion.Lerp(transform.localRotation, end, t / time);
+            t += Time.deltaTime;
+
+            yield return null;
+        }
+    }
+
+    private IEnumerator MoveCamera(Vector3 end, float time)
+    {
+        float t = 0.0f;
+
+        while (t < time)
+        {
+            cam.transform.localPosition = Vector3.Lerp(cam.transform.localPosition, end, t / time);
             t += Time.deltaTime;
 
             yield return null;

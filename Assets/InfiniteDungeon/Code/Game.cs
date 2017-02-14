@@ -26,14 +26,20 @@ public class Game : MonoBehaviour
 
     public void NextTurn(int dir)
     {
-        // Handle Player
-        float timer = barbarian.NextTurn(dir, turn);
+        if (TURN_READY)
+        {
+            // Handle Player
+            float timer = barbarian.NextTurn(dir, turn);
 
-        TURN_READY = false;
-        StartCoroutine(Waiter(timer));
+            // Something went wrong, invalid move etc..
+            if (timer > 665.0f) { return; }
+
+            TURN_READY = false;
+            StartCoroutine(Waiter(timer));
+        }
     }
 
-    void ExecuteTurn()
+    void ExecuteEnemyTurn()
     {
         // Handle Enemy turns.
         int e = enemies.Count;
@@ -62,8 +68,14 @@ public class Game : MonoBehaviour
         }
 
         //execute
-        ExecuteTurn();
+        ExecuteEnemyTurn();
+        barbarian.CheckSurroundings();
     }
+
+
+
+
+
 
     public static void Over()
     {
