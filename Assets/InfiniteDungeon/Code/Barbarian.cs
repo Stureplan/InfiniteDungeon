@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Player : MonoBehaviour
+public class Barbarian : MonoBehaviour
 {
-    Map map;
+    public Map map;
+    public BarbarianUI ui;
 
     public void NextTurn(int turn) { }
     public void DecideMove(int turn) { }
@@ -14,5 +15,20 @@ public class Player : MonoBehaviour
         // Handle animations, effects etc.
 
         return 1.0f;
+    }
+
+
+
+    private void Start()
+    {
+        ui.FadePanelsIn();
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.A))
+        {
+            ui.FadePanelsOut();
+        }
     }
 }

@@ -8,14 +8,15 @@ public class Game : MonoBehaviour
     static bool TURN_READY = true;
 
     public Map map;
+
     List<Agent> enemies = new List<Agent>();
-    Player player;
+    Barbarian barbarian;
 
     int turn = 0;
 
     void Start ()
     {
-        player = FindObjectOfType<Player>();
+        barbarian = FindObjectOfType<Barbarian>();
 	}
 	
 	void Update ()
@@ -26,8 +27,8 @@ public class Game : MonoBehaviour
     void NextTurn()
     {
         // Handle Player
-        player.NextTurn(turn);
-        float timer = player.VisualTurn(turn);
+        barbarian.NextTurn(turn);
+        float timer = barbarian.VisualTurn(turn);
 
         TURN_READY = false;
         StartCoroutine(Waiter(timer));
