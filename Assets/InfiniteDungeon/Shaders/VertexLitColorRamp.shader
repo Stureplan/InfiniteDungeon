@@ -1,6 +1,6 @@
 ﻿// Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
 
-Shader "InfinityDungeon/VertexLitColorRamp"
+Shader "InfiniteDungeon/VertexLitColorRamp"
 {
 	Properties
 	{
@@ -92,10 +92,13 @@ Shader "InfinityDungeon/VertexLitColorRamp"
 				fixed4 col2 = tex2D(_SnowTex, i.normal.xy);
 				
 				
+				
 				fixed h = 0;
-				h = step(0.4, i.uv.x);
-				col2 = step(0.65, col2.a) * h;
+				
+				h = smoothstep(0.5, 0.51, i.uv.x);
 
+				//col2 = step(0.49, col2.a) * h;
+				col2 = smoothstep(0.4, 0.55, col2.a) * h;
 
 				return col + col2;
 			}

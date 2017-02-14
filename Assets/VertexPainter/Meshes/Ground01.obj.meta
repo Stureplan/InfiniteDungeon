@@ -1,17 +1,22 @@
 fileFormatVersion: 2
-guid: b3e51fe823c601a4ba721ab0c4aed0be
-timeCreated: 1486854067
+guid: 3bcb73319ac8d624eb649e6a5186bba2
+timeCreated: 1487016618
 licenseType: Free
 ModelImporter:
   serializedVersion: 19
   fileIDToRecycleName:
     100000: //RootNode
-    100002: sword
+    100002: pCube1
+    100004: ground
     400000: //RootNode
-    400002: sword
-    2300000: sword
-    3300000: sword
-    4300000: sword
+    400002: pCube1
+    400004: ground
+    2300000: pCube1
+    2300002: ground
+    3300000: pCube1
+    3300002: ground
+    4300000: pCube1
+    4300002: ground
   materials:
     importMaterials: 0
     materialName: 0

@@ -1,19 +1,19 @@
 fileFormatVersion: 2
-guid: b3e51fe823c601a4ba721ab0c4aed0be
-timeCreated: 1486854067
+guid: 24f993d59fcfa5945a0446ca3f8abe2d
+timeCreated: 1487033859
 licenseType: Free
 ModelImporter:
   serializedVersion: 19
   fileIDToRecycleName:
     100000: //RootNode
-    100002: sword
+    100002: cloud3
     400000: //RootNode
-    400002: sword
-    2300000: sword
-    3300000: sword
-    4300000: sword
+    400002: cloud3
+    2300000: cloud3
+    3300000: cloud3
+    4300000: cloud3
   materials:
-    importMaterials: 0
+    importMaterials: 1
     materialName: 0
     materialSearch: 1
   animations:
@@ -55,7 +55,7 @@ ModelImporter:
     normalSmoothAngle: 60
     normalImportMode: 0
     tangentImportMode: 3
-  importAnimation: 0
+  importAnimation: 1
   copyAvatar: 0
   humanDescription:
     serializedVersion: 2

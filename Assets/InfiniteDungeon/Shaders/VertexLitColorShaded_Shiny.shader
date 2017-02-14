@@ -1,4 +1,4 @@
-﻿Shader "InfiniteDungeon/VertexLitColorShaded_Detail"
+﻿Shader "InfiniteDungeon/VertexLitColorShaded_Shiny"
 {
 	Properties
 	{
@@ -30,6 +30,8 @@
 			struct v2f
 			{
 				float4 vertex : SV_POSITION;
+				fixed3 normal : NORMAL;
+				fixed3 view : TEXCOORD1;
 				fixed4 color : COLOR;
 			};
 
@@ -96,11 +98,15 @@
 
 				o.vertex = UnityObjectToClipPos(v.vertex);
 				fixed3 normal = v.normal;
+				o.normal = mul(unity_ObjectToWorld, normal);
 
 
 				// Vertex in WORLD space.
 				fixed3 pos = mul(unity_ObjectToWorld, v.vertex);
 				
+				o.view = _WorldSpaceCameraPos.xyz - pos;
+
+
 
 				// Apply base color and Vertex color.
 				fixed4 col = lerp(_MainColor, fixed4(v.color.rgb, 1.0), v.color.a);
@@ -124,7 +130,12 @@
 			fixed4 frag (v2f i) : SV_Target
 			{
 				fixed4 col = i.color;
-				return col;
+				fixed3 nor = i.normal;
+				
+				fixed rim = 1.0 - max(dot(normalize(i.view), nor), 0.0);
+				rim = smoothstep(0.8, 1.0, pow(rim, 1.0));
+
+				return col += rim;
 			}
 			ENDCG
 		}

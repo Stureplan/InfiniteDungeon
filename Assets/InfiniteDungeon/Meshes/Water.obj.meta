@@ -1,17 +1,17 @@
 fileFormatVersion: 2
-guid: b3e51fe823c601a4ba721ab0c4aed0be
-timeCreated: 1486854067
+guid: 49f4e8bde23d2c044b448614e70b41da
+timeCreated: 1487034175
 licenseType: Free
 ModelImporter:
   serializedVersion: 19
   fileIDToRecycleName:
     100000: //RootNode
-    100002: sword
+    100002: water
     400000: //RootNode
-    400002: sword
-    2300000: sword
-    3300000: sword
-    4300000: sword
+    400002: water
+    2300000: water
+    3300000: water
+    4300000: water
   materials:
     importMaterials: 0
     materialName: 0
