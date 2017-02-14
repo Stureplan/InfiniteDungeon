@@ -16,7 +16,7 @@ public class BarbarianUI : MonoBehaviour
     public void FadePanelsOut()
     {
         StartCoroutine(Fade(topPanel, new Vector2(0, 70.0f), 2.0f));
-        StartCoroutine(Fade(botPanel, new Vector2(0, -130.0f), 2.0f));
+        StartCoroutine(Fade(botPanel, new Vector2(0, -128.0f), 2.0f));
     }
 
     IEnumerator Fade(RectTransform panel, Vector2 end, float time)

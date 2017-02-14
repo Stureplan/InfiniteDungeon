@@ -24,21 +24,18 @@ public class Game : MonoBehaviour
 
 	}
 
-    void NextTurn()
+    void NextTurn(int dir)
     {
         // Handle Player
-        barbarian.NextTurn(turn);
-        float timer = barbarian.VisualTurn(turn);
+        float timer = barbarian.NextTurn(dir, turn);
 
         TURN_READY = false;
         StartCoroutine(Waiter(timer));
-
-
     }
 
     void ExecuteTurn()
     {
-        // Handle Enemies
+        // Handle Enemy turns.
         int e = enemies.Count;
         for (int i = 0; i < e; i++)
         {
@@ -46,7 +43,10 @@ public class Game : MonoBehaviour
             enemies[i].VisualTurn(map, turn);
         }
 
+        // Turn count up.
         turn++;
+
+        // Turn is ready for Player input again.
         TURN_READY = true;
     }
 
@@ -63,5 +63,11 @@ public class Game : MonoBehaviour
 
         //execute
         ExecuteTurn();
+    }
+
+    public static void Over()
+    {
+        Debug.Log("Game Over!");
+        UnityEngine.SceneManagement.SceneManager.LoadScene(0);
     }
 }
