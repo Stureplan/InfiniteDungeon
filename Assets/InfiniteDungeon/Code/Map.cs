@@ -103,11 +103,26 @@ public class Map : MonoBehaviour
         map.Generate(true);
     }
 
+    private void Awake()
+    {
+        Generate(true);
+    }
+
     public void CleanAndPrepare()
     {
         for (int i = 0; i < allSceneObjects.Count; i++)
         {
             DestroyImmediate(allSceneObjects[i]);
+        }
+
+        Transform[] children = GetComponentsInChildren<Transform>();
+        for (int i = 0; i < transform.childCount; i++)
+        {
+            if (i != 0)
+            {
+                DestroyImmediate(children[i].gameObject);
+                //Destroy(children[i].gameObject);
+            }
         }
     }
 
@@ -261,7 +276,7 @@ public class Map : MonoBehaviour
                 if (grid[x, y].type == 0)
                 {
                     // EMPTY SPACE (ROAD)
-
+                    grid[x, y].occupant = 0;
                     Vector3 pos = new Vector3((x - sizeX / 2) * space, 0, (y - sizeY / 2) * space);
                     GameObject c = Instantiate(cellPrefab, pos, Quaternion.identity);
                     c.transform.parent = transform;
@@ -271,7 +286,7 @@ public class Map : MonoBehaviour
                 if (grid[x, y].type == 1)
                 {
                     // OBSTACLE I (EMPTY)
-
+                    grid[x, y].occupant = 0;
                     //Vector3 pos = new Vector3((x - sizeX / 2) * space, 0, (y - sizeY / 2) * space);
                     //GameObject c = Instantiate(obstaclePrefabI, pos, Quaternion.identity);
                     //c.transform.parent = transform;
@@ -281,6 +296,7 @@ public class Map : MonoBehaviour
                 if (grid[x, y].type == 2)
                 {
                     // OBSTACLE II (MOUNTAINS)
+                    grid[x, y].occupant = 0;
 
                     Vector3 pos = new Vector3((x - sizeX / 2) * space, 0, (y - sizeY / 2) * space);
                     GameObject c = Instantiate(mountainPrefabs[RNG.Range(0, 3)], pos, RNG.Q90f(Vector3.up));
@@ -291,6 +307,7 @@ public class Map : MonoBehaviour
                 if (grid[x, y].type == 3)
                 {
                     // OBSTACLE III
+                    grid[x, y].occupant = 0;
 
                     //Vector3 pos = new Vector3((x - sizeX / 2) * space, 0, (y - sizeY / 2) * space);
                     //GameObject c = Instantiate(obstaclePrefabIII, pos, Quaternion.identity);
@@ -301,6 +318,7 @@ public class Map : MonoBehaviour
                 if (grid[x, y].type == 4)
                 {
                     // START
+                    grid[x, y].occupant = 2;
 
                     Vector3 pos = new Vector3((x - sizeX / 2) * space, 0, (y - sizeY / 2) * space);
                     GameObject c = Instantiate(startPrefab, pos, Quaternion.identity);
@@ -311,6 +329,7 @@ public class Map : MonoBehaviour
                 if (grid[x, y].type == 5)
                 {
                     // END
+                    grid[x, y].occupant = 0;
 
                     Vector3 pos = new Vector3((x - sizeX / 2) * space, 0, (y - sizeY / 2) * space);
                     GameObject c = Instantiate(endPrefab, pos, Quaternion.identity);
@@ -320,6 +339,16 @@ public class Map : MonoBehaviour
                 }
             }
         }
+    }
+
+    public Cell StartCell()
+    {
+        return grid[sizeX / 2, 0];
+    }
+
+    public Cell EndCell()
+    {
+        return grid[sizeX / 2, sizeY - 1];
     }
 
     public Cell CellAtPoint(int x, int y)

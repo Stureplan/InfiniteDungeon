@@ -19,5 +19,14 @@ public enum MOVE_TYPE
 {
     MOVE,
     ATTACK,
-    INVALID
+    INVALID,
+    FINISH
+}
+
+public static class QHelp
+{
+    public static Quaternion QDIR(Vector3 dir)
+    {
+        return Quaternion.LookRotation(dir);
+    }
 }

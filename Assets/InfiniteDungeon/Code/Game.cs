@@ -24,7 +24,7 @@ public class Game : MonoBehaviour
 
 	}
 
-    void NextTurn(int dir)
+    public void NextTurn(int dir)
     {
         // Handle Player
         float timer = barbarian.NextTurn(dir, turn);
