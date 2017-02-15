@@ -35,7 +35,7 @@ public class Slime : Agent
         Cell[] cells = Pathfinder.FindPath(barbarian.cell, cell);
         SLIME_MOVE_TYPE move;
 
-        if (cells.Length > 2)
+        if (cells.Length > 1)
         {
             targetCell = cells[0];
             move = SLIME_MOVE_TYPE.MOVE;
