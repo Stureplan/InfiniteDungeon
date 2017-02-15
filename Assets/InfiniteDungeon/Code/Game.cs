@@ -9,13 +9,17 @@ public class Game : MonoBehaviour
 
     public Map map;
 
-    List<Agent> enemies = new List<Agent>();
+    static List<Agent> enemies = new List<Agent>();
     Barbarian barbarian;
 
     int turn = 0;
 
     void Start ()
     {
+        // Initialize all static classes here.
+        FX.Initialize();
+
+
         barbarian = FindObjectOfType<Barbarian>();
         enemies = map.Enemies();
 	}
@@ -75,7 +79,10 @@ public class Game : MonoBehaviour
 
 
 
-
+    public static void RemoveEnemy(Agent a)
+    {
+        enemies.Remove(a);
+    }
 
     public static void Over()
     {

@@ -105,6 +105,8 @@
 
 				// Apply lighting.
 				o.color.rgb = col + lights(pos, normal);
+				o.color.a = col.a;
+
 
 				// Apply Vertex shadows.
 				fixed a = v.uv.x;		// Alpha is in the 0-1 range
@@ -115,7 +117,7 @@
 				half nDot = dot(normal, fixed3(1, 1, 0));
 				nDot = clamp(nDot, 0.8, 1);
 				o.color.rgb *= nDot;
-				o.color.a = 1.0;
+				//o.color.a = 1.0;
 				return o;
 			}
 			

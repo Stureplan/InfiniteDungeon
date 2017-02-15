@@ -188,7 +188,7 @@ public class VertexPainterEditor : Editor
         brush.color = EditorGUI.ColorField(new Rect(10, 90, 125, 16), brush.color);
         brush.shade = EditorGUI.ColorField(new Rect(10, 110, 125, 16), brush.shade);
 
-        if (GUI.Button(new Rect(10, 141, 130, 20), "Save Prefab")) { SaveMeshData(mf.sharedMesh, vp.name); }
+        if (GUI.Button(new Rect(10, 141, 130, 20), "Save Asset")) { SaveMeshData(mf.sharedMesh, vp.name); }
         Handles.EndGUI();
 
 

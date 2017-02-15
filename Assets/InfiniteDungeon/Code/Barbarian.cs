@@ -28,8 +28,8 @@ public class Barbarian : MonoBehaviour, IDamageable<int>
 
     public void Damage(int damage)
     {
-        Debug.Log("Damage " + damage);
         currentHealth -= damage;
+        ui.SetHealth(currentHealth);
         if (currentHealth < 1) { Kill(); }
     }
 

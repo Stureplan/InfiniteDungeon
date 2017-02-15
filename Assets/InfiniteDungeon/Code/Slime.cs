@@ -18,8 +18,12 @@ public class Slime : Agent
 
     public override void Kill()
     {
+        // Spawn death effect
+        //FX.Emit(transform.position, Quaternion.identity, FX.VFX.SlimeDeath, 15);
+
         cell.occupant = 0;
         cell.enemy = null;
+        Game.RemoveEnemy(this);
         Destroy(gameObject);
     }
 
@@ -62,6 +66,7 @@ public class Slime : Agent
                 break;
 
             case SLIME_MOVE_TYPE.ATTACK:
+                
                 barbarian.Damage(5);
                 break;
 
