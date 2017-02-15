@@ -4,9 +4,14 @@ using UnityEngine;
 
 public class Agent : MonoBehaviour, IDamageable<int>
 {
+    public int maxHealth;
+    public int health;
+    public Map map;
+    public Cell cell;
+    public Barbarian barbarian; 
+
     public virtual void Damage(int damage) { }
-	public virtual void NextTurn(Map map, int turn) { }
-    public virtual void DecideMove(Map map, int turn) { }
-    public virtual void ExecuteMove(Map map, int turn) { }
-    public virtual void VisualTurn(Map map, int turn) { }
+    public virtual void Kill() { }
+
+    public virtual void NextTurn(int turn) { }
 }

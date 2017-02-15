@@ -17,6 +17,7 @@ public class Game : MonoBehaviour
     void Start ()
     {
         barbarian = FindObjectOfType<Barbarian>();
+        enemies = map.Enemies();
 	}
 	
 	void Update ()
@@ -45,8 +46,7 @@ public class Game : MonoBehaviour
         int e = enemies.Count;
         for (int i = 0; i < e; i++)
         {
-            enemies[i].NextTurn(map, turn);
-            enemies[i].VisualTurn(map, turn);
+            enemies[i].NextTurn(turn);
         }
 
         // Turn count up.

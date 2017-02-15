@@ -15,10 +15,28 @@ public class Barbarian : MonoBehaviour, IDamageable<int>
     private int currentDamage = 1;
     private int currentHealth = 100;
 
+    public static Barbarian barbarian;
+    public static Barbarian FindBarbarian()
+    {
+        if (barbarian == null)
+        {
+            barbarian = (Barbarian)FindObjectOfType<Barbarian>();
+        }
+
+        return barbarian;
+    }
+
     public void Damage(int damage)
     {
+        Debug.Log("Damage " + damage);
         currentHealth -= damage;
-        if (currentHealth < 1) { Game.Over(); }
+        if (currentHealth < 1) { Kill(); }
+    }
+
+    public void Kill()
+    {
+
+        Game.Over();
     }
     
     public float NextTurn(int d, int turn)
@@ -125,6 +143,8 @@ public class Barbarian : MonoBehaviour, IDamageable<int>
     {
         // Handle animations, effects etc.
         // Lerp to new cell.
+        float r = 0.5f;
+
         switch (type)
         {
             case MOVE_TYPE.MOVE:
@@ -134,6 +154,8 @@ public class Barbarian : MonoBehaviour, IDamageable<int>
                 StartCoroutine(Rotate(QHelp.QDIR(c.position - transform.position), 0.1f));
                 break;
             case MOVE_TYPE.ATTACK:
+                PlayAnimation("Barbarian_Attack");
+                StartCoroutine(Rotate(QHelp.QDIR(c.position - transform.position), 0.1f));
                 break;
 
             case MOVE_TYPE.FINISH:
@@ -141,13 +163,13 @@ public class Barbarian : MonoBehaviour, IDamageable<int>
                 break;
 
             default:
-                return 0.0f;
+                r = 0.0f;
                 break;
         }
 
 
 
-        return 0.5f;
+        return r;
     }
 
     public void CheckSurroundings()

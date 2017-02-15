@@ -89,17 +89,19 @@ public class Map : MonoBehaviour
     Miner settler;
     List<Miner> miners;
     List<GameObject> allSceneObjects = new List<GameObject>();
+    List<Agent> allSceneEnemies = new List<Agent>();
+
     //Miner m01, m02, m03...
 
     public static Map map;
-    public static void Recreate()
+    public static Map FindMap()
     {
         if (map == null)
         {
             map = (Map)FindObjectOfType(typeof(Map));
         }
 
-        map.Generate(true);
+        return map;
     }
 
     private void Awake()
@@ -344,9 +346,18 @@ public class Map : MonoBehaviour
 
     void SpawnEnemies()
     {
+        int x, y;
+        x = sizeX / 2; y = sizeY - 2;
+
         //Instnatitae..
-        //grid[xy].occupant = 1;
-        //grid[xy].enemy = GetCOmponent<agent;
+        Vector3 pos = new Vector3((x - sizeX / 2) * space, 0, (y - sizeY / 2) * space);
+        GameObject go = Instantiate(slimePrefab, pos, Quaternion.identity);
+        Agent a = go.AddComponent<Slime>();
+        a.cell = grid[x, y];
+        grid[x, y].enemy = a;
+        grid[x, y].occupant = 1;
+
+        allSceneEnemies.Add(a);
     }
 
     public Cell StartCell()
@@ -532,6 +543,11 @@ public class Map : MonoBehaviour
     public Vector3 PositionAt(int x, int y)
     {
         return grid[x, y].position;
+    }
+
+    public List<Agent> Enemies()
+    {
+        return allSceneEnemies;
     }
 
     public List<Cell> Neighbors(Cell cell)

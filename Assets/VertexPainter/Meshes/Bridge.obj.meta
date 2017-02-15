@@ -1,17 +1,17 @@
 fileFormatVersion: 2
-guid: ce347686755f7114da54df487a69bc39
-timeCreated: 1487033860
+guid: 12ced7a60655fd44e8613a6dbef69ac6
+timeCreated: 1487116873
 licenseType: Free
 ModelImporter:
   serializedVersion: 19
   fileIDToRecycleName:
     100000: //RootNode
-    100002: cloud2
+    100002: bridge
     400000: //RootNode
-    400002: cloud2
-    2300000: cloud2
-    3300000: cloud2
-    4300000: cloud2
+    400002: bridge
+    2300000: bridge
+    3300000: bridge
+    4300000: bridge
   materials:
     importMaterials: 0
     materialName: 0

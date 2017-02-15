@@ -2,28 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Pathfinder : MonoBehaviour
+public static class Pathfinder
 {
-    Map map;
-
-    Vector3 targetPos = Vector3.zero;
-
-    Cell[] path;
-
-    GameObject primitiveSphere;
-
-    void Start ()
-    {
-        map = GetComponent<Map>();
-        primitiveSphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-        Destroy(primitiveSphere.GetComponent<Collider>());
-        primitiveSphere.SetActive(false);
-	}
-	
-	void Update ()
-    {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
+	//void Update ()
+   // {
+     //   if (Input.GetKeyDown(KeyCode.Space))
+       // {
             /*int x1 = Random.Range(0, map.sizeX);
             int y1 = Random.Range(0, map.sizeY);
 
@@ -34,43 +18,11 @@ public class Pathfinder : MonoBehaviour
 
             //debugPos1 = map.PositionAt(x1, y1);
             //debugPos2 = map.PositionAt(x2, y2);
-        }
+      //  }
+	//}
+    //path = FindPath(map.CellAtPoint(0, 0), tCell);
 
-        if (Input.GetMouseButtonDown(0))
-        {
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hit;
-            if (Physics.Raycast(ray, out hit, 1000.0f))
-            {
-                targetPos = hit.transform.position;
-                primitiveSphere.SetActive(true);
-                primitiveSphere.transform.localPosition = targetPos + Vector3.up;
-
-                Cell tCell = map.CellAtPosition(hit.transform.parent.position);
-                if (tCell.type == 0)
-                {
-                    path = FindPath(map.CellAtPoint(0, 0), tCell);
-                }
-            }
-        }
-	}
-
-    private void OnDrawGizmos()
-    {
-        Gizmos.color = Color.red;
-        //Gizmos.DrawWireSphere(debugPos2, 0.5f);
-        //Gizmos.DrawLine(debugPos1, debugPos2);
-
-        if (path != null)
-        {
-            for (int i = 0; i < path.Length; i++)
-            {
-                Gizmos.DrawWireCube(map.PositionAt(path[i].x, path[i].y), Vector3.one * 0.5f);
-            }
-        }
-    }
-    
-    List<Cell> RetracePath(Cell start, Cell end)
+    static List<Cell> RetracePath(Cell start, Cell end)
     {
         List<Cell> retracedPath = new List<Cell>();
         Cell currentNode = end;
@@ -86,8 +38,10 @@ public class Pathfinder : MonoBehaviour
         return retracedPath;
     }
 
-    public Cell[] FindPath(Cell target, Cell start)
+    static Map map;
+    public static Cell[] FindPath(Cell target, Cell start)
     {
+        if (map == null) { map = Map.FindMap(); }
         if (target.type != 0) { return null; }
 
 

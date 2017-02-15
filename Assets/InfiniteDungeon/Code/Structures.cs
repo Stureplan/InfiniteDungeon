@@ -5,6 +5,7 @@ using UnityEngine;
 public interface IDamageable<T>
 {
     void Damage(int damage);
+    void Kill();
 }
 
 public enum MOVE_DIR
@@ -21,6 +22,13 @@ public enum MOVE_TYPE
     ATTACK,
     INVALID,
     FINISH
+}
+
+public enum SLIME_MOVE_TYPE
+{
+    MOVE,
+    ATTACK,
+    INVALID
 }
 
 public static class QHelp
