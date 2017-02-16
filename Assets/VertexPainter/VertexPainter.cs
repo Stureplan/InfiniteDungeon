@@ -11,9 +11,9 @@ public class VertexPainter : MonoBehaviour
 enum BrushMode
 {
     Painting = 0,
-    Shading,
+    Texturing,
     ErasingPaint,
-    ErasingShade
+    ErasingTexture
 }
 
 struct Brush
@@ -220,7 +220,7 @@ public class VertexPainterEditor : Editor
                 Handles.CircleCap(0, center + point, rot, brush.radius);
             }
 
-            else if (brush.mode == BrushMode.Shading)
+            else if (brush.mode == BrushMode.Texturing)
             {
 
                 float a = 1 - brush.shade.a;
@@ -234,7 +234,7 @@ public class VertexPainterEditor : Editor
                 Handles.DrawDottedLine(point, point + (dir * 0.1f), 5.0f);
             }
 
-            else if (brush.mode == BrushMode.ErasingShade)
+            else if (brush.mode == BrushMode.ErasingTexture)
             {
                 Handles.DrawDottedLine(point, point + (dir * 0.1f), 5.0f);
             }
@@ -313,7 +313,7 @@ public class VertexPainterEditor : Editor
 
                 mesh.colors = colors;
             }
-            else if (mode == BrushMode.Shading)
+            else if (mode == BrushMode.Texturing)
             {
                 uvs[vtx].x   = brush.shade.a;
 
@@ -325,7 +325,7 @@ public class VertexPainterEditor : Editor
                 
                 mesh.colors = colors;
             }
-            else if (mode == BrushMode.ErasingShade)
+            else if (mode == BrushMode.ErasingTexture)
             {
                 uvs[vtx].x     = 0.0f;
 

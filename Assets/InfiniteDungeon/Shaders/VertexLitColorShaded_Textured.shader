@@ -3,7 +3,6 @@
 	Properties
 	{
 		_MainTex ("Texture", 2D) = "white" {}
-		_MainColor ("Main Color", Color) = (1, 1, 1, 1)
 	}
 
 	SubShader
@@ -25,6 +24,7 @@
 				float4 vertex : POSITION;
 				fixed4 color : COLOR;
 				fixed3 normal : NORMAL;
+				fixed2 uv : TEXCOORD0;
 			};
 
 			struct v2f
@@ -32,11 +32,11 @@
 				float4 vertex : SV_POSITION;
 				fixed4 color : COLOR;
 				fixed3 normal : NORMAL;
-				fixed3 worldPos : TEXCOORD0;
+				fixed2 uv : TEXCOORD0;
+				fixed3 worldPos : TEXCOORD1;
 			};
 
 			sampler2D _MainTex;
-			fixed4 _MainColor;
 
 			fixed4 GLOBAL_LIGHT_POS_0 = fixed4(0, 500, 0, 0);
 			fixed4 GLOBAL_LIGHT_POS_1 = fixed4(0, 500, 0, 0);
@@ -100,18 +100,18 @@
 				fixed3 pos = mul(unity_ObjectToWorld, v.vertex);
 				o.worldPos = pos;
 				
-
-				// Apply base color and Vertex color.
-				fixed4 col = lerp(_MainColor, fixed4(v.color.rgb, 1.0), v.color.a);
+				// Add in the texture blend.
+				o.uv = fixed2(v.uv.x, 0.0);
 
 				// Apply lighting.
-				o.color.rgb = col + lights(pos, normal);
+				o.color.rgb = v.color.rgb + fixed4(lights(pos, normal), 1.0);
+				o.color.a = v.color.a;
 
 				// Hard edges.
 				half nDot = dot(normal, fixed3(1, 1, 0));
 				nDot = clamp(nDot, 0.8, 1);
 				o.color.rgb *= nDot;
-				o.color.a = 1.0;
+
 				return o;
 			}
 			
@@ -135,11 +135,17 @@
 				// Divide our blend mask by the sum of it's components, this will make x+y+z=1
 				blendWeights = blendWeights / (blendWeights.x + blendWeights.y + blendWeights.z);
 
-
 				// Finally, blend together all three samples based on the blend mask.
-				col.rgb = xDiff * blendWeights.x + yDiff * blendWeights.y + zDiff * blendWeights.z;
+				fixed4 tex = fixed4(xDiff * blendWeights.x + yDiff * blendWeights.y + zDiff * blendWeights.z, 1.0);
+				
+
+				// Fake "normal map" based on the brightness of the pixel.
+				fixed intensity = (tex.r + tex.g + tex.b) / 3;
+				tex.rgb += (lights(i.worldPos.rgb, i.normal.rgb) * smoothstep(0.2, 0.6, intensity));
 
 
+				col = lerp(col, tex, i.uv.x);
+				col.a = 1.0;
 
 				
 				return col;

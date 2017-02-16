@@ -8,15 +8,20 @@ ModelImporter:
     100000: //RootNode
     100002: pCube1
     100004: ground
+    100006: initialShadingGroup_ground
     400000: //RootNode
     400002: pCube1
     400004: ground
+    400006: initialShadingGroup_ground
     2300000: pCube1
     2300002: ground
+    2300004: initialShadingGroup_ground
     3300000: pCube1
     3300002: ground
+    3300004: initialShadingGroup_ground
     4300000: pCube1
     4300002: ground
+    4300004: initialShadingGroup_ground
   materials:
     importMaterials: 0
     materialName: 0
