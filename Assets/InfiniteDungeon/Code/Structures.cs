@@ -33,8 +33,13 @@ public enum SLIME_MOVE_TYPE
 
 public static class QHelp
 {
+}
+
+public static class Helper
+{
     public static Quaternion QDIR(Vector3 dir)
     {
         return Quaternion.LookRotation(dir);
     }
+
 }

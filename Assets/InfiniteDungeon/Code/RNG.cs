@@ -31,4 +31,12 @@ public static class RNG
 
         return q;
     }
+
+
+    public static T RandomFromArray<T>(T[] arr)
+    {
+        int length = arr.Length;
+
+        return arr[Range(0, length)];
+    }
 }

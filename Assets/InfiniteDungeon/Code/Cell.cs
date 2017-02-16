@@ -7,9 +7,10 @@ public class Cell
     public Vector3 position;    //TYPES: 1 = Obstacle I, 2 = Obstacle II, 3 = Obstacle III,
     public int x, y;            //TYPES: 4 = Start, 5 = End
     public int occupant;        //OCCUPANTS: 0 = Empty, 1 = Enemy, 2 = Player
-    public Agent enemy;
 
+    public Agent enemy;
     public Cell parent;
+
 
     public int gCost;
     public int hCost;

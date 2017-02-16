@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class Slime : Agent
 {
-    private bool inAttackRange = false;
     Cell targetCell;
 
     public override void Damage(int damage)
@@ -19,7 +18,7 @@ public class Slime : Agent
     public override void Kill()
     {
         // Spawn death effect
-        //FX.Emit(transform.position, Quaternion.identity, FX.VFX.SlimeDeath, 15);
+        FX.Emit(transform.position, Quaternion.identity, FX.VFX.SlimeDeath, 15);
 
         cell.occupant = 0;
         cell.enemy = null;
@@ -83,7 +82,7 @@ public class Slime : Agent
             case SLIME_MOVE_TYPE.MOVE:
                 //PlayAnimation("Slime_Move");
                 StartCoroutine(Move(cell.position, 0.2f));
-                StartCoroutine(Rotate(QHelp.QDIR(cell.position - transform.position), 0.1f));
+                StartCoroutine(Rotate(Helper.QDIR(cell.position - transform.position), 0.1f));
                 break;
 
             case SLIME_MOVE_TYPE.ATTACK:

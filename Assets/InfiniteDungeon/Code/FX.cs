@@ -13,6 +13,12 @@ public static class FX
         SlimeDeath
     }
 
+    struct PS
+    {
+        public GameObject go;
+        public ParticleSystem ps;
+    }
+
     // The object to use.
     static GameObject fx;
     static ParticleSystem ps;
@@ -22,7 +28,7 @@ public static class FX
     static ParticleSystem frostbolt;
     static ParticleSystem blood01;
     static ParticleSystem blood02;
-    static ParticleSystem slimeDeath;
+    static PS slimeDeath;
 
 
     public static void Initialize()
@@ -32,7 +38,8 @@ public static class FX
         ps = fx.AddComponent<ParticleSystem>();
 
 
-        slimeDeath = (ParticleSystem)Resources.Load("FX/SlimeDeath", typeof(ParticleSystem));
+        slimeDeath.go = Resources.Load<GameObject>("FX/SlimeDeath");
+        slimeDeath.ps = slimeDeath.go.GetComponent<ParticleSystem>();
     }
 
     public static void Emit(Vector3 point, Quaternion rotation, VFX VFX, int amount)
@@ -45,7 +52,7 @@ public static class FX
                 break;
 
             case VFX.SlimeDeath:
-                ps = slimeDeath;
+
                 break;
         }
 
