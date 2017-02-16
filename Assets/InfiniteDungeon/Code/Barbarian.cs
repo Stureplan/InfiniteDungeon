@@ -151,11 +151,11 @@ public class Barbarian : MonoBehaviour, IDamageable<int>
                 PlayAnimation("Barbarian_Move");
                 StartCoroutine(Move(c.position, 0.5f));
                 StartCoroutine(MoveCamera(c.position + camOffset, 0.5f));
-                StartCoroutine(Rotate(QHelp.QDIR(c.position - transform.position), 0.1f));
+                StartCoroutine(Rotate(Helper.QDIR(c.position - transform.position), 0.1f));
                 break;
             case MOVE_TYPE.ATTACK:
                 PlayAnimation("Barbarian_Attack");
-                StartCoroutine(Rotate(QHelp.QDIR(c.position - transform.position), 0.1f));
+                StartCoroutine(Rotate(Helper.QDIR(c.position - transform.position), 0.1f));
                 break;
 
             case MOVE_TYPE.FINISH:

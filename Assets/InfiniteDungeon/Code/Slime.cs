@@ -18,7 +18,7 @@ public class Slime : Agent
     public override void Kill()
     {
         // Spawn death effect
-        FX.Emit(transform.position, Quaternion.identity, FX.VFX.SlimeDeath, 15);
+        FX.Emit(transform.position + new Vector3(0, 0.5f, 0), Quaternion.identity, FX.VFX.SlimeDeath, 15);
 
         cell.occupant = 0;
         cell.enemy = null;
@@ -100,6 +100,13 @@ public class Slime : Agent
     {
         map = Map.FindMap();
         barbarian = Barbarian.FindBarbarian();
+    }
+
+    public override void SetupEnemy(Cell c)
+    {
+        c.enemy = this;
+        c.occupant = 1;
+        cell = c;
     }
 
     private IEnumerator Move(Vector3 end, float time)

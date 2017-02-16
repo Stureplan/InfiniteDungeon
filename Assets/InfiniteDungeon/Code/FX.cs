@@ -17,6 +17,7 @@ public static class FX
     {
         public GameObject go;
         public ParticleSystem ps;
+        public bool spawned;
     }
 
     // The object to use.
@@ -30,16 +31,14 @@ public static class FX
     static ParticleSystem blood02;
     static PS slimeDeath;
 
+    static float hiddenHeight = -1000.0f;
 
     public static void Initialize()
     {
-        fx = new GameObject("FX");
-        fx.transform.position = new Vector3(0.0f, 1000.0f, 0.0f);
-        ps = fx.AddComponent<ParticleSystem>();
-
-
         slimeDeath.go = Resources.Load<GameObject>("FX/SlimeDeath");
+        slimeDeath.go.transform.position = new Vector3(0.0f, hiddenHeight, 0.0f);
         slimeDeath.ps = slimeDeath.go.GetComponent<ParticleSystem>();
+        slimeDeath.spawned = false;
     }
 
     public static void Emit(Vector3 point, Quaternion rotation, VFX VFX, int amount)
@@ -52,12 +51,18 @@ public static class FX
                 break;
 
             case VFX.SlimeDeath:
+                // Hasn't been spawned yet.
+                if (slimeDeath.spawned == false)
+                {
+                    // Spawn and assign.
+                    slimeDeath.go = GameObject.Instantiate(slimeDeath.go);
+                    slimeDeath.spawned = true;
+                }
 
+                slimeDeath.go.transform.localPosition = point;
+                slimeDeath.go.transform.localRotation = rotation;
+                slimeDeath.ps.Emit(amount);
                 break;
         }
-
-        fx.transform.localPosition = point;
-        fx.transform.localRotation = rotation;
-        ps.Emit(amount);
     }
 }

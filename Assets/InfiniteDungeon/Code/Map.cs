@@ -353,9 +353,7 @@ public class Map : MonoBehaviour
         Vector3 pos = new Vector3((x - sizeX / 2) * space, 0, (y - sizeY / 2) * space);
         GameObject go = Instantiate(slimePrefab, pos, Quaternion.identity);
         Agent a = go.AddComponent<Slime>();
-        a.cell = grid[x, y];
-        grid[x, y].enemy = a;
-        grid[x, y].occupant = 1;
+        a.SetupEnemy(grid[x, y]);
 
         allSceneEnemies.Add(a);
     }
