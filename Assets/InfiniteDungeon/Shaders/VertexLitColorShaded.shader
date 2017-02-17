@@ -2,14 +2,11 @@
 {
 	Properties
 	{
-		_MainColor ("Main Color", Color) = (1, 1, 1, 1)
 	}
 
 	SubShader
 	{
-		Tags{ "RenderType" = "TransparentCutout" "LightMode" = "ForwardBase" }
-
-		Blend SrcAlpha OneMinusSrcAlpha
+		Tags{ "LightMode" = "ForwardBase" }
 
 		Pass
 		{
@@ -32,8 +29,6 @@
 				float4 vertex : SV_POSITION;
 				fixed4 color : COLOR;
 			};
-
-			fixed4 _MainColor;
 
 			fixed4 GLOBAL_LIGHT_POS_0 = fixed4(0, 500, 0, 0);
 			fixed4 GLOBAL_LIGHT_POS_1 = fixed4(0, 500, 0, 0);
@@ -100,8 +95,8 @@
 
 
 
-				// Apply base color and Vertex color.
-				fixed4 col = lerp(_MainColor, fixed4(v.color.rgb, 1.0), v.color.a);
+				// Apply Vertex color.
+				fixed4 col = v.color;
 
 				// Apply lighting.
 				o.color.rgb = col + lights(pos, normal);

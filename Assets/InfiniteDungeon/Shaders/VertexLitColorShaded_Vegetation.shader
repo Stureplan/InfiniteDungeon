@@ -2,15 +2,14 @@
 {
 	Properties
 	{
-		_MainTex ("Texture", 2D) = "white" {}
-		_Scale ("Texture Scale", Float) = 1.0
+		_WindY("Wind Y Speed", Range(0, 5)) = 1.0
+		_Shakiness("Shake Amount", Range(1, 2)) = 1.0
+
 	}
 
 	SubShader
 	{
-		Tags{ "RenderType" = "TransparentCutout" "LightMode" = "ForwardBase" }
-
-		Blend SrcAlpha OneMinusSrcAlpha
+		Tags{ "LightMode" = "ForwardBase" }
 
 		Pass
 		{
@@ -32,13 +31,10 @@
 			{
 				float4 vertex : SV_POSITION;
 				fixed4 color : COLOR;
-				fixed3 normal : NORMAL;
-				fixed2 uv : TEXCOORD0;
-				fixed3 worldPos : TEXCOORD1;
 			};
 
-			sampler2D _MainTex;
-			fixed _Scale;
+			fixed _WindY;
+			fixed _Shakiness;
 
 			fixed4 GLOBAL_LIGHT_POS_0 = fixed4(0, 500, 0, 0);
 			fixed4 GLOBAL_LIGHT_POS_1 = fixed4(0, 500, 0, 0);
@@ -106,55 +102,31 @@
 			{
 				v2f o;
 
-				//v.vertex = Object Space
-				
+				// v.vertex = Object Space (Base is (0, 0, 0))
 				fixed localDistance = distance(v.vertex.xyz, fixed3(0, 0, 0));
 				
 				
 				
-				//v.vertex.xyz += (dir * d * localDistance);
-				//v.vertex.y += (sin(_SinTime.w * 0.1)) * localDistance);
-				
-				fixed s = sin(_Time.y + v.vertex.x);
-				fixed c = cos(_Time.y + v.vertex.z);
+				fixed s = sin(_Time.y * _WindY + v.vertex.x);
+				fixed c = cos(_Time.y * _WindY + v.vertex.z);
 
 				fixed sy = sin(_Time.y + v.vertex.y);
 				fixed cy = cos(_Time.y + v.vertex.y);
 
 
-				v.vertex.y += (rand(v.vertex.xyz)) * s * c * localDistance * 0.2;
-				//v.vertex.z += sy * cy * localDistance * 0.1;
-				//v.vertex.x += sy * cy * localDistance * 0.2;
-
-
-
-
-
-				//v.vertex.z += (sin(_SinTime.w * 0.2)) * (localDistance / 3);
-				//v.vertex.x += (sin(_SinTime.w * 0.12)) * (localDistance / 4);
-
-
+				v.vertex.y += (rand(v.vertex.xyz) * _Shakiness) * s * c * localDistance * 0.2;
 
 
 				// Vertex in WORLD space.
 				fixed3 pos = mul(unity_ObjectToWorld, v.vertex);
-				o.worldPos = pos;
 
 				fixed3 dir = normalize(pos - GLOBAL_PLAYER_POS);
 				fixed d = length(dir);
 
 
 
-				//fixed3 dir = normalize(pos - GLOBAL_PLAYER_POS);
-				//fixed d = min(distance(pos, GLOBAL_PLAYER_POS), 0.2);
-				//v.vertex.xyz += (dir * d) * localDistance;
-
 				o.vertex = UnityObjectToClipPos(v.vertex);
 				fixed3 normal = v.normal;
-				o.normal = v.normal;
-
-				// Add in the texture blend.
-				o.uv = fixed2(v.uv.x, 0.0);
 
 				// Apply lighting.
 				o.color.rgb = v.color.rgb + fixed4(lights(pos, normal), 1.0);
@@ -171,33 +143,6 @@
 			fixed4 frag (v2f i) : SV_Target
 			{
 				fixed4 col = i.color;
-				
-				fixed scale = 1.0;
-				fixed sharpness = 1.0;
-
-				half2 xUV = i.worldPos.zy / _Scale;
-				half2 yUV = i.worldPos.xz / _Scale;
-				half2 zUV = i.worldPos.xy / _Scale;
-
-				half3 xDiff = tex2D(_MainTex, xUV);
-				half3 yDiff = tex2D(_MainTex, yUV);
-				half3 zDiff = tex2D(_MainTex, zUV);
-
-				half3 blendWeights = pow(abs(i.normal), 1.0);
-
-				// Divide our blend mask by the sum of it's components, this will make x+y+z=1
-				blendWeights = blendWeights / (blendWeights.x + blendWeights.y + blendWeights.z);
-
-				// Finally, blend together all three samples based on the blend mask.
-				fixed4 tex = fixed4(xDiff * blendWeights.x + yDiff * blendWeights.y + zDiff * blendWeights.z, 1.0);
-				
-
-				// Fake "normal map" based on the brightness of the pixel.
-				fixed intensity = (tex.r + tex.g + tex.b) / 3;
-				tex.rgb += (lights(i.worldPos.rgb, i.normal.rgb) * smoothstep(0.2, 0.6, intensity));
-
-
-				col = lerp(col, tex, i.uv.x);
 				col.a = 1.0;
 
 				

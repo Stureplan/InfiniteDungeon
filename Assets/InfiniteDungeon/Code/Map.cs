@@ -407,6 +407,14 @@ public class Map : MonoBehaviour
         return 1;
     }
 
+    public int Distance(int x1, int y1, int x2, int y2)
+    {
+        // Naive Manhattan distance (bird mode)
+        int d = (x2 - x1) + (y2 - y1);
+
+        return Mathf.Abs(d);
+    }
+
     public int TypeAtPoint(int x, int y)
     {
         return grid[x, y].type;
