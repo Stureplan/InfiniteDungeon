@@ -19,11 +19,17 @@ public class VLight : MonoBehaviour
     public string shaderCol = "GLOBAL_LIGHT_COL_";
 
 
-    void Start() { }
+    void Start()
+    {
+    }
 
     void Update()
     {
-        if (frame % updates == 0) { UpdateShaders(); }
+        if (frame % updates == 0)
+
+        {
+            UpdateShaders();
+        }
 
         frame++;
         //TODO: Add Cookie child object, rotated towards cam
