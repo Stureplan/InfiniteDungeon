@@ -26,6 +26,7 @@ public class VLight : MonoBehaviour
         if (frame % updates == 0) { UpdateShaders(); }
 
         frame++;
+        //TODO: Add Cookie child object, rotated towards cam
     }
 
     public void UpdateShaderNames()

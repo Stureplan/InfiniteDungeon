@@ -13,6 +13,19 @@ public class BarbarianUI : MonoBehaviour
     public Sprite attack, moveLeft, moveForward, moveRight, moveBack;
     public Text health;
 
+    public RawImage minimap;
+
+    public void SetMinimap(Texture2D tex)
+    {
+        minimap.color = Color.white;
+        minimap.texture = tex;
+    }
+
+    public void SetMinimapPixel(int x, int y)
+    {
+        //minimap.rectTransform.localPosition
+    }
+
 	public void FadePanelsIn()
     {
         StartCoroutine(Fade(topPanel, Vector2.zero, 2.0f));

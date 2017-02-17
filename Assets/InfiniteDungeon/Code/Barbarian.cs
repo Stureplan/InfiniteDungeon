@@ -15,6 +15,9 @@ public class Barbarian : MonoBehaviour, IDamageable<int>
     private int currentDamage = 1;
     private int currentHealth = 100;
 
+    private int frame = 0;
+    private int vegetationUpdate = 1;
+
     public static Barbarian barbarian;
     public static Barbarian FindBarbarian()
     {
@@ -195,6 +198,7 @@ public class Barbarian : MonoBehaviour, IDamageable<int>
         camOffset = cam.transform.position - transform.position;
 
         ui.FadePanelsIn();
+        ui.SetMinimap(map.GetMinimap());
     }
 
     private void Update()
@@ -205,8 +209,14 @@ public class Barbarian : MonoBehaviour, IDamageable<int>
         }
 
 
-        // TODO: Check for enemies or movement
-        // and change button sprites accordingly.
+        if (frame % vegetationUpdate == 0)
+        {
+            Vector4 vec = new Vector4(transform.localPosition.x, transform.localPosition.y, transform.localPosition.z, 1.0f);
+            Shader.SetGlobalVector("GLOBAL_PLAYER_POS", vec);
+        }
+
+
+        frame++;
     }
 
     private IEnumerator Move(Vector3 end, float time)

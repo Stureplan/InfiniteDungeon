@@ -1,4 +1,4 @@
-﻿Shader "InfiniteDungeon/VertexLitColorShaded_Textured"
+﻿Shader "InfiniteDungeon/VertexLitColorShaded_Vegetation"
 {
 	Properties
 	{
@@ -50,6 +50,8 @@
 			fixed4 GLOBAL_LIGHT_COL_2 = fixed4(1, 1, 1, 0);
 			fixed4 GLOBAL_LIGHT_COL_3 = fixed4(1, 1, 1, 0);
 
+			fixed4 GLOBAL_PLAYER_POS = fixed4(0, 0, 0, 0);
+
 
 			fixed3 lights(fixed3 pos, fixed3 normal)
 			{
@@ -90,18 +92,67 @@
 				return (col0 + col1 + col2 + col3);
 			}
 
+
+			float TriangleWave(float x) 
+			{
+				return (frac(x + 0.5) * 2.0 - 1.0);
+			}
+			float rand(float3 co)
+			{
+				return frac(sin(dot(co.xyz, float3(12.9898, 78.233, 45.5432))) * 8.5453);
+			}
+
 			v2f vert (appdata v)
 			{
 				v2f o;
+
+				//v.vertex = Object Space
+				
+				fixed localDistance = distance(v.vertex.xyz, fixed3(0, 0, 0));
+				
+				
+				
+				//v.vertex.xyz += (dir * d * localDistance);
+				//v.vertex.y += (sin(_SinTime.w * 0.1)) * localDistance);
+				
+				fixed s = sin(_Time.y + v.vertex.x);
+				fixed c = cos(_Time.y + v.vertex.z);
+
+				fixed sy = sin(_Time.y + v.vertex.y);
+				fixed cy = cos(_Time.y + v.vertex.y);
+
+
+				v.vertex.y += (rand(v.vertex.xyz)) * s * c * localDistance * 0.2;
+				//v.vertex.z += sy * cy * localDistance * 0.1;
+				//v.vertex.x += sy * cy * localDistance * 0.2;
+
+
+
+
+
+				//v.vertex.z += (sin(_SinTime.w * 0.2)) * (localDistance / 3);
+				//v.vertex.x += (sin(_SinTime.w * 0.12)) * (localDistance / 4);
+
+
+
+
+				// Vertex in WORLD space.
+				fixed3 pos = mul(unity_ObjectToWorld, v.vertex);
+				o.worldPos = pos;
+
+				fixed3 dir = normalize(pos - GLOBAL_PLAYER_POS);
+				fixed d = length(dir);
+
+
+
+				//fixed3 dir = normalize(pos - GLOBAL_PLAYER_POS);
+				//fixed d = min(distance(pos, GLOBAL_PLAYER_POS), 0.2);
+				//v.vertex.xyz += (dir * d) * localDistance;
 
 				o.vertex = UnityObjectToClipPos(v.vertex);
 				fixed3 normal = v.normal;
 				o.normal = v.normal;
 
-				// Vertex in WORLD space.
-				fixed3 pos = mul(unity_ObjectToWorld, v.vertex);
-				o.worldPos = pos;
-				
 				// Add in the texture blend.
 				o.uv = fixed2(v.uv.x, 0.0);
 

@@ -79,7 +79,8 @@ public class Map : MonoBehaviour
     public bool randomSeed = false;
 
     Cell[,] grid;
-    public GameObject cellPrefab;
+    Texture2D minimap;
+    public GameObject[] groundPrefabs = new GameObject[2];
     public GameObject[] mountainPrefabs = new GameObject[3];
     public GameObject startPrefab;
     public GameObject endPrefab;
@@ -155,6 +156,8 @@ public class Map : MonoBehaviour
 
         SpawnPrefabs();
         SpawnEnemies();
+
+        CreateMinimap();
     }
 
 	void CreateArea()
@@ -280,7 +283,7 @@ public class Map : MonoBehaviour
                     // EMPTY SPACE (ROAD)
                     grid[x, y].occupant = 0;
                     Vector3 pos = new Vector3((x - sizeX / 2) * space, 0, (y - sizeY / 2) * space);
-                    GameObject c = Instantiate(cellPrefab, pos, Quaternion.identity);
+                    GameObject c = Instantiate(groundPrefabs[Random.Range(0, 2)], pos, Quaternion.identity);
                     c.transform.parent = transform;
 
                     allSceneObjects.Add(c);
@@ -610,6 +613,61 @@ public class Map : MonoBehaviour
         */
         return neighbors;
     }
+
+    public void CreateMinimap()
+    {
+        minimap = new Texture2D(sizeX, sizeY);
+        Color obstacle = Color.clear;
+        Color empty = new Color(1, 1, 1, 0.25f);
+        Color start = new Color(0, 0, 1, 0.25f);
+        Color end = new Color(1, 0, 0, 0.25f);
+
+
+
+        for (int x = 0; x < sizeX; x++)
+        {
+            for (int y = 0; y < sizeY; y++)
+            {
+                Cell c = grid[x, y];
+
+                if (c.type == 0)
+                {
+                    minimap.SetPixel(x, y, empty);
+                }
+
+                else if (c.type == 1)
+                {
+                    minimap.SetPixel(x, y, obstacle);
+                }
+
+                else if (c.type == 2)
+                {
+                    minimap.SetPixel(x, y, obstacle);
+                }
+
+                else if (c.type == 4)
+                {
+                    minimap.SetPixel(x, y, start);
+                }
+
+                else if (c.type == 5)
+                {
+                    minimap.SetPixel(x, y, end);
+                }
+            }
+        }
+
+        minimap.name = "Minimap";
+        minimap.filterMode = FilterMode.Point;
+        minimap.wrapMode = TextureWrapMode.Clamp;
+        minimap.Apply();
+    }
+
+    public Texture2D GetMinimap()
+    {
+        if (minimap == null) { CreateMinimap(); }
+        return minimap;
+    }
 }
 
 [ExecuteInEditMode]
@@ -637,7 +695,9 @@ public class MapEditor : Editor
         map.randomSeed = EditorGUILayout.Toggle("Random Seed", map.randomSeed);
 
         // Regular ground
-        map.cellPrefab = EditorGUILayout.ObjectField("Cell Prefab", map.cellPrefab, typeof(GameObject), false) as GameObject;
+        map.groundPrefabs[0] = EditorGUILayout.ObjectField("Cell Prefab 1", map.groundPrefabs[0], typeof(GameObject), false) as GameObject;
+        map.groundPrefabs[1] = EditorGUILayout.ObjectField("Cell Prefab 1", map.groundPrefabs[1], typeof(GameObject), false) as GameObject;
+
 
         // Obstacles
         map.mountainPrefabs[0] = EditorGUILayout.ObjectField("Mountain 1", map.mountainPrefabs[0], typeof(GameObject), false) as GameObject;
