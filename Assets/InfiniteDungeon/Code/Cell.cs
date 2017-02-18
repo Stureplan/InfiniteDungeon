@@ -8,6 +8,8 @@ public class Cell
     public int x, y;            //TYPES: 4 = Start, 5 = End
     public int occupant;        //OCCUPANTS: 0 = Empty, 1 = Enemy, 2 = Player
 
+    public int destructible;    //1 = Will be stomped and destroyed when used: 
+
     public Agent enemy;
     public Cell parent;
 

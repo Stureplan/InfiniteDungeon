@@ -622,6 +622,23 @@ public class Map : MonoBehaviour
         return neighbors;
     }
 
+    public T GetComponentAtPosition<T>(Vector3 position, T component)
+    {
+        int objects = allSceneObjects.Count;
+        for (int i = 0; i < objects; i++)
+        {
+            float distance = Vector3.Distance(position, allSceneObjects[i].transform.position);
+            if (Mathf.Abs(distance) < 0.1f)
+            {
+                return allSceneObjects[i].GetComponent<T>();
+            }
+
+        }
+
+
+        return default(T);
+    }
+
     public void CreateMinimap()
     {
         minimap = new Texture2D(sizeX, sizeY);

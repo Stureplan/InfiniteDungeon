@@ -52,7 +52,9 @@ public class VertexPainterEditor : Editor
     Vector3 center;
     Vector3 point;
     Vector3 dir;
-    MeshFilter mf;
+    //MeshFilter mf;
+    //SkinnedMeshRenderer smr;
+    Mesh sharedMesh;
     Color[] colors = new Color[1];
     Vector2[] uvs = new Vector2[1];
 
@@ -65,27 +67,39 @@ public class VertexPainterEditor : Editor
     bool ctrlIsDown = false;
     bool shiftIsDown = false;
 
+    private static Color brushColor = Color.white;
+    private static void SetLastBrushColor(Color c)
+    {
+        brushColor = c;
+    }
 
+    private static Color LastBrushColor()
+    {
+        return brushColor;
+    }
 
     private void OnEnable()
     {
         vp = (VertexPainter)target;
-        mf = vp.GetComponent<MeshFilter>();
-        colors = new Color[mf.sharedMesh.vertexCount];
+        MeshFilter mf = vp.GetComponent<MeshFilter>();
+        if (sharedMesh == null) { sharedMesh = vp.GetComponent<SkinnedMeshRenderer>().sharedMesh; }
+        else { sharedMesh = mf.sharedMesh; }
+
+        colors = new Color[sharedMesh.vertexCount];
         uvs = new Vector2[colors.Length];
 
         for (int i = 0; i < colors.Length; i++)
         {
-            if (mf.sharedMesh.colors.Length > 0)
+            if (sharedMesh.colors.Length > 0)
             {
-                colors[i] = mf.sharedMesh.colors[i];
+                colors[i] = sharedMesh.colors[i];
 
             }
             else
             {
-                colors[i] = Color.clear;
+                colors[i] = Color.white;
             }
-            uvs[i] = mf.sharedMesh.uv[i];
+            uvs[i] = sharedMesh.uv[i];
         }
 
         paintMode = true;
@@ -95,6 +109,7 @@ public class VertexPainterEditor : Editor
 
     private void OnDisable()
     {
+        SetLastBrushColor(brush.color);
         paintMode = false;
         HandleUtility.AddDefaultControl(GUIUtility.GetControlID(FocusType.Keyboard));
         Tools.current = Tool.Move;
@@ -133,7 +148,7 @@ public class VertexPainterEditor : Editor
     private void SetupPainter()
     {
         Color b = new Color(0.0f, 0.0f, 0.0f, 0.5f);
-        brush = new Brush(BrushMode.Painting, 0.05f, Color.red, b);
+        brush = new Brush(BrushMode.Painting, 0.05f, LastBrushColor(), b);
         center = vp.transform.position;
         point = Vector3.zero;
         dir = Vector3.zero;
@@ -152,6 +167,8 @@ public class VertexPainterEditor : Editor
         if (GUI.Button(new Rect(10, 10, 130, 20), "Mode: " + brush.mode.ToString())) { CycleModes(); }
         if (GUI.Button(new Rect(10, 35, 130, 20), "Wipe Colors"))  { ResetColors(); }
         if (GUI.Button(new Rect(10, 60, 130, 20), "Wipe Shading")) { ResetShading(); }
+        if (GUI.Button(new Rect(10, 85, 130, 20), "Flood Color")) { FloodColors(brush.color); }
+
 
         Event e = Event.current;
         
@@ -185,10 +202,10 @@ public class VertexPainterEditor : Editor
 
 
 
-        brush.color = EditorGUI.ColorField(new Rect(10, 90, 125, 16), brush.color);
-        brush.shade = EditorGUI.ColorField(new Rect(10, 110, 125, 16), brush.shade);
+        brush.color = EditorGUI.ColorField(new Rect(10, 115, 125, 16), brush.color);
+        brush.shade = EditorGUI.ColorField(new Rect(10, 135, 125, 16), brush.shade);
 
-        if (GUI.Button(new Rect(10, 141, 130, 20), "Save Asset")) { SaveMeshData(mf.sharedMesh, vp.name); }
+        if (GUI.Button(new Rect(10, 166, 130, 20), "Save Asset")) { SaveMeshData(sharedMesh, vp.name); }
         Handles.EndGUI();
 
 
@@ -279,7 +296,7 @@ public class VertexPainterEditor : Editor
     {
         if (hit.collider.name == vp.name)
         {
-            Mesh mesh = mf.sharedMesh;
+            Mesh mesh = sharedMesh;
             int index = hit.triangleIndex * 3;
 
             PVertex[] hits = new PVertex[3];
@@ -334,6 +351,18 @@ public class VertexPainterEditor : Editor
         }
     }
 
+    private void FloodColors(Color c)
+    {
+        int vtx = colors.Length;
+        colors = new Color[vtx];
+        for (int i = 0; i < vtx; i++)
+        {
+            colors[i] = c;
+        }
+
+        sharedMesh.colors = colors;
+    }
+
     private void ResetColors()
     {
         int vtx = colors.Length;
@@ -343,7 +372,7 @@ public class VertexPainterEditor : Editor
             colors[i] = Color.clear;
         }
 
-        mf.sharedMesh.colors = colors;
+        sharedMesh.colors = colors;
     }
 
     private void ResetShading()
@@ -355,7 +384,7 @@ public class VertexPainterEditor : Editor
             uvs[i] = Vector2.zero;
         }
 
-        mf.sharedMesh.uv = uvs;
+        sharedMesh.uv = uvs;
     }
 
     private void CycleModes()
