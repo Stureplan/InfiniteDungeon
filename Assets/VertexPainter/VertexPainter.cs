@@ -82,7 +82,7 @@ public class VertexPainterEditor : Editor
     {
         vp = (VertexPainter)target;
         MeshFilter mf = vp.GetComponent<MeshFilter>();
-        if (sharedMesh == null) { sharedMesh = vp.GetComponent<SkinnedMeshRenderer>().sharedMesh; }
+        if (mf == null) { sharedMesh = vp.GetComponent<SkinnedMeshRenderer>().sharedMesh; }
         else { sharedMesh = mf.sharedMesh; }
 
         colors = new Color[sharedMesh.vertexCount];

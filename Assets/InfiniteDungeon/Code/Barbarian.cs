@@ -203,12 +203,6 @@ public class Barbarian : MonoBehaviour, IDamageable<int>
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.A))
-        {
-            ui.FadePanelsOut();
-        }
-
-
         if (frame % vegetationUpdate == 0)
         {
             Vector4 vec = new Vector4(transform.localPosition.x, transform.localPosition.y, transform.localPosition.z, 1.0f);
@@ -217,6 +211,12 @@ public class Barbarian : MonoBehaviour, IDamageable<int>
 
 
         frame++;
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        //TODO: Set up Visual triggers.
+        // Vegetation, Destructible, etc.
     }
 
     private IEnumerator Move(Vector3 end, float time)
