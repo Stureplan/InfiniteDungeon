@@ -14,6 +14,7 @@ public class Barbarian : MonoBehaviour, IDamageable<int>
     private Animation animations;
     private int currentDamage = 1;
     private int currentHealth = 100;
+    private Agent currentAgent;
 
     private int frame = 0;
     private int vegetationUpdate = 1;
@@ -40,6 +41,11 @@ public class Barbarian : MonoBehaviour, IDamageable<int>
     {
 
         Game.Over();
+    }
+
+    public void DamageAgents()
+    {
+        currentAgent.Damage(currentDamage);
     }
     
     public float NextTurn(int d, int turn)
@@ -124,7 +130,8 @@ public class Barbarian : MonoBehaviour, IDamageable<int>
                 break;
 
             case MOVE_TYPE.ATTACK:
-                c.enemy.Damage(currentDamage);
+                //c.enemy.Damage(currentDamage);
+                currentAgent = c.enemy;
                 break;
 
             case MOVE_TYPE.INVALID:
@@ -157,7 +164,7 @@ public class Barbarian : MonoBehaviour, IDamageable<int>
                 StartCoroutine(Rotate(Helper.QDIR(c.position - transform.position), 0.1f));
                 break;
             case MOVE_TYPE.ATTACK:
-                PlayAnimation("Barbarian_Attack");
+                PlayAnimation("Barbarian_Attack1");
                 StartCoroutine(Rotate(Helper.QDIR(c.position - transform.position), 0.1f));
                 break;
 

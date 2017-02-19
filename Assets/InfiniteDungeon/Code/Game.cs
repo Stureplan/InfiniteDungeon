@@ -37,7 +37,7 @@ public class Game : MonoBehaviour
             float timer = barbarian.NextTurn(dir, turn);
 
             // Something went wrong, invalid move etc..
-            if (timer > 665.0f) { return; }
+            if (timer > 665.0f) { Debug.LogWarning("Timer was " + timer); return; }
 
             TURN_READY = false;
             StartCoroutine(Waiter(timer));

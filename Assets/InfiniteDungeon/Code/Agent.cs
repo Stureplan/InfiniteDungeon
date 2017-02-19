@@ -6,6 +6,7 @@ public class Agent : MonoBehaviour, IDamageable<int>
 {
     public int maxHealth;
     public int health;
+    public bool dead;
     public Map map;
     public Cell cell;
     public Barbarian barbarian; 

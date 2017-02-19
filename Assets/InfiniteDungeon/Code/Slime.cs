@@ -12,6 +12,7 @@ public class Slime : Agent
         if (health < 1)
         {
             Kill();
+            dead = true;
         }
     }
 
@@ -101,12 +102,15 @@ public class Slime : Agent
         map = Map.FindMap();
         barbarian = Barbarian.FindBarbarian();
     }
+    
+    private void Update() { }
 
     public override void SetupEnemy(Cell c)
     {
         c.enemy = this;
         c.occupant = 1;
         cell = c;
+        dead = false;
     }
 
     private IEnumerator Move(Vector3 end, float time)
