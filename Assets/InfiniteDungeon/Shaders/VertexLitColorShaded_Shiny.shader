@@ -7,9 +7,8 @@
 
 	SubShader
 	{
-		Tags{ "Queue" = "AlphaTest" "RenderType" = "Transparent" "LightMode" = "ForwardBase" }
+		Tags{ "LightMode" = "ForwardBase" }
 
-		Blend SrcAlpha OneMinusSrcAlpha
 
 		Pass
 		{
