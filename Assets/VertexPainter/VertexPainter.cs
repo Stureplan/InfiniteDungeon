@@ -87,12 +87,19 @@ public class VertexPainterEditor : Editor
         colors = new Color[sharedMesh.vertexCount];
         uvs = new Vector2[colors.Length];
 
-        palette = new Texture2D(5, 1);
-        for (int i = 0; i < 5; i++)
+        palette = LoadTexture();
+        if (palette == null)
         {
-            paletteColors[i] = Color.clear;
+            palette = new Texture2D(5, 1);
+            for (int i = 0; i < 5; i++)
+            {
+                paletteColors[i] = Color.black;
+            }
+            palette.SetPixels(paletteColors);
+            palette.filterMode = FilterMode.Point;
+            palette.Apply();
         }
-        palette.SetPixels(paletteColors);
+
         currentPaletteColor = 0;
 
         for (int i = 0; i < colors.Length; i++)
@@ -175,11 +182,11 @@ public class VertexPainterEditor : Editor
         if (GUI.Button(new Rect(10, 60, 130, 20), "Wipe Shading")) { ResetShading(); }
         if (GUI.Button(new Rect(10, 85, 130, 20), "Flood Color")) { FloodColors(brush.color); }
         if (GUI.Button(new Rect(10, 110, 130, 20), "Add to Palette")) { UpdatePalette(brush.color, currentPaletteColor); currentPaletteColor++; if (currentPaletteColor > 4) currentPaletteColor = 0; }
+
         GUI.DrawTexture(new Rect(10, 135, 130, 20), palette);
 
-
         Event e = Event.current;
-
+        
         #region OLD_SHADING_SYSTEM
         /*if (e.control && !ctrlIsDown)
         {
@@ -364,9 +371,52 @@ public class VertexPainterEditor : Editor
         palette = new Texture2D(5, 1);
         paletteColors[i] = c;
         palette.SetPixels(paletteColors);
+        palette.name = "palette";
         palette.filterMode = FilterMode.Point;
         palette.wrapMode = TextureWrapMode.Clamp;
         palette.Apply();
+
+        SaveTexture(palette);
+    }
+
+    static Texture2D LoadTexture()
+    {
+        string filePath = Application.dataPath + "/Resources/Editor/palette.png";
+
+        if (System.IO.File.Exists(filePath))
+        {
+            byte[] bytes = System.IO.File.ReadAllBytes(filePath);
+
+            Texture2D tex = new Texture2D(5, 1);
+            tex.filterMode = FilterMode.Point;
+            tex.wrapMode = TextureWrapMode.Clamp;
+            tex.LoadImage(bytes);
+            tex.Apply();
+
+            return tex;
+        }
+
+        else
+        {
+            // Something went wrong
+            Texture2D tex = new Texture2D(5, 1);
+            Color[] c = new Color[5];
+            for (int i = 0; i < 5; i++) { c[i] = Color.black; }
+            tex.SetPixels(c);
+            tex.Apply();
+            return tex;
+        }
+
+    }
+
+    static void SaveTexture(Texture2D tex)
+    {
+        if (tex == null) { return; }
+        string filePath = Application.dataPath + "/Resources/Editor/palette.png";
+
+        tex.wrapMode = TextureWrapMode.Clamp;
+        byte[] bytes = tex.EncodeToPNG();
+        System.IO.File.WriteAllBytes(filePath, bytes);
     }
 
     private void FloodColors(Color c)

@@ -1,34 +1,19 @@
 fileFormatVersion: 2
-guid: 3bcb73319ac8d624eb649e6a5186bba2
-timeCreated: 1487016618
+guid: ed7065915a57ef34bbd2572076f825d3
+timeCreated: 1487611719
 licenseType: Free
 ModelImporter:
   serializedVersion: 19
   fileIDToRecycleName:
-    100000: //RootNode
-    100002: pCube1
-    100004: ground
-    100006: initialShadingGroup_ground
-    100008: Ground01:ground_Ground01:initialShadingGroup_initialShadingGroup_ground1
-    400000: //RootNode
-    400002: pCube1
-    400004: ground
-    400006: initialShadingGroup_ground
-    400008: Ground01:ground_Ground01:initialShadingGroup_initialShadingGroup_ground1
-    2300000: pCube1
-    2300002: ground
-    2300004: initialShadingGroup_ground
-    2300006: Ground01:ground_Ground01:initialShadingGroup_initialShadingGroup_ground1
-    3300000: pCube1
-    3300002: ground
-    3300004: initialShadingGroup_ground
-    3300006: Ground01:ground_Ground01:initialShadingGroup_initialShadingGroup_ground1
-    4300000: pCube1
-    4300002: ground
-    4300004: initialShadingGroup_ground
-    4300006: Ground01:ground_Ground01:initialShadingGroup_initialShadingGroup_ground1
+    100000: initialShadingGroup_mountain2
+    100002: //RootNode
+    400000: initialShadingGroup_mountain2
+    400002: //RootNode
+    2300000: initialShadingGroup_mountain2
+    3300000: initialShadingGroup_mountain2
+    4300000: initialShadingGroup_mountain2
   materials:
-    importMaterials: 0
+    importMaterials: 1
     materialName: 0
     materialSearch: 1
   animations:
@@ -70,7 +55,7 @@ ModelImporter:
     normalSmoothAngle: 60
     normalImportMode: 0
     tangentImportMode: 3
-  importAnimation: 0
+  importAnimation: 1
   copyAvatar: 0
   humanDescription:
     serializedVersion: 2
