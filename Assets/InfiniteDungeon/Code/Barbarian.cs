@@ -198,14 +198,25 @@ public class Barbarian : MonoBehaviour, IDamageable<int>
         animations.Play(anim);
     }
 
-    private void Start()
+    private void StartLevel()
     {
-        animations = GetComponent<Animation>();
+        // Barbarian has landed!
         cell = map.StartCell();
-        camOffset = cam.transform.position - transform.position;
 
         ui.FadePanelsIn();
         ui.SetMinimap(map.GetMinimap());
+    }
+
+    private void Start()
+    {
+        camOffset = cam.transform.position - transform.position;
+        animations = GetComponent<Animation>();
+
+
+        //cell = map.StartCell();
+
+        //ui.FadePanelsIn();
+        //ui.SetMinimap(map.GetMinimap());
     }
 
     private void Update()

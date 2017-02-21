@@ -107,7 +107,7 @@ public class Map : MonoBehaviour
 
     private void Awake()
     {
-        Generate(true);
+        //Generate(true);
     }
 
     public void CleanAndPrepare()
@@ -128,7 +128,7 @@ public class Map : MonoBehaviour
         }
     }
 
-	public void Generate(bool gridHasChanged)
+	public void Generate(bool showMap)
     {
         // 1. Create grid if not created
         // 2. Create critical path start/end
@@ -141,12 +141,9 @@ public class Map : MonoBehaviour
         RNG.Init(seed);
 
 
-        if (gridHasChanged)
-        {
-            // Allocates grid and sets Cells to empty (0)
-            CleanAndPrepare();
-            CreateArea();
-        }
+        // Allocates grid and sets Cells to empty (0)
+        CleanAndPrepare();
+        CreateArea();
 
         CreateMiners(minerCount);
         Mine(minerCount);
@@ -158,6 +155,15 @@ public class Map : MonoBehaviour
         SpawnEnemies();
 
         CreateMinimap();
+
+        if (showMap == false)
+        {
+            gameObject.SetActive(false);
+        }
+        else
+        {
+            // TODO: Move into place
+        }
     }
 
 	void CreateArea()

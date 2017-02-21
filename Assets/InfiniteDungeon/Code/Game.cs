@@ -7,7 +7,7 @@ public class Game : MonoBehaviour
 {
     static bool TURN_READY = true;
 
-    public Map map;
+    Map map;
 
     static List<Agent> enemies = new List<Agent>();
     Barbarian barbarian;
@@ -18,6 +18,8 @@ public class Game : MonoBehaviour
     {
         // Initialize all static classes here.
         FX.Initialize();
+        map = Map.FindMap();
+        map.Generate(false);
 
 
         barbarian = FindObjectOfType<Barbarian>();
