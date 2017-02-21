@@ -128,7 +128,7 @@ public class Map : MonoBehaviour
         }
     }
 
-	public void Generate(bool showMap)
+	public void Generate(bool animateLevel)
     {
         // 1. Create grid if not created
         // 2. Create critical path start/end
@@ -156,13 +156,15 @@ public class Map : MonoBehaviour
 
         CreateMinimap();
 
-        if (showMap == false)
+        if (animateLevel == true)
         {
-            gameObject.SetActive(false);
+            // TODO: Move into place
+
         }
         else
         {
-            // TODO: Move into place
+
+            gameObject.SetActive(false);
         }
     }
 
