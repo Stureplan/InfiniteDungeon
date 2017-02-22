@@ -65,4 +65,9 @@ public static class FX
                 break;
         }
     }
+
+    public static void EmitNumber(Vector3 point, Color c, int number)
+    {
+
+    }
 }

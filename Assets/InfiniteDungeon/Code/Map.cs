@@ -128,7 +128,7 @@ public class Map : MonoBehaviour
         }
     }
 
-	public void Generate(bool animateLevel)
+	public void Generate()
     {
         // 0. Move map down
         // 1. Create grid if not created
@@ -158,7 +158,7 @@ public class Map : MonoBehaviour
 
         CreateMinimap();
 
-        if (animateLevel == true)
+        /*if (animateLevel == true)
         {
             // TODO: Move into place
             StartCoroutine(MoveMap(1.0f));
@@ -167,10 +167,15 @@ public class Map : MonoBehaviour
         {
 
             gameObject.SetActive(false);
-        }
+        }*/
     }
 
-	void CreateArea()
+    public void AnimateMap()
+    {
+        StartCoroutine(MoveMap(1.0f));
+    }
+
+    void CreateArea()
     {
         grid = new Cell[sizeX, sizeY];
         for (int x = 0; x < sizeX; x++)
@@ -773,7 +778,7 @@ public class MapEditor : Editor
 
         if (GUILayout.Button("Generate"))
         {
-            map.Generate(true);
+            map.Generate();
         }
         if (GUILayout.Button("Clear"))
         {
