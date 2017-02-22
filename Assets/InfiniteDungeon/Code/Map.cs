@@ -130,13 +130,17 @@ public class Map : MonoBehaviour
 
 	public void Generate(bool animateLevel)
     {
+        // 0. Move map down
         // 1. Create grid if not created
         // 2. Create critical path start/end
         // 3. Pick miner spots and mine
         // 4. Cleanup
         // N. Spawn Prefabs
 
-        
+        HideMap(new Vector3(0, -10, 0));
+
+
+
         if (randomSeed) { seed = Random.Range(0, 9999); }
         RNG.Init(seed);
 
@@ -159,7 +163,7 @@ public class Map : MonoBehaviour
         if (animateLevel == true)
         {
             // TODO: Move into place
-
+            HideMap(Vector3.zero);
         }
         else
         {
@@ -699,6 +703,34 @@ public class Map : MonoBehaviour
     {
         if (minimap == null) { CreateMinimap(); }
         return minimap;
+    }
+
+    private void HideMap(Vector3 pos)
+    {
+        transform.position = pos;
+        int index = allSceneObjects.Count;
+
+        StartCoroutine(MoveObjectUp(index, 0.0f, 0.1f));
+    }
+
+    private IEnumerator MoveObjectUp(int i, float y, float time)
+    {
+        Vector3 end = new Vector3(0, y, 0);
+        float t = 0.0f;
+
+        while (t<time)
+        {
+            allSceneObjects[i].transform.localPosition = Vector3.Lerp(transform.localPosition, end, t / time);
+            t += Time.deltaTime;
+
+            yield return null;
+        }
+
+        if (i >= 0)
+        {
+            i--;
+            StartCoroutine(MoveObjectUp(i, y, time));
+        }
     }
 }
 

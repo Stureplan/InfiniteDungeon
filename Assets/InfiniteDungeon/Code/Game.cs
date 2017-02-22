@@ -19,7 +19,7 @@ public class Game : MonoBehaviour
         // Initialize all static classes here.
         FX.Initialize();
         map = Map.FindMap();
-        map.Generate(false);
+        //map.Generate(false);
 
 
         barbarian = FindObjectOfType<Barbarian>();
