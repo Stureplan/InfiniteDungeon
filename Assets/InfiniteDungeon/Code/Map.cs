@@ -136,9 +136,7 @@ public class Map : MonoBehaviour
         // 3. Pick miner spots and mine
         // 4. Cleanup
         // N. Spawn Prefabs
-
         transform.localPosition = new Vector3(0, BOTTOM_HEIGHT, 0);
-
 
 
         if (randomSeed) { seed = Random.Range(0, 9999); }
@@ -163,7 +161,7 @@ public class Map : MonoBehaviour
         if (animateLevel == true)
         {
             // TODO: Move into place
-            HideMap(new Vector3(0, BOTTOM_HEIGHT, 0));
+            StartCoroutine(MoveMap(2.0f));
         }
         else
         {
@@ -296,7 +294,7 @@ public class Map : MonoBehaviour
                     grid[x, y].occupant = 0;
                     Vector3 pos = new Vector3((x - sizeX / 2) * space, 0, (y - sizeY / 2) * space);
                     GameObject c = Instantiate(groundPrefabs[Random.Range(0, 2)], pos, Quaternion.identity);
-                    c.transform.parent = transform;
+                    c.transform.SetParent(transform, false);
 
                     allSceneObjects.Add(c);
                 }
@@ -317,7 +315,8 @@ public class Map : MonoBehaviour
 
                     Vector3 pos = new Vector3((x - sizeX / 2) * space, 0, (y - sizeY / 2) * space);
                     GameObject c = Instantiate(mountainPrefabs[RNG.Range(0, 3)], pos, RNG.Q90f(Vector3.up));
-                    c.transform.parent = transform;
+                    c.transform.SetParent(transform, false);
+
 
                     allSceneObjects.Add(c);
                 }
@@ -339,7 +338,8 @@ public class Map : MonoBehaviour
 
                     Vector3 pos = new Vector3((x - sizeX / 2) * space, 0, (y - sizeY / 2) * space);
                     GameObject c = Instantiate(startPrefab, pos, Quaternion.identity);
-                    c.transform.parent = transform;
+                    c.transform.SetParent(transform, false);
+
 
                     allSceneObjects.Add(c);
                 }
@@ -350,7 +350,8 @@ public class Map : MonoBehaviour
 
                     Vector3 pos = new Vector3((x - sizeX / 2) * space, 0, (y - sizeY / 2) * space);
                     GameObject c = Instantiate(endPrefab, pos, Quaternion.identity);
-                    c.transform.parent = transform;
+                    c.transform.SetParent(transform, false);
+
 
                     allSceneObjects.Add(c);
                 }
@@ -705,50 +706,20 @@ public class Map : MonoBehaviour
         return minimap;
     }
 
-    private void HideMap(Vector3 pos)
+    private IEnumerator MoveMap(float time)
     {
-        transform.localPosition = new Vector3(0, 0, 0);
-
-
-        int index = allSceneObjects.Count;
-        int max = index;
-
-
-        for (int i = 0; i < index; i++)
-        {
-            Vector3 p = allSceneObjects[i].transform.localPosition;
-            p.y = pos.y;
-
-            allSceneObjects[i].transform.localPosition = p;
-        }
-
-
-
-
-        StartCoroutine(MoveObjectUp(0, max, 0.0f, 0.05f));
-    }
-
-    private IEnumerator MoveObjectUp(int i, int max, float y, float time)
-    {
-        Vector3 end = allSceneObjects[i].transform.localPosition;
-        end.y = y;
+        Vector3 end = Vector3.zero;
         float t = 0.0f;
 
         while (t<time)
         {
-            allSceneObjects[i].transform.localPosition = Vector3.Lerp(allSceneObjects[i].transform.localPosition, end, t / time);
+            transform.localPosition = Vector3.Lerp(transform.localPosition, end, t / time);
             t += Time.deltaTime;
 
             yield return null;
         }
 
-        allSceneObjects[i].transform.localPosition = end;
-
-        if (i < max-1)
-        {
-            i++;
-            StartCoroutine(MoveObjectUp(i, max, y, time));
-        }
+        transform.localPosition = end;
     }
 }
 
