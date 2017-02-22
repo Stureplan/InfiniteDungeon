@@ -93,7 +93,7 @@ public class Map : MonoBehaviour
     List<Agent> allSceneEnemies = new List<Agent>();
 
     //Miner m01, m02, m03...
-
+    const float BOTTOM_HEIGHT = -10.0f;
     public static Map map;
     public static Map FindMap()
     {
@@ -137,7 +137,7 @@ public class Map : MonoBehaviour
         // 4. Cleanup
         // N. Spawn Prefabs
 
-        HideMap(new Vector3(0, -10, 0));
+        transform.localPosition = new Vector3(0, BOTTOM_HEIGHT, 0);
 
 
 
@@ -163,7 +163,7 @@ public class Map : MonoBehaviour
         if (animateLevel == true)
         {
             // TODO: Move into place
-            HideMap(Vector3.zero);
+            HideMap(new Vector3(0, BOTTOM_HEIGHT, 0));
         }
         else
         {
@@ -707,29 +707,47 @@ public class Map : MonoBehaviour
 
     private void HideMap(Vector3 pos)
     {
-        transform.position = pos;
-        int index = allSceneObjects.Count;
+        transform.localPosition = new Vector3(0, 0, 0);
 
-        StartCoroutine(MoveObjectUp(index, 0.0f, 0.1f));
+
+        int index = allSceneObjects.Count;
+        int max = index;
+
+
+        for (int i = 0; i < index; i++)
+        {
+            Vector3 p = allSceneObjects[i].transform.localPosition;
+            p.y = pos.y;
+
+            allSceneObjects[i].transform.localPosition = p;
+        }
+
+
+
+
+        StartCoroutine(MoveObjectUp(0, max, 0.0f, 0.05f));
     }
 
-    private IEnumerator MoveObjectUp(int i, float y, float time)
+    private IEnumerator MoveObjectUp(int i, int max, float y, float time)
     {
-        Vector3 end = new Vector3(0, y, 0);
+        Vector3 end = allSceneObjects[i].transform.localPosition;
+        end.y = y;
         float t = 0.0f;
 
         while (t<time)
         {
-            allSceneObjects[i].transform.localPosition = Vector3.Lerp(transform.localPosition, end, t / time);
+            allSceneObjects[i].transform.localPosition = Vector3.Lerp(allSceneObjects[i].transform.localPosition, end, t / time);
             t += Time.deltaTime;
 
             yield return null;
         }
 
-        if (i >= 0)
+        allSceneObjects[i].transform.localPosition = end;
+
+        if (i < max-1)
         {
-            i--;
-            StartCoroutine(MoveObjectUp(i, y, time));
+            i++;
+            StartCoroutine(MoveObjectUp(i, max, y, time));
         }
     }
 }
