@@ -203,16 +203,16 @@ public class Barbarian : MonoBehaviour, IDamageable<int>
         // Barbarian has jumped off the first platform!
         map.Generate(true); // <-- initiates the animation sequence
         //PlayAnimation("Barbarian_FirstJump"); // TODO: Remember to LOOP to "Barbarian_Fall"!
-        StartCoroutine(Move(map.StartCell().position, 0.5f));
-        StartCoroutine(MoveCamera(map.StartCell().position + camOffset, 0.5f));
+        StartCoroutine(Move(map.StartCell().position, 2.0f));
+        StartCoroutine(MoveCamera(map.StartCell().position + camOffset, 2.0f));
     }
 
-    private void StartLevel()
+    public void StartLevel()
     {
         // Barbarian has landed!
         cell = map.StartCell();
 
-        PlayAnimation("Barbarian_Land");
+        //PlayAnimation("Barbarian_Land");
         ui.FadePanelsIn();
         ui.SetMinimap(map.GetMinimap());
     }

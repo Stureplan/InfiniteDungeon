@@ -161,7 +161,7 @@ public class Map : MonoBehaviour
         if (animateLevel == true)
         {
             // TODO: Move into place
-            StartCoroutine(MoveMap(4.0f));
+            StartCoroutine(MoveMap(1.0f));
         }
         else
         {
@@ -710,16 +710,22 @@ public class Map : MonoBehaviour
     {
         Vector3 end = Vector3.zero;
         float t = 0.0f;
+        float d = Vector3.Distance(transform.localPosition, end);
 
-        while (t<time)
+        while (t < time)
         {
-            transform.localPosition = Vector3.Lerp(transform.localPosition, end, t / time);
+            float delta = (d * Time.deltaTime) / time;
+
+            transform.localPosition = Vector3.MoveTowards(transform.localPosition, end,delta);
+
+
             t += Time.deltaTime;
 
             yield return null;
         }
 
         transform.localPosition = end;
+        Barbarian.FindBarbarian().StartLevel();
     }
 }
 
