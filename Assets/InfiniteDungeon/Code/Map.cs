@@ -161,7 +161,7 @@ public class Map : MonoBehaviour
         if (animateLevel == true)
         {
             // TODO: Move into place
-            StartCoroutine(MoveMap(2.0f));
+            StartCoroutine(MoveMap(4.0f));
         }
         else
         {
