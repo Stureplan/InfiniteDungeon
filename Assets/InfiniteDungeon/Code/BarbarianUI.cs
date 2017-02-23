@@ -9,6 +9,7 @@ public class BarbarianUI : MonoBehaviour
 {
     public RectTransform topPanel, botPanel;
 
+    public Image healthBar;
     public Button butLeft, butForward, butRight, butBack;
     public Sprite attack, moveLeft, moveForward, moveRight, moveBack;
     public Text health;
@@ -40,6 +41,7 @@ public class BarbarianUI : MonoBehaviour
     
     public void SetHealth(int h)
     {
+        healthBar.fillAmount = (float)h / (float)Barbarian.MAX_HEALTH;
         health.text = h.ToString();
     }
 
