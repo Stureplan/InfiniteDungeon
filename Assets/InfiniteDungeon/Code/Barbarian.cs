@@ -209,8 +209,8 @@ public class Barbarian : MonoBehaviour, IDamageable<int>
 
         // Barbarian has jumped off the first platform!
         PlayAnimation("Barbarian_JumpingDown"); // TODO: Remember to LOOP to "Barbarian_JumpingLoop"!
-        StartCoroutine(Move(map.StartCell().position, 5.0f));
-        StartCoroutine(MoveCamera(map.StartCell().position + camOffset, 5.0f));
+        StartCoroutine(Move(map.StartCell().position, 1.0f));
+        StartCoroutine(MoveCamera(map.StartCell().position + camOffset, 1.0f));
     }
 
     public void StartLevel()
@@ -266,6 +266,7 @@ public class Barbarian : MonoBehaviour, IDamageable<int>
 
             yield return null;
         }
+        transform.localPosition = end;
     }
 
     private IEnumerator Rotate(Quaternion end, float time)
@@ -279,6 +280,7 @@ public class Barbarian : MonoBehaviour, IDamageable<int>
 
             yield return null;
         }
+        transform.localRotation = end;
     }
 
     private IEnumerator MoveCamera(Vector3 end, float time)
@@ -292,5 +294,7 @@ public class Barbarian : MonoBehaviour, IDamageable<int>
 
             yield return null;
         }
+        cam.transform.localPosition = end;
+
     }
 }
