@@ -11,23 +11,25 @@ public class VertexPainter : MonoBehaviour
 enum BrushMode
 {
     Painting = 0,
+    Animating,
     ErasingPaint,
+    ErasingAnimation
 }
 
 struct Brush
 {
-
-
-    public Brush(BrushMode m, float r, Color c)
+    public Brush(BrushMode m, float r, Color c, float a)
     {
         mode = m;
         radius = r;
         color = c;
+        anim = a;
     }
 
     public BrushMode mode;
     public float radius;
     public Color color;
+    public float anim;
 }
 
 struct PVertex
@@ -52,7 +54,8 @@ public class VertexPainterEditor : Editor
     Color[] paletteColors = new Color[5];
     int currentPaletteColor;
 
-
+    Transform trans;
+    Matrix4x4 matrix;
     Mesh sharedMesh;
     Color[] colors = new Color[1];
     Vector2[] uvs = new Vector2[1];
@@ -80,6 +83,8 @@ public class VertexPainterEditor : Editor
     private void OnEnable()
     {
         vp = (VertexPainter)target;
+        trans = vp.transform;
+        matrix = trans.localToWorldMatrix;
         MeshFilter mf = vp.GetComponent<MeshFilter>();
         if (mf == null) { sharedMesh = vp.GetComponent<SkinnedMeshRenderer>().sharedMesh; }
         else { sharedMesh = mf.sharedMesh; }
@@ -161,7 +166,7 @@ public class VertexPainterEditor : Editor
 
     private void SetupPainter()
     {
-        brush = new Brush(BrushMode.Painting, 0.05f, LastBrushColor());
+        brush = new Brush(BrushMode.Painting, 0.05f, LastBrushColor(), 1.0f);
         center = vp.transform.position;
         point = Vector3.zero;
         dir = Vector3.zero;
@@ -179,7 +184,7 @@ public class VertexPainterEditor : Editor
         
         if (GUI.Button(new Rect(10, 10, 130, 20), "Mode: " + brush.mode.ToString())) { CycleModes(); }
         if (GUI.Button(new Rect(10, 35, 130, 20), "Wipe Colors"))  { ResetColors(); }
-        if (GUI.Button(new Rect(10, 60, 130, 20), "Wipe Shading")) { ResetShading(); }
+        if (GUI.Button(new Rect(10, 60, 130, 20), "Wipe Animation")) { ResetAnimation(); }
         if (GUI.Button(new Rect(10, 85, 130, 20), "Flood Color")) { FloodColors(brush.color); }
         if (GUI.Button(new Rect(10, 110, 130, 20), "Add to Palette")) { UpdatePalette(brush.color, currentPaletteColor); currentPaletteColor++; if (currentPaletteColor > 4) currentPaletteColor = 0; }
 
@@ -188,11 +193,11 @@ public class VertexPainterEditor : Editor
         Event e = Event.current;
         
         #region OLD_SHADING_SYSTEM
-        /*if (e.control && !ctrlIsDown)
+        if (e.control && !ctrlIsDown)
         {
             mousePos = Event.current.mousePosition;
             mousePos.x -= 5;
-            mousePos.y -= (105 -Mathf.FloorToInt(brush.shade.a * 95.0f));
+            mousePos.y -= (105 -Mathf.FloorToInt(brush.anim * 95.0f));
 
             ctrlIsDown = true;
         }
@@ -202,8 +207,8 @@ public class VertexPainterEditor : Editor
         }
         if (ctrlIsDown)
         {
-            brush.shade.a = GUI.VerticalSlider(new Rect(mousePos, new Vector2(10, 115)), brush.shade.a, 1.0f, 0.0f);
-        }*/
+            brush.anim = GUI.VerticalSlider(new Rect(mousePos, new Vector2(10, 115)), brush.anim, 1.0f, 0.0f);
+        }
         #endregion
 
         if (e.shift && !shiftIsDown)
@@ -230,7 +235,7 @@ public class VertexPainterEditor : Editor
 
 
         /* 3D Scene GUI */
-        //if (!ctrlIsDown)
+        if (!ctrlIsDown)
         {
             Handles.color = Color.cyan;
 
@@ -249,28 +254,28 @@ public class VertexPainterEditor : Editor
             if (brush.mode == BrushMode.Painting)
             {
                 Handles.DrawLine(point, point + (dir * 0.1f));
-                Handles.CircleCap(0, center + point, rot, brush.radius);
+                Handles.CircleCap(0, point, rot, brush.radius);
             }
 
-            /*else if (brush.mode == BrushMode.Texturing)
+            else if (brush.mode == BrushMode.Animating)
             {
 
-                float a = 1 - brush.shade.a;
-                Handles.color = new Color(a, a, a, 1.0f);
+                float a = 1 - brush.anim;
+                Handles.color = Color.Lerp(Color.red, Color.white, a);
                 Handles.DrawLine(point, point + (dir * 0.1f));
-                Handles.CircleCap(0, center + point, rot, brush.radius);
-            }*/
+                Handles.CircleCap(0, point, rot, brush.radius);
+            }
 
             else if (brush.mode == BrushMode.ErasingPaint)
             {
                 Handles.DrawDottedLine(point, point + (dir * 0.1f), 5.0f);
             }
 
-            /*else if (brush.mode == BrushMode.ErasingTexture)
+            else if (brush.mode == BrushMode.ErasingAnimation)
             {
                 Handles.DrawDottedLine(point, point + (dir * 0.1f), 5.0f);
             }
-            */
+            
         }
     }
 
@@ -313,11 +318,14 @@ public class VertexPainterEditor : Editor
         {
             Mesh mesh = sharedMesh;
             int index = hit.triangleIndex * 3;
+            matrix = trans.localToWorldMatrix;
+
+            
 
             PVertex[] hits = new PVertex[3];
-            hits[0].p = mesh.vertices[mesh.triangles[index]];
-            hits[1].p = mesh.vertices[mesh.triangles[index + 1]];
-            hits[2].p = mesh.vertices[mesh.triangles[index + 2]];
+            hits[0].p = matrix.MultiplyPoint(mesh.vertices[mesh.triangles[index]]);
+            hits[1].p = matrix.MultiplyPoint(mesh.vertices[mesh.triangles[index + 1]]);
+            hits[2].p = matrix.MultiplyPoint(mesh.vertices[mesh.triangles[index + 2]]);
 
             hits[0].i = mesh.triangles[index];
             hits[1].i = mesh.triangles[index+1];
@@ -345,24 +353,24 @@ public class VertexPainterEditor : Editor
 
                 mesh.colors = colors;
             }
-            /*else if (mode == BrushMode.Texturing)
+            else if (mode == BrushMode.Animating)
             {
-                uvs[vtx].x   = brush.shade.a;
+                uvs[vtx].x   = brush.anim;
 
                 mesh.uv = uvs;
-            }*/
+            }
             else if (mode == BrushMode.ErasingPaint)
             {
                 colors[vtx]     = Color.clear;
                 
                 mesh.colors = colors;
             }
-            /*else if (mode == BrushMode.ErasingTexture)
+            else if (mode == BrushMode.ErasingAnimation)
             {
                 uvs[vtx].x     = 0.0f;
 
                 mesh.uv = uvs;
-            }*/
+            }
         }
     }
 
@@ -443,7 +451,7 @@ public class VertexPainterEditor : Editor
         sharedMesh.colors = colors;
     }
 
-    private void ResetShading()
+    private void ResetAnimation()
     {
         int vtx = uvs.Length;
         uvs = new Vector2[vtx];

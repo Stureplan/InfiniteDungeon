@@ -14,6 +14,28 @@ ModelImporter:
     100012: warlock_body_leftArm_leftHand
     100014: warlock_body_rightArm
     100016: warlock_body_rightArm_rightHand
+    100018: body_warlock
+    100020: body_warlock_head
+    100022: body_warlock_leftArm
+    100024: body_warlock_leftArm_leftHand
+    100026: body_warlock_rightArm
+    100028: body_warlock_rightArm_rightHand
+    100030: warlock_book
+    100032: default
+    100034: body
+    100036: body_head
+    100038: body_leftArm
+    100040: body_leftArm_leftHand
+    100042: body_rightArm
+    100044: body_rightArm_rightHand
+    100046: book
+    100048: body_warlock_rightArm_group2
+    100050: body_warlock_rightArm_group2_rightHand_group1
+    100052: head
+    100054: leftArm
+    100056: leftHand
+    100058: rightArm
+    100060: rightHand
     400000: book_warlock
     400002: book_warlock_paper
     400004: //RootNode
@@ -23,6 +45,28 @@ ModelImporter:
     400012: warlock_body_leftArm_leftHand
     400014: warlock_body_rightArm
     400016: warlock_body_rightArm_rightHand
+    400018: body_warlock
+    400020: body_warlock_head
+    400022: body_warlock_leftArm
+    400024: body_warlock_leftArm_leftHand
+    400026: body_warlock_rightArm
+    400028: body_warlock_rightArm_rightHand
+    400030: warlock_book
+    400032: default
+    400034: body
+    400036: body_head
+    400038: body_leftArm
+    400040: body_leftArm_leftHand
+    400042: body_rightArm
+    400044: body_rightArm_rightHand
+    400046: book
+    400048: body_warlock_rightArm_group2
+    400050: body_warlock_rightArm_group2_rightHand_group1
+    400052: head
+    400054: leftArm
+    400056: leftHand
+    400058: rightArm
+    400060: rightHand
     2300000: book_warlock
     2300002: book_warlock_paper
     2300004: warlock_body
@@ -31,6 +75,28 @@ ModelImporter:
     2300010: warlock_body_leftArm_leftHand
     2300012: warlock_body_rightArm
     2300014: warlock_body_rightArm_rightHand
+    2300016: body_warlock
+    2300018: body_warlock_head
+    2300020: body_warlock_leftArm
+    2300022: body_warlock_leftArm_leftHand
+    2300024: body_warlock_rightArm
+    2300026: body_warlock_rightArm_rightHand
+    2300028: warlock_book
+    2300030: default
+    2300032: body
+    2300034: body_head
+    2300036: body_leftArm
+    2300038: body_leftArm_leftHand
+    2300040: body_rightArm
+    2300042: body_rightArm_rightHand
+    2300044: book
+    2300046: body_warlock_rightArm_group2
+    2300048: body_warlock_rightArm_group2_rightHand_group1
+    2300050: head
+    2300052: leftArm
+    2300054: leftHand
+    2300056: rightArm
+    2300058: rightHand
     3300000: book_warlock
     3300002: book_warlock_paper
     3300004: warlock_body
@@ -39,6 +105,28 @@ ModelImporter:
     3300010: warlock_body_leftArm_leftHand
     3300012: warlock_body_rightArm
     3300014: warlock_body_rightArm_rightHand
+    3300016: body_warlock
+    3300018: body_warlock_head
+    3300020: body_warlock_leftArm
+    3300022: body_warlock_leftArm_leftHand
+    3300024: body_warlock_rightArm
+    3300026: body_warlock_rightArm_rightHand
+    3300028: warlock_book
+    3300030: default
+    3300032: body
+    3300034: body_head
+    3300036: body_leftArm
+    3300038: body_leftArm_leftHand
+    3300040: body_rightArm
+    3300042: body_rightArm_rightHand
+    3300044: book
+    3300046: body_warlock_rightArm_group2
+    3300048: body_warlock_rightArm_group2_rightHand_group1
+    3300050: head
+    3300052: leftArm
+    3300054: leftHand
+    3300056: rightArm
+    3300058: rightHand
     4300000: book_warlock
     4300002: book_warlock_paper
     4300004: warlock_body
@@ -47,8 +135,30 @@ ModelImporter:
     4300010: warlock_body_leftArm_leftHand
     4300012: warlock_body_rightArm
     4300014: warlock_body_rightArm_rightHand
+    4300016: body_warlock
+    4300018: body_warlock_head
+    4300020: body_warlock_leftArm
+    4300022: body_warlock_leftArm_leftHand
+    4300024: body_warlock_rightArm
+    4300026: body_warlock_rightArm_rightHand
+    4300028: warlock_book
+    4300030: default
+    4300032: body
+    4300034: body_head
+    4300036: body_leftArm
+    4300038: body_leftArm_leftHand
+    4300040: body_rightArm
+    4300042: body_rightArm_rightHand
+    4300044: book
+    4300046: body_warlock_rightArm_group2
+    4300048: body_warlock_rightArm_group2_rightHand_group1
+    4300050: head
+    4300052: leftArm
+    4300054: leftHand
+    4300056: rightArm
+    4300058: rightHand
   materials:
-    importMaterials: 1
+    importMaterials: 0
     materialName: 0
     materialSearch: 1
   animations:
@@ -90,7 +200,7 @@ ModelImporter:
     normalSmoothAngle: 60
     normalImportMode: 0
     tangentImportMode: 3
-  importAnimation: 1
+  importAnimation: 0
   copyAvatar: 0
   humanDescription:
     serializedVersion: 2
