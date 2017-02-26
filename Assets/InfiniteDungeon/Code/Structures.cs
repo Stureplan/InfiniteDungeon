@@ -16,7 +16,8 @@ public enum MOVE_DIR
     BACK    = 3,
 }
 
-public enum MOVE_TYPE
+// Player moves
+public enum BARBARIAN_MOVE_TYPE
 {
     MOVE,
     ATTACK,
@@ -24,10 +25,19 @@ public enum MOVE_TYPE
     FINISH
 }
 
-public enum SLIME_MOVE_TYPE
+// Generic melee mover (Slime, etc)
+public enum MELEE_MOVE_TYPE
 {
     MOVE,
     ATTACK,
+    INVALID
+}
+
+public enum WARLOCK_MOVE_TYPE
+{
+    MOVE,
+    ATTACK,
+    SPELL1,
     INVALID
 }
 

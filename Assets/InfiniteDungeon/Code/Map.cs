@@ -85,6 +85,7 @@ public class Map : MonoBehaviour
     public GameObject startPrefab;
     public GameObject endPrefab;
     public GameObject slimePrefab;
+    public GameObject warlockPrefab;
 
 
     Miner settler;
@@ -377,6 +378,17 @@ public class Map : MonoBehaviour
         a.SetupEnemy(grid[x, y]);
 
         allSceneEnemies.Add(a);
+
+        SpawnEnemy<Warlock>(warlockPrefab, grid[sizeX / 2, sizeY - 4]);
+    }
+
+    void SpawnEnemy<T>(GameObject prefab, Cell c)
+    {
+        GameObject go = Instantiate(prefab, c.position, Quaternion.identity);
+        Agent a = (Agent)go.AddComponent(typeof(T));
+        a.SetupEnemy(c);
+
+        allSceneEnemies.Add(a);    
     }
 
     public Cell StartCell()
@@ -425,12 +437,17 @@ public class Map : MonoBehaviour
         return 1;
     }
 
-    public int Distance(int x1, int y1, int x2, int y2)
+    public static int CellDistance(int x1, int y1, int x2, int y2)
     {
         // Naive Manhattan distance (bird mode)
         int d = (x2 - x1) + (y2 - y1);
 
         return Mathf.Abs(d);
+    }
+
+    public static float Distance(Cell c1, Cell c2)
+    {
+        return Mathf.Abs(Vector3.Distance(c1.position, c2.position));
     }
 
     public int TypeAtPoint(int x, int y)
@@ -506,6 +523,52 @@ public class Map : MonoBehaviour
         if (CellSafeCheck(x, y - 1) != 666) { o[3] = grid[x, y - 1].occupant; }
 
         return o;
+    }
+
+    public static bool CellsAreAlignedH(Cell[] c, int x)
+    {
+        int amount = c.Length;
+        int aligned = 0;
+
+        for (int i = 0; i < amount; i++)
+        {
+            if (c[i].x == x)
+            {
+                aligned++;
+            }
+        }
+
+        if (amount == aligned)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    public static bool CellsAreAlignedV(Cell[] c, int y)
+    {
+        int amount = c.Length;
+        int aligned = 0;
+
+        for (int i = 0; i < amount; i++)
+        {
+            if (c[i].y == y)
+            {
+                aligned++;
+            }
+        }
+
+        if (amount == aligned)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 
     public Cell RandomNeighbor(int x, int y)
@@ -774,6 +837,7 @@ public class MapEditor : Editor
 
         // Enemies
         map.slimePrefab = EditorGUILayout.ObjectField("Slime Prefab", map.slimePrefab, typeof(GameObject), false) as GameObject;
+        map.warlockPrefab = EditorGUILayout.ObjectField("Warlock Prefab", map.warlockPrefab, typeof(GameObject), false) as GameObject;
 
 
         if (GUILayout.Button("Generate"))

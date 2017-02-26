@@ -35,6 +35,8 @@ public static class FX
 
     public static void Initialize()
     {
+        //TODO: Transition into a "load once when first used, never destroy"-pattern.
+        //Important for mobile.
         slimeDeath.go = Resources.Load<GameObject>("FX/SlimeDeath");
         slimeDeath.go.transform.position = new Vector3(0.0f, hiddenHeight, 0.0f);
         slimeDeath.ps = slimeDeath.go.GetComponent<ParticleSystem>();
@@ -69,5 +71,14 @@ public static class FX
     public static void EmitNumber(Vector3 point, Color c, int number)
     {
 
+    }
+
+    public static GameObject Projectile(Vector3 point, Quaternion rot)
+    {
+        GameObject go = new GameObject("Projectile");
+        go.transform.position = point;
+        go.transform.rotation = rot;
+
+        return go;
     }
 }

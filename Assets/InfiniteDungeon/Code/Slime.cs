@@ -27,37 +27,47 @@ public class Slime : Agent
         Destroy(gameObject);
     }
 
+    public override void SetupEnemy(Cell c)
+    {
+        c.enemy = this;
+        c.occupant = 1;
+        cell = c;
+        dead = false;
+    }
+
     public override void NextTurn(int turn)
     {
-        SLIME_MOVE_TYPE type = DecideMove(turn);
+        MELEE_MOVE_TYPE type = DecideMove(turn);
         ExecuteMove(type, turn);
         VisualTurn(type, turn);
     }
 
-    public SLIME_MOVE_TYPE DecideMove(int turn)
+
+
+    public MELEE_MOVE_TYPE DecideMove(int turn)
     {
         Cell[] cells = Pathfinder.FindPath(barbarian.cell, cell);
-        SLIME_MOVE_TYPE move;
+        MELEE_MOVE_TYPE move;
 
         if (cells.Length > 1)
         {
             targetCell = cells[0];
-            move = SLIME_MOVE_TYPE.MOVE;
+            move = MELEE_MOVE_TYPE.MOVE;
         }
         else
         {
             targetCell = barbarian.cell;
-            move = SLIME_MOVE_TYPE.ATTACK;
+            move = MELEE_MOVE_TYPE.ATTACK;
         }
 
         return move;
     }
 
-    public void ExecuteMove(SLIME_MOVE_TYPE type, int turn)
+    public void ExecuteMove(MELEE_MOVE_TYPE type, int turn)
     {
         switch(type)
         {
-            case SLIME_MOVE_TYPE.MOVE:
+            case MELEE_MOVE_TYPE.MOVE:
                 cell.occupant = 0;
                 cell.enemy = null;
                 cell = targetCell;
@@ -65,32 +75,31 @@ public class Slime : Agent
                 cell.enemy = this;
                 break;
 
-            case SLIME_MOVE_TYPE.ATTACK:
-                
+            case MELEE_MOVE_TYPE.ATTACK:
                 barbarian.Damage(5);
                 break;
 
-            case SLIME_MOVE_TYPE.INVALID:
-
+            case MELEE_MOVE_TYPE.INVALID:
+                
                 break;
         }
     }
 
-    public void VisualTurn(SLIME_MOVE_TYPE type, int turn)
+    public void VisualTurn(MELEE_MOVE_TYPE type, int turn)
     {
         switch(type)
         {
-            case SLIME_MOVE_TYPE.MOVE:
+            case MELEE_MOVE_TYPE.MOVE:
                 //PlayAnimation("Slime_Move");
                 StartCoroutine(Move(cell.position, 0.2f));
                 StartCoroutine(Rotate(Helper.QDIR(cell.position - transform.position), 0.1f));
                 break;
 
-            case SLIME_MOVE_TYPE.ATTACK:
+            case MELEE_MOVE_TYPE.ATTACK:
                 //PlayAnimation("Slime_Attack");
                 break;
 
-            case SLIME_MOVE_TYPE.INVALID:
+            case MELEE_MOVE_TYPE.INVALID:
 
                 break;
         }
@@ -105,13 +114,7 @@ public class Slime : Agent
     
     private void Update() { }
 
-    public override void SetupEnemy(Cell c)
-    {
-        c.enemy = this;
-        c.occupant = 1;
-        cell = c;
-        dead = false;
-    }
+
 
     private IEnumerator Move(Vector3 end, float time)
     {

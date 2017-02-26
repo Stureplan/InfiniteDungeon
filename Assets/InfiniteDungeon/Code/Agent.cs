@@ -16,4 +16,6 @@ public class Agent : MonoBehaviour, IDamageable<int>
 
     public virtual void SetupEnemy(Cell c) { }
     public virtual void NextTurn(int turn) { }
+
+    public static int b;
 }

@@ -53,14 +53,14 @@ public class Barbarian : MonoBehaviour, IDamageable<int>
     {
         Cell c;
         MOVE_DIR dir = (MOVE_DIR)d;
-        MOVE_TYPE type = DecideMove(dir, out c);
+        BARBARIAN_MOVE_TYPE type = DecideMove(dir, out c);
         ExecuteMove(c, type);
 
-        if (type == MOVE_TYPE.INVALID) { return 666.6f; }
+        if (type == BARBARIAN_MOVE_TYPE.INVALID) { return 666.6f; }
         return VisualTurn(type, c, turn);
     }
 
-    private MOVE_TYPE DecideMove(MOVE_DIR dir, out Cell c)
+    private BARBARIAN_MOVE_TYPE DecideMove(MOVE_DIR dir, out Cell c)
     {
         switch (dir)
         {
@@ -88,57 +88,57 @@ public class Barbarian : MonoBehaviour, IDamageable<int>
         if (c == null)
         {
             // Something went wrong.
-            return MOVE_TYPE.INVALID;
+            return BARBARIAN_MOVE_TYPE.INVALID;
         }
 
         if (c.type == 666)
         {
             // Probably out of bounds.
-            return MOVE_TYPE.INVALID;
+            return BARBARIAN_MOVE_TYPE.INVALID;
         }
 
         if (c.type == 5)
         {
-            return MOVE_TYPE.FINISH;
+            return BARBARIAN_MOVE_TYPE.FINISH;
         }
 
         if (c.occupant == 1)
         {
             // Occupied tile that (can be attacked).
-            return MOVE_TYPE.ATTACK;
+            return BARBARIAN_MOVE_TYPE.ATTACK;
         }
 
         if ((c.type == 0 || c.type == 4) && c.occupant == 0)
         {
             // Empty ground tile.
-            return MOVE_TYPE.MOVE;
+            return BARBARIAN_MOVE_TYPE.MOVE;
         }
         else
         {
             // Some garbage.
-            return MOVE_TYPE.INVALID;
+            return BARBARIAN_MOVE_TYPE.INVALID;
         }
     }
 
-    private void ExecuteMove(Cell c, MOVE_TYPE type)
+    private void ExecuteMove(Cell c, BARBARIAN_MOVE_TYPE type)
     {
         switch(type)
         {
-            case MOVE_TYPE.MOVE:
+            case BARBARIAN_MOVE_TYPE.MOVE:
                 cell.occupant = 0;
                 cell = c;
                 cell.occupant = 2;
                 break;
 
-            case MOVE_TYPE.ATTACK:
+            case BARBARIAN_MOVE_TYPE.ATTACK:
                 //c.enemy.Damage(currentDamage);
                 currentAgent = c.enemy;
                 break;
 
-            case MOVE_TYPE.INVALID:
+            case BARBARIAN_MOVE_TYPE.INVALID:
                 break;
 
-            case MOVE_TYPE.FINISH:
+            case BARBARIAN_MOVE_TYPE.FINISH:
                 // TODO: Implement "Next Level"
                 break;
 
@@ -150,7 +150,7 @@ public class Barbarian : MonoBehaviour, IDamageable<int>
 
 
 
-    public float VisualTurn(MOVE_TYPE type, Cell c, int turn)
+    public float VisualTurn(BARBARIAN_MOVE_TYPE type, Cell c, int turn)
     {
         // Handle animations, effects etc.
         // Lerp to new cell.
@@ -158,18 +158,18 @@ public class Barbarian : MonoBehaviour, IDamageable<int>
 
         switch (type)
         {
-            case MOVE_TYPE.MOVE:
+            case BARBARIAN_MOVE_TYPE.MOVE:
                 PlayAnimation("Barbarian_Move");
                 StartCoroutine(Move(c.position, 0.5f));
                 StartCoroutine(MoveCamera(c.position + camOffset, 0.5f));
                 StartCoroutine(Rotate(Helper.QDIR(c.position - transform.position), 0.1f));
                 break;
-            case MOVE_TYPE.ATTACK:
+            case BARBARIAN_MOVE_TYPE.ATTACK:
                 PlayAnimation("Barbarian_Attack1");
                 StartCoroutine(Rotate(Helper.QDIR(c.position - transform.position), 0.1f));
                 break;
 
-            case MOVE_TYPE.FINISH:
+            case BARBARIAN_MOVE_TYPE.FINISH:
                 //Here goes jump down animations and map lerps
                 break;
 
@@ -231,7 +231,6 @@ public class Barbarian : MonoBehaviour, IDamageable<int>
 
 
         map.Generate(); // <-- initiates the animation sequence
-
         //cell = map.StartCell();
 
         //ui.FadePanelsIn();
