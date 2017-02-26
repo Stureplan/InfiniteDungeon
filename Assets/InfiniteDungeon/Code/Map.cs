@@ -379,8 +379,8 @@ public class Map : MonoBehaviour
 
         allSceneEnemies.Add(a);*/
 
-        SpawnEnemy<Slime>(slimePrefab, grid[(sizeX / 2) - 1, sizeY - 2]);
-        SpawnEnemy<Warlock>(warlockPrefab, grid[sizeX / 2, sizeY - 4]);
+        //SpawnEnemy<Slime>(slimePrefab, grid[(sizeX / 2) - 1, sizeY - 2]);
+        SpawnEnemy<Warlock>(warlockPrefab, grid[sizeX / 2, sizeY - 3]);
     }
 
     void SpawnEnemy<T>(GameObject prefab, Cell c)

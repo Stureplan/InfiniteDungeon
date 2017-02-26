@@ -90,7 +90,14 @@ public class Warlock : Agent
                 break;
 
             case WARLOCK_MOVE_TYPE.SPELL1:
-                GameObject go = FX.Projectile(transform.position + Vector3.one / 2, Quaternion.LookRotation((targetCell.position - cell.position).normalized));
+                Vector3 dir = targetCell.position - cell.position;
+                Quaternion rot = Quaternion.identity;
+                if (dir.magnitude > 0.001f)
+                {
+                    Quaternion.LookRotation((targetCell.position - cell.position).normalized);
+                }
+
+                GameObject go = FX.Projectile(transform.position + Vector3.one / 2, rot);
                 go.AddComponent<ShadowBolt>().Init(targetCell, Map.Distance(cell, targetCell));
                 break;
 
@@ -112,8 +119,8 @@ public class Warlock : Agent
 
             case WARLOCK_MOVE_TYPE.ATTACK:
                 Debug.Log("Attack");
-                PlayAnimation("Warlock_Move");
-                StartCoroutine(Rotate(Helper.QDIR(cell.position - transform.position), 0.1f));
+                PlayAnimation("Warlock_Attack");
+                StartCoroutine(Rotate(Helper.QDIR(targetCell.position - transform.position), 0.1f));
                 break;
 
             case WARLOCK_MOVE_TYPE.SPELL1:

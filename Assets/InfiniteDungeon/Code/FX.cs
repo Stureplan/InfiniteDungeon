@@ -16,15 +16,22 @@ public static class FX
         public bool spawned;
     }
 
-    // The object to use.
-    static GameObject fx;
+    struct PROJECTILE
+    {
+        public PROJECTILE(GameObject go, bool s)
+        {
+            prefab = go;
+            spawned = s;
+        }
+
+        public GameObject prefab;
+        public bool spawned;
+    }
 
     // All these need to be World space to work.
-    static ParticleSystem fireball;
-    static ParticleSystem frostbolt;
-    static ParticleSystem blood01;
-    static ParticleSystem blood02;
     static PS slimeDeath;
+
+    static PROJECTILE shadowBolt = new PROJECTILE(null, false);
 
     static float hiddenHeight = -1000.0f;
 
@@ -63,9 +70,16 @@ public static class FX
 
     }
 
-    public static GameObject Projectile(Vector3 point, Quaternion rot)
-    {
-        GameObject go = new GameObject("Projectile");
+    public static GameObject ShadowBolt(Vector3 point, Quaternion rot)
+    {        
+        if (!shadowBolt.spawned)
+        {
+            shadowBolt.prefab = Resources.Load<GameObject>("FX/ShadowBolt");
+            shadowBolt.spawned = true;
+        }
+
+        GameObject go = GameObject.Instantiate(shadowBolt.prefab);
+        go.name = "ShadowBolt";
         go.transform.position = point;
         go.transform.rotation = rot;
 
