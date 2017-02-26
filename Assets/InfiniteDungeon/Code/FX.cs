@@ -6,11 +6,7 @@ public static class FX
 {
     public enum VFX
     {
-        Fireball = 0,
-        Frostbolt,
-        Blood01,
-        Blood02,
-        SlimeDeath
+        SlimeDeath = 0
     }
 
     struct PS
@@ -22,7 +18,6 @@ public static class FX
 
     // The object to use.
     static GameObject fx;
-    static ParticleSystem ps;
 
     // All these need to be World space to work.
     static ParticleSystem fireball;
@@ -47,11 +42,6 @@ public static class FX
     {
         switch (VFX)
         {
-            case VFX.Fireball:
-                ps = fireball;
-
-                break;
-
             case VFX.SlimeDeath:
                 // Hasn't been spawned yet.
                 if (slimeDeath.spawned == false)

@@ -372,13 +372,14 @@ public class Map : MonoBehaviour
         x = sizeX / 2; y = sizeY - 2;
 
         //Instnatitae..
-        Vector3 pos = new Vector3((x - sizeX / 2) * space, 0, (y - sizeY / 2) * space);
+        /*Vector3 pos = new Vector3((x - sizeX / 2) * space, 0, (y - sizeY / 2) * space);
         GameObject go = Instantiate(slimePrefab, pos, Quaternion.identity);
         Agent a = go.AddComponent<Slime>();
         a.SetupEnemy(grid[x, y]);
 
-        allSceneEnemies.Add(a);
+        allSceneEnemies.Add(a);*/
 
+        SpawnEnemy<Slime>(slimePrefab, grid[(sizeX / 2) - 1, sizeY - 2]);
         SpawnEnemy<Warlock>(warlockPrefab, grid[sizeX / 2, sizeY - 4]);
     }
 
@@ -532,7 +533,7 @@ public class Map : MonoBehaviour
 
         for (int i = 0; i < amount; i++)
         {
-            if (c[i].x == x)
+            if (c[i].x == x && c[i].occupant != 1)
             {
                 aligned++;
             }
@@ -555,7 +556,7 @@ public class Map : MonoBehaviour
 
         for (int i = 0; i < amount; i++)
         {
-            if (c[i].y == y)
+            if (c[i].y == y && c[i].occupant != 1)
             {
                 aligned++;
             }

@@ -47,7 +47,6 @@ public class VertexPainterEditor : Editor
 
     // Scene
     Brush brush;
-    Vector3 center;
     Vector3 point;
     Vector3 dir;
     Texture2D palette;
@@ -167,7 +166,6 @@ public class VertexPainterEditor : Editor
     private void SetupPainter()
     {
         brush = new Brush(BrushMode.Painting, 0.05f, LastBrushColor(), 1.0f);
-        center = vp.transform.position;
         point = Vector3.zero;
         dir = Vector3.zero;
     }
