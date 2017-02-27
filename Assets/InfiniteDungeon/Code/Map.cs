@@ -368,8 +368,8 @@ public class Map : MonoBehaviour
 
     void SpawnEnemies()
     {
-        int x, y;
-        x = sizeX / 2; y = sizeY - 2;
+        //int x, y;
+        //x = sizeX / 2; y = sizeY - 2;
 
         //Instnatitae..
         /*Vector3 pos = new Vector3((x - sizeX / 2) * space, 0, (y - sizeY / 2) * space);
