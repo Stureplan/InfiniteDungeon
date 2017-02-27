@@ -19,14 +19,14 @@ public static class FX
 
     struct PROJECTILE
     {
-        public PROJECTILE(GameObject go, bool s)
+        public PROJECTILE(GameObject go, bool l)
         {
             prefab = go;
-            spawned = s;
+            loaded = l;
         }
 
         public GameObject prefab;
-        public bool spawned;
+        public bool loaded;
     }
 
     // All these need to be World space to work.
@@ -78,7 +78,7 @@ public static class FX
                 {
                     // Spawn and assign.
                     shadowBoltHit.go = GameObject.Instantiate(shadowBoltHit.go);
-                    shadowBoltHit.ps = shadowBoltHit.go.GetComponent<ParticleSystem>();
+                    shadowBoltHit.ps = shadowBoltHit.go.GetComponentInChildren<ParticleSystem>();
                     shadowBoltHit.spawned = true;
                 }
 
@@ -97,10 +97,10 @@ public static class FX
 
     public static GameObject ShadowBolt(Vector3 point, Quaternion rot)
     {        
-        if (!shadowBolt.spawned)
+        if (!shadowBolt.loaded)
         {
             shadowBolt.prefab = Resources.Load<GameObject>("FX/ShadowBolt");
-            shadowBolt.spawned = true;
+            shadowBolt.loaded = true;
         }
 
         GameObject go = GameObject.Instantiate(shadowBolt.prefab);

@@ -33,7 +33,20 @@ public class ShadowBolt : MonoBehaviour
         if (cDist < 0.1f)
         {
             //hit
-            Debug.Log("Shadow Bolt Hit");
+
+            FX.Emit(transform.position, transform.rotation, FX.VFX.ShadowBoltHit, 50);
+            Barbarian.FindBarbarian().Damage(10);
+
+            ParticleSystem ps = GetComponentInChildren<ParticleSystem>();
+            Transform tr = GetComponentInChildren<TrailRenderer>().transform;
+            ParticleSystem.EmissionModule em = ps.emission;
+            em.enabled = false;
+            
+            tr.SetParent(null, true);
+            ps.transform.SetParent(tr, true);
+
+            Destroy(tr.gameObject, 0.5f);
+            Destroy(gameObject);
         }
     }
 }
