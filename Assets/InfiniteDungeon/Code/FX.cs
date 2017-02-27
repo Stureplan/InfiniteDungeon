@@ -6,7 +6,8 @@ public static class FX
 {
     public enum VFX
     {
-        SlimeDeath = 0
+        SlimeDeath = 0,
+        ShadowBoltHit
     }
 
     struct PS
@@ -30,6 +31,8 @@ public static class FX
 
     // All these need to be World space to work.
     static PS slimeDeath;
+    static PS shadowBoltHit;
+
 
     static PROJECTILE shadowBolt = new PROJECTILE(null, false);
 
@@ -41,8 +44,11 @@ public static class FX
         //Important for mobile.
         slimeDeath.go = Resources.Load<GameObject>("FX/SlimeDeath");
         slimeDeath.go.transform.position = new Vector3(0.0f, hiddenHeight, 0.0f);
-        slimeDeath.ps = slimeDeath.go.GetComponent<ParticleSystem>();
         slimeDeath.spawned = false;
+
+        shadowBoltHit.go = Resources.Load<GameObject>("FX/ShadowBoltHit");
+        shadowBoltHit.go.transform.position = new Vector3(0.0f, hiddenHeight, 0.0f);
+        shadowBoltHit.spawned = false;
     }
 
     public static void Emit(Vector3 point, Quaternion rotation, VFX VFX, int amount)
@@ -54,13 +60,32 @@ public static class FX
                 if (slimeDeath.spawned == false)
                 {
                     // Spawn and assign.
+                    //TODO: Move "Resources.Load" into here ---V
                     slimeDeath.go = GameObject.Instantiate(slimeDeath.go);
+                    slimeDeath.ps = slimeDeath.go.GetComponent<ParticleSystem>();
                     slimeDeath.spawned = true;
                 }
 
                 slimeDeath.go.transform.localPosition = point;
                 slimeDeath.go.transform.localRotation = rotation;
                 slimeDeath.ps.Emit(amount);
+
+                break;
+
+            case VFX.ShadowBoltHit:
+                // Hasn't been spawned yet.
+                if (shadowBoltHit.spawned == false)
+                {
+                    // Spawn and assign.
+                    shadowBoltHit.go = GameObject.Instantiate(shadowBoltHit.go);
+                    shadowBoltHit.ps = shadowBoltHit.go.GetComponent<ParticleSystem>();
+                    shadowBoltHit.spawned = true;
+                }
+
+                shadowBoltHit.go.transform.localPosition = point;
+                shadowBoltHit.go.transform.localRotation = rotation;
+                shadowBoltHit.ps.Emit(amount);
+
                 break;
         }
     }

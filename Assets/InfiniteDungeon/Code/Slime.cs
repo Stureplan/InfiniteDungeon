@@ -19,7 +19,7 @@ public class Slime : Agent
     public override void Kill()
     {
         // Spawn death effect
-        FX.Emit(transform.position + new Vector3(0, 0.5f, 0), Quaternion.identity, FX.VFX.SlimeDeath, 15);
+        FX.Emit(transform.localPosition + new Vector3(0, 0.5f, 0), Quaternion.identity, FX.VFX.SlimeDeath, 30);
 
         cell.occupant = 0;
         cell.enemy = null;

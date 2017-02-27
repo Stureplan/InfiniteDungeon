@@ -35,6 +35,7 @@ public class Barbarian : MonoBehaviour, IDamageable<int>
     {
         currentHealth -= damage;
         ui.SetHealth(currentHealth);
+        ui.FloatingDamageText(damage);
         if (currentHealth < 1) { Kill(); }
     }
 
@@ -154,7 +155,7 @@ public class Barbarian : MonoBehaviour, IDamageable<int>
     {
         // Handle animations, effects etc.
         // Lerp to new cell.
-        float r = 0.5f;
+        float r = Game.BARBARIAN_TIMER;
 
         switch (type)
         {

@@ -5,6 +5,9 @@ using UnityEngine;
 
 public class Game : MonoBehaviour
 {
+    public const float ENEMY_TIMER = 0.2f;
+    public const float BARBARIAN_TIMER = 0.2f;
+
     static bool TURN_READY = true;
 
     Map map;
@@ -42,7 +45,7 @@ public class Game : MonoBehaviour
             if (timer > 665.0f) { Debug.LogWarning("Timer was " + timer); return; }
 
             TURN_READY = false;
-            StartCoroutine(Waiter(timer));
+            StartCoroutine(BarbarianWaiter(timer));
         }
     }
 
@@ -55,14 +58,9 @@ public class Game : MonoBehaviour
             enemies[i].NextTurn(turn);
         }
 
-        // Turn count up.
-        turn++;
-
-        // Turn is ready for Player input again.
-        TURN_READY = true;
     }
 
-    IEnumerator Waiter(float timer)
+    IEnumerator BarbarianWaiter(float timer)
     {
         float t = 0.0f;
 
@@ -73,9 +71,31 @@ public class Game : MonoBehaviour
             yield return null;
         }
 
-        //execute
+        //Enemy turn
         ExecuteEnemyTurn();
         barbarian.CheckSurroundings();
+
+        //Wait for enemies
+        StartCoroutine(EnemyWaiter(ENEMY_TIMER));
+    }
+
+    IEnumerator EnemyWaiter(float timer)
+    {
+        float t = 0.0f;
+
+        while (t < timer)
+        {
+            t += Time.deltaTime;
+
+            yield return null;
+        }
+
+
+        // Turn count up.
+        turn++;
+
+        // Turn is ready for Player input again.
+        TURN_READY = true;
     }
 
 

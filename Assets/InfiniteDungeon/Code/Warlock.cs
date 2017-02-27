@@ -97,8 +97,8 @@ public class Warlock : Agent
                     rot = Quaternion.LookRotation(dir);
                 }
 
-                GameObject go = FX.ShadowBolt(transform.position + Vector3.one / 2, rot);
-                go.AddComponent<ShadowBolt>().Init(targetCell, Map.Distance(cell, targetCell));
+                GameObject go = FX.ShadowBolt(transform.position + new Vector3(0, 0.5f, 0), rot);
+                go.AddComponent<ShadowBolt>().Init(targetCell);
                 break;
 
             case WARLOCK_MOVE_TYPE.INVALID:
