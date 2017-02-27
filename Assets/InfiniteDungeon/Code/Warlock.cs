@@ -124,10 +124,8 @@ public class Warlock : Agent
                 break;
 
             case WARLOCK_MOVE_TYPE.SPELL1:
-                Debug.Log("Spell");
-                PlayAnimation("Warlock_Move");
+                PlayAnimation("Warlock_Spell1");
                 StartCoroutine(Rotate(Helper.QDIR(targetCell.position - transform.position), 0.1f));
-                //PlayAnimation("Warlock_Spell1");
                 break;
 
             case WARLOCK_MOVE_TYPE.INVALID:

@@ -49,7 +49,6 @@ public class BarbarianUI : MonoBehaviour
 
     public void FloatingDamageText(int dmg)
     {
-        Debug.Log(dmg);
         damageText.text = (-dmg).ToString();
         damageTextAnim.Stop();
         damageTextAnim.Play("CombatText1");
