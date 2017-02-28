@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Slime : Agent
 {
+    private Animation animations;
+
     Cell targetCell;
 
     public override void Damage(int damage)
@@ -18,12 +20,18 @@ public class Slime : Agent
 
     public override void Kill()
     {
-        // Spawn death effect
-        FX.Emit(transform.localPosition + new Vector3(0, 0.5f, 0), Quaternion.identity, FX.VFX.SlimeDeath, 30);
-
         cell.occupant = 0;
         cell.enemy = null;
         Game.RemoveEnemy(this);
+        //Destroy(gameObject);
+
+        PlayAnimation("Slime_Death");
+    }
+
+    public void VisualDeath()
+    {
+        // Spawn death effect
+        FX.Emit(transform.localPosition + new Vector3(0, 0.5f, 0), Quaternion.identity, FX.VFX.SlimeDeath, 30);
         Destroy(gameObject);
     }
 
@@ -90,7 +98,7 @@ public class Slime : Agent
         switch(type)
         {
             case MELEE_MOVE_TYPE.MOVE:
-                //PlayAnimation("Slime_Move");
+                PlayAnimation("Slime_Move");
                 StartCoroutine(Move(cell.position, 0.2f));
                 StartCoroutine(Rotate(Helper.QDIR(cell.position - transform.position), 0.1f));
                 break;
@@ -105,11 +113,19 @@ public class Slime : Agent
         }
     }
 
+    private void PlayAnimation(string anim)
+    {
+        animations.Stop();
+        animations.Play(anim);
+    }
+
 
     private void Start()
     {
         map = Map.FindMap();
         barbarian = Barbarian.FindBarbarian();
+        animations = GetComponent<Animation>();
+        PlayAnimation("Slime_Idle");
     }
     
     private void Update() { }
