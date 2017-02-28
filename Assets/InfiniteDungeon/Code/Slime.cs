@@ -99,12 +99,13 @@ public class Slime : Agent
         {
             case MELEE_MOVE_TYPE.MOVE:
                 PlayAnimation("Slime_Move");
-                StartCoroutine(Move(cell.position, 0.2f));
-                StartCoroutine(Rotate(Helper.QDIR(cell.position - transform.position), 0.1f));
+                StartCoroutine(Move(targetCell.position, 0.2f));
+                StartCoroutine(Rotate(Helper.QDIR(targetCell.position - transform.position), 0.1f));
                 break;
 
             case MELEE_MOVE_TYPE.ATTACK:
-                //PlayAnimation("Slime_Attack");
+                PlayAnimation("Slime_Attack");
+                StartCoroutine(Rotate(Helper.QDIR(targetCell.position - transform.position), 0.1f));
                 break;
 
             case MELEE_MOVE_TYPE.INVALID:

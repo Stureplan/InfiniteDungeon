@@ -90,16 +90,9 @@ public class Warlock : Agent
                 break;
 
             case WARLOCK_MOVE_TYPE.SPELL1:
-                Vector3 dir = (targetCell.position - cell.position).normalized;
-                Quaternion rot = Quaternion.identity;
-                if (dir.magnitude > 0.001f)
-                {
-                    rot = Quaternion.LookRotation(dir);
-                }
-
-                GameObject go = FX.ShadowBolt(transform.position + new Vector3(0, 0.5f, 0), rot);
+                GameObject go = FX.ShadowBolt(transform.position + new Vector3(0, 0.5f, 0), Quaternion.LookRotation((targetCell.position-cell.position).normalized));
                 go.AddComponent<ShadowBolt>().Init(targetCell);
-                break;
+                break;  
 
             case WARLOCK_MOVE_TYPE.INVALID:
 
