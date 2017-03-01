@@ -35,6 +35,17 @@ public class VLight : MonoBehaviour
         //TODO: Add Cookie child object, rotated towards cam
     }
 
+    private void OnDestroy()
+    {
+        Hide();
+    }
+
+    public void Hide()
+    {
+        transform.position = Game.HIDDEN;
+        UpdateShaders();
+    }
+
     public void UpdateShaderNames()
     {
         shaderPos = "GLOBAL_LIGHT_POS_" + index;

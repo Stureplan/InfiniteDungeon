@@ -36,18 +36,16 @@ public static class FX
 
     static PROJECTILE shadowBolt = new PROJECTILE(null, false);
 
-    static float hiddenHeight = -1000.0f;
-
     public static void Initialize()
     {
         //TODO: Transition into a "load once when first used, never destroy"-pattern.
         //Important for mobile.
         slimeDeath.go = Resources.Load<GameObject>("FX/SlimeDeath");
-        slimeDeath.go.transform.position = new Vector3(0.0f, hiddenHeight, 0.0f);
+        slimeDeath.go.transform.position = Game.HIDDEN;
         slimeDeath.spawned = false;
 
         shadowBoltHit.go = Resources.Load<GameObject>("FX/ShadowBoltHit");
-        shadowBoltHit.go.transform.position = new Vector3(0.0f, hiddenHeight, 0.0f);
+        shadowBoltHit.go.transform.position = Game.HIDDEN;
         shadowBoltHit.spawned = false;
     }
 

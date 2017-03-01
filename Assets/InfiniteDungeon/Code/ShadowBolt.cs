@@ -45,6 +45,8 @@ public class ShadowBolt : MonoBehaviour
             tr.SetParent(null, true);
             ps.transform.SetParent(tr, true);
 
+            GetComponentInChildren<VLight>().Hide();
+
             Destroy(tr.gameObject, 0.5f);
             Destroy(gameObject);
         }
