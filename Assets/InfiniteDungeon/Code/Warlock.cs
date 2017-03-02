@@ -155,7 +155,7 @@ public class Warlock : Agent
         {
             transform.localPosition = Vector3.Lerp(transform.localPosition, end, t / time);
             t += Time.deltaTime;
-
+            
             yield return null;
         }
     }

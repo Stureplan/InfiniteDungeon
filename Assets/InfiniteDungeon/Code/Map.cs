@@ -79,6 +79,8 @@ public class Map : MonoBehaviour
     public bool randomSeed = false;
 
     Cell[,] grid;
+    Cell[] openCells;
+    int enemyAmount = 10;
     Texture2D minimap;
     public GameObject[] groundPrefabs = new GameObject[2];
     public GameObject[] mountainPrefabs = new GameObject[3];
@@ -127,6 +129,8 @@ public class Map : MonoBehaviour
                 //Destroy(children[i].gameObject);
             }
         }
+
+        openCells = new Cell[0];
     }
 
 	public void Generate()
@@ -158,7 +162,7 @@ public class Map : MonoBehaviour
         SpawnEnemies();
 
         CreateMinimap();
-
+        
         /*if (animateLevel == true)
         {
             // TODO: Move into place
@@ -303,6 +307,7 @@ public class Map : MonoBehaviour
                     c.transform.SetParent(transform, false);
 
                     allSceneObjects.Add(c);
+                    ArrayUtility.Add(ref openCells, grid[x,y]);
                 }
                 if (grid[x, y].type == 1)
                 {
@@ -378,9 +383,13 @@ public class Map : MonoBehaviour
         a.SetupEnemy(grid[x, y]);
 
         allSceneEnemies.Add(a);*/
+        for (int i = 0; i < enemyAmount; i++)
+        {
+            int r = RNG.Range(0, openCells.Length);
 
-        SpawnEnemy<Warlock>(warlockPrefab, grid[(sizeX / 2) - 1, sizeY - 5]);
-        SpawnEnemy<Slime>(slimePrefab, grid[(sizeX / 2) + 2, sizeY - 2]);
+            SpawnEnemy<Warlock>(warlockPrefab, openCells[r]);
+            ArrayUtility.RemoveAt(ref openCells, r);
+        }
 
         //SpawnEnemy<Warlock>(warlockPrefab, grid[sizeX / 2, sizeY - 3]);
     }
