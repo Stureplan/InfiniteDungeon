@@ -30,15 +30,6 @@
 				fixed4 color : COLOR;
 			};
 
-			struct vlight
-			{
-				fixed4 LIGHT_POS;
-				fixed4 LIGHT_COL;
-				fixed  LIGHT_RANGE;
-			};
-
-			vlight allLights[4];
-
 			fixed4 GLOBAL_LIGHT_POS_0 = fixed4(0, 500, 0, 0);
 			fixed4 GLOBAL_LIGHT_POS_1 = fixed4(0, 500, 0, 0);
 			fixed4 GLOBAL_LIGHT_POS_2 = fixed4(0, 500, 0, 0);

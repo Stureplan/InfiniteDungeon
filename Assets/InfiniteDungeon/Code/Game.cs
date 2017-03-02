@@ -6,6 +6,8 @@ using UnityEngine;
 public class Game : MonoBehaviour
 {
     public static readonly Vector3 HIDDEN = new Vector3(0.0f, -1000.0f, 0.0f);
+    public static readonly Vector3 HALF_Y = new Vector3(0.0f, 0.5f, 0.0f);
+
     public const float ENEMY_TIMER = 0.2f;
     public const float BARBARIAN_TIMER = 0.2f;
     static bool TURN_READY = true;

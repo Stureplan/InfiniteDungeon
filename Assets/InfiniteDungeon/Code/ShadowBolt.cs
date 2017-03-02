@@ -19,7 +19,7 @@ public class ShadowBolt : MonoBehaviour
     {
         direction = transform.forward;
         targetCell = t;
-        targetPos = targetCell.position + new Vector3(0, 0.5f, 0);
+        targetPos = targetCell.position + Game.HALF_Y;
 
         distance = Vector3.Distance(transform.position, targetPos);
         speed = distance / TIME;

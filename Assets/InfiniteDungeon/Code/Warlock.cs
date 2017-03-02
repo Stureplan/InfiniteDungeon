@@ -24,7 +24,9 @@ public class Warlock : Agent
         cell.occupant = 0;
         cell.enemy = null;
         Game.RemoveEnemy(this);
-        Destroy(gameObject);
+
+        PlayAnimation("Warlock_Death");
+        StartCoroutine(DelayedDestruction(animations.GetClip("Warlock_Death").length));
     }
 
     public override void SetupEnemy(Cell c)
@@ -90,7 +92,7 @@ public class Warlock : Agent
                 break;
 
             case WARLOCK_MOVE_TYPE.SPELL1:
-                GameObject go = FX.ShadowBolt(transform.position + new Vector3(0, 0.5f, 0), Quaternion.LookRotation((targetCell.position-cell.position).normalized));
+                GameObject go = FX.ShadowBolt(transform.position + Game.HALF_Y, Quaternion.LookRotation((targetCell.position-cell.position).normalized));
                 go.AddComponent<ShadowBolt>().Init(targetCell);
                 break;  
 
@@ -167,5 +169,21 @@ public class Warlock : Agent
 
             yield return null;
         }
+    }
+
+    private IEnumerator DelayedDestruction(float time)
+    {
+        float t = 0.0f;
+
+        while (t < time)
+        {
+            t += Time.deltaTime;
+
+            yield return null;
+        }
+        //FX.Emit(transform.localPosition + Game.HALF_Y, Quaternion.identity, FX.VFX.Bats, 15);
+
+        Destroy(gameObject);
+
     }
 }

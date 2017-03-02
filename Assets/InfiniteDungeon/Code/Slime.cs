@@ -26,13 +26,7 @@ public class Slime : Agent
         //Destroy(gameObject);
 
         PlayAnimation("Slime_Death");
-    }
-
-    public void VisualDeath()
-    {
-        // Spawn death effect
-        FX.Emit(transform.localPosition + new Vector3(0, 0.5f, 0), Quaternion.identity, FX.VFX.SlimeDeath, 30);
-        Destroy(gameObject);
+        StartCoroutine(DelayedDestruction(animations.GetClip("Slime_Death").length));
     }
 
     public override void SetupEnemy(Cell c)
@@ -157,5 +151,21 @@ public class Slime : Agent
 
             yield return null;
         }
+    }
+
+    private IEnumerator DelayedDestruction(float time)
+    {
+        float t = 0.0f;
+
+        while (t < time)
+        {
+            t += Time.deltaTime;
+
+            yield return null;
+        }
+
+        FX.Emit(transform.localPosition + Game.HALF_Y, Quaternion.identity, FX.VFX.SlimeDeath, 30);
+        Destroy(gameObject);
+
     }
 }
