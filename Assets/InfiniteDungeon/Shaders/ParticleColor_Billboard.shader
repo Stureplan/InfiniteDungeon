@@ -11,7 +11,13 @@
 
 	SubShader
 	{
-		Tags{ "Queue" = "Transparent" "IgnoreProjector" = "True" "RenderType" = "Transparent" "PreviewType" = "Plane"}
+		Tags
+		{ 
+			"Queue" = "Overlay" 
+			"IgnoreProjector" = "True" 
+			"RenderType" = "Transparent" 
+			"PreviewType" = "Plane"
+		}
 
 		Blend SrcAlpha One
 		Cull Off Lighting Off ZWrite Off
