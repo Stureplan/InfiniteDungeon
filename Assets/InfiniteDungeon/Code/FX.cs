@@ -7,14 +7,15 @@ public static class FX
     public enum VFX
     {
         SlimeDeath = 0,
-        ShadowBoltHit
+        ShadowBoltHit,
+        Bats
     }
 
     struct PS
     {
         public GameObject go;
         public ParticleSystem ps;
-        public bool spawned;
+        public bool loaded;
     }
 
     struct PROJECTILE
@@ -32,6 +33,7 @@ public static class FX
     // All these need to be World space to work.
     static PS slimeDeath;
     static PS shadowBoltHit;
+    static PS bats;
 
 
     static PROJECTILE shadowBolt = new PROJECTILE(null, false);
@@ -42,11 +44,13 @@ public static class FX
         //Important for mobile.
         slimeDeath.go = Resources.Load<GameObject>("FX/SlimeDeath");
         slimeDeath.go.transform.position = Game.HIDDEN;
-        slimeDeath.spawned = false;
+        slimeDeath.loaded = false;
 
         shadowBoltHit.go = Resources.Load<GameObject>("FX/ShadowBoltHit");
         shadowBoltHit.go.transform.position = Game.HIDDEN;
-        shadowBoltHit.spawned = false;
+        shadowBoltHit.loaded = false;
+
+        bats.loaded = false;
     }
 
     public static void Emit(Vector3 point, Quaternion rotation, VFX VFX, int amount)
@@ -55,13 +59,13 @@ public static class FX
         {
             case VFX.SlimeDeath:
                 // Hasn't been spawned yet.
-                if (slimeDeath.spawned == false)
+                if (slimeDeath.loaded == false)
                 {
                     // Spawn and assign.
                     //TODO: Move "Resources.Load" into here ---V
                     slimeDeath.go = GameObject.Instantiate(slimeDeath.go);
                     slimeDeath.ps = slimeDeath.go.GetComponent<ParticleSystem>();
-                    slimeDeath.spawned = true;
+                    slimeDeath.loaded = true;
                 }
 
                 slimeDeath.go.transform.localPosition = point;
@@ -72,17 +76,33 @@ public static class FX
 
             case VFX.ShadowBoltHit:
                 // Hasn't been spawned yet.
-                if (shadowBoltHit.spawned == false)
+                if (shadowBoltHit.loaded == false)
                 {
                     // Spawn and assign.
+
                     shadowBoltHit.go = GameObject.Instantiate(shadowBoltHit.go);
                     shadowBoltHit.ps = shadowBoltHit.go.GetComponentInChildren<ParticleSystem>();
-                    shadowBoltHit.spawned = true;
+                    shadowBoltHit.loaded = true;
                 }
 
                 shadowBoltHit.go.transform.localPosition = point;
                 shadowBoltHit.go.transform.localRotation = rotation;
                 shadowBoltHit.ps.Emit(amount);
+
+                break;
+
+            case VFX.Bats:
+                if (bats.loaded == false)
+                {
+                    bats.go = Resources.Load<GameObject>("FX/Bats");
+                    bats.go = GameObject.Instantiate(bats.go);
+                    bats.ps = bats.go.GetComponent<ParticleSystem>();
+                    bats.loaded = true;
+                }
+
+                bats.go.transform.localPosition = point;
+                bats.go.transform.localRotation = rotation;
+                bats.ps.Play();
 
                 break;
         }

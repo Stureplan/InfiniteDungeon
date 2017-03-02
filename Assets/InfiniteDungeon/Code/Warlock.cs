@@ -26,6 +26,8 @@ public class Warlock : Agent
         Game.RemoveEnemy(this);
 
         PlayAnimation("Warlock_Death");
+        FX.Emit(transform.localPosition + Game.HALF_Y, Quaternion.identity, FX.VFX.Bats, 15);
+
         StartCoroutine(DelayedDestruction(animations.GetClip("Warlock_Death").length));
     }
 
@@ -181,7 +183,6 @@ public class Warlock : Agent
 
             yield return null;
         }
-        //FX.Emit(transform.localPosition + Game.HALF_Y, Quaternion.identity, FX.VFX.Bats, 15);
 
         Destroy(gameObject);
 
