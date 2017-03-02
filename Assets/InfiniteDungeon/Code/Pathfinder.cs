@@ -72,7 +72,7 @@ public static class Pathfinder
 
             foreach (Cell neighbor in map.Neighbors(currentCell))
             {
-                if (neighbor.type != 0 || closedSet.Contains(neighbor))
+                if (neighbor.type != 0 || closedSet.Contains(neighbor) || neighbor.occupant == 1)
                 {
                     continue;
                 }

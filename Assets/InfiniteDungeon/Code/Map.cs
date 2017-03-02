@@ -544,7 +544,7 @@ public class Map : MonoBehaviour
 
         for (int i = 0; i < amount; i++)
         {
-            if (c[i].x == x && c[i].occupant != 1)
+            if (c[i].x == x && c[i].occupant == 0)
             {
                 aligned++;
             }
@@ -567,7 +567,7 @@ public class Map : MonoBehaviour
 
         for (int i = 0; i < amount; i++)
         {
-            if (c[i].y == y && c[i].occupant != 1)
+            if (c[i].y == y && c[i].occupant == 0)
             {
                 aligned++;
             }

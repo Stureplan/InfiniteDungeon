@@ -5,7 +5,7 @@ public class Cell
 {
     public int type;            //TYPES: 0 = Empty, 
     public Vector3 position;    //TYPES: 1 = Obstacle I, 2 = Obstacle II, 3 = Obstacle III,
-    public int x, y;            //TYPES: 4 = Start, 5 = End
+    public int x, y;            //TYPES: 4 = Start, 5 = End         TODO: Remove 4=Start 5=End, make everything 0=Empty
     public int occupant;        //OCCUPANTS: 0 = Empty, 1 = Enemy, 2 = Player
 
     public int destructible;    //1 = Will be stomped and destroyed when used: 
