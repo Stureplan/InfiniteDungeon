@@ -278,8 +278,8 @@ public class Map : MonoBehaviour
             SetCell(sizeX / 2, y, 0);
         }
 
-        SetCell(sizeX / 2, 0, 4);
-        SetCell(sizeX / 2, sizeY-1, 5);
+        SetCell(sizeX / 2, 0, 0);
+        SetCell(sizeX / 2, sizeY-1, 0);
     }
 
     void SpawnPrefabs()
@@ -388,6 +388,7 @@ public class Map : MonoBehaviour
             }
 
             ArrayUtility.RemoveAt(ref openCells, r);
+            int b = 1;
         }
 
     }

@@ -111,7 +111,7 @@ public class Slime : Agent
     public void CauldronVisualSpawn(Cell c)
     {
         anim.PlayAnimation("Slime_Jump");
-        StartCoroutine(Move(c.position, 1.0f));
+        StartCoroutine(Move(c.position, 0.2f));
         StartCoroutine(Rotate(Helper.QDIR(c.position - transform.position), 0.2f));
     }
 
