@@ -33,6 +33,13 @@ public enum MELEE_MOVE_TYPE
     INVALID
 }
 
+public enum BUILDING_MOVE_TYPE
+{
+    NOTHING,
+    SPAWN,
+    INVALID
+}
+
 public enum WARLOCK_MOVE_TYPE
 {
     MOVE,

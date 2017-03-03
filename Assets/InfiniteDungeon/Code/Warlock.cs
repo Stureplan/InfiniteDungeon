@@ -15,7 +15,6 @@ public class Warlock : Agent
         if (health < 1)
         {
             Kill();
-            dead = true;
         }
     }
 
@@ -36,7 +35,6 @@ public class Warlock : Agent
         c.enemy = this;
         c.occupant = 1;
         cell = c;
-        dead = false;
     }
 
     public override void NextTurn(int turn)

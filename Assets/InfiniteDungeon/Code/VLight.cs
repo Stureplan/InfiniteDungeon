@@ -32,7 +32,6 @@ public class VLight : MonoBehaviour
         }
 
         frame++;
-        //TODO: Add Cookie child object, rotated towards cam
     }
 
     private void OnDestroy()

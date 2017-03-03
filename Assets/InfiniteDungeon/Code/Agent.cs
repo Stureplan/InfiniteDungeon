@@ -6,7 +6,7 @@ public class Agent : MonoBehaviour, IDamageable<int>
 {
     public int maxHealth;
     public int health;
-    public bool dead;
+    //public bool dead;
     public Map map;
     public Cell cell;
     public Barbarian barbarian; 
@@ -16,6 +16,4 @@ public class Agent : MonoBehaviour, IDamageable<int>
 
     public virtual void SetupEnemy(Cell c) { }
     public virtual void NextTurn(int turn) { }
-
-    public static int b;
 }

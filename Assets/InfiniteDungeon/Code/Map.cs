@@ -80,7 +80,7 @@ public class Map : MonoBehaviour
 
     Cell[,] grid;
     Cell[] openCells;
-    int enemyAmount = 10;
+    int enemyAmount = 5;
     Texture2D minimap;
     public GameObject[] groundPrefabs = new GameObject[2];
     public GameObject[] mountainPrefabs = new GameObject[3];
@@ -162,17 +162,6 @@ public class Map : MonoBehaviour
         SpawnEnemies();
 
         CreateMinimap();
-        
-        /*if (animateLevel == true)
-        {
-            // TODO: Move into place
-            StartCoroutine(MoveMap(1.0f));
-        }
-        else
-        {
-
-            gameObject.SetActive(false);
-        }*/
     }
 
     public void AnimateMap()
@@ -383,24 +372,36 @@ public class Map : MonoBehaviour
         a.SetupEnemy(grid[x, y]);
 
         allSceneEnemies.Add(a);*/
+
         for (int i = 0; i < enemyAmount; i++)
         {
             int r = RNG.Range(0, openCells.Length);
 
-            SpawnEnemy<Warlock>(warlockPrefab, openCells[r]);
+            SpawnEnemy<Slime>(slimePrefab, openCells[r]);
             ArrayUtility.RemoveAt(ref openCells, r);
         }
 
         //SpawnEnemy<Warlock>(warlockPrefab, grid[sizeX / 2, sizeY - 3]);
     }
 
-    void SpawnEnemy<T>(GameObject prefab, Cell c)
+    public void SpawnEnemy<T>(GameObject prefab, Cell c)
     {
         GameObject go = Instantiate(prefab, c.position, Quaternion.identity);
         Agent a = (Agent)go.AddComponent(typeof(T));
         a.SetupEnemy(c);
 
-        allSceneEnemies.Add(a);    
+        allSceneEnemies.Add(a);
+    }
+
+    public Slime SpawnSlime(Cell c)
+    {
+        GameObject go = Instantiate(slimePrefab, c.position, Quaternion.identity);
+        Slime s = (Slime)go.AddComponent(typeof(Slime));
+        s.SetupEnemy(c);
+
+        allSceneEnemies.Add(s);
+
+        return s;
     }
 
     public Cell StartCell()
@@ -442,6 +443,16 @@ public class Map : MonoBehaviour
     public int CellSafeCheck(int x, int y)
     {
         if (x < 0 || x > sizeX - 1 || y < 0 || y > sizeY - 1)
+        {
+            return 666;
+        }
+
+        return 1;
+    }
+
+    public int CellSafeCheck(Cell c)
+    {
+        if (c.x < 0 || c.x > sizeX - 1 || c.y < 0 || c.y > sizeY - 1)
         {
             return 666;
         }
@@ -650,6 +661,38 @@ public class Map : MonoBehaviour
     public List<Agent> Enemies()
     {
         return allSceneEnemies;
+    }
+
+    public Cell FirstFreeNeighbor(int x, int y)
+    {
+        Cell temp;
+
+        temp = grid[x - 1, y];
+        if (CellSafeCheck(temp) != 666 && temp.type == 0 && temp.occupant == 0)
+        {
+            return temp;
+        }
+
+        temp = grid[x + 1, y];
+        if (CellSafeCheck(temp) != 666 && temp.type == 0 && temp.occupant == 0)
+        {
+            return temp;
+        }
+
+        temp = grid[x, y - 1];
+        if (CellSafeCheck(temp) != 666 && temp.type == 0 && temp.occupant == 0)
+        {
+            return temp;
+        }
+
+        temp = grid[x, y + 1];
+        if (CellSafeCheck(temp) != 666 && temp.type == 0 && temp.occupant == 0)
+        {
+            return temp;
+        }
+
+
+        return Cell.NoCell();
     }
 
     public List<Cell> Neighbors(Cell cell)

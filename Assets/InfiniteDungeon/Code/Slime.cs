@@ -14,7 +14,6 @@ public class Slime : Agent
         if (health < 1)
         {
             Kill();
-            dead = true;
         }
     }
 
@@ -34,7 +33,6 @@ public class Slime : Agent
         c.enemy = this;
         c.occupant = 1;
         cell = c;
-        dead = false;
     }
 
     public override void NextTurn(int turn)
@@ -106,6 +104,19 @@ public class Slime : Agent
 
                 break;
         }
+    }
+
+    public void CauldronSpawn(Cell c)
+    {
+        cell.occupant = 0;
+        cell.enemy = null;
+        cell = c;
+        cell.occupant = 1;
+        cell.enemy = this;
+
+        PlayAnimation("Slime_Jump");
+        StartCoroutine(Move(c.position, 0.2f));
+        StartCoroutine(Rotate(Helper.QDIR(c.position - transform.position), 0.2f));
     }
 
     private void PlayAnimation(string anim)

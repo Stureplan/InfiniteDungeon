@@ -210,7 +210,7 @@ public class Barbarian : MonoBehaviour, IDamageable<int>
         map.AnimateMap();
 
         // Barbarian has jumped off the first platform!
-        PlayAnimation("Barbarian_JumpingDown"); // TODO: Remember to LOOP to "Barbarian_JumpingLoop"!
+        PlayAnimation("Barbarian_JumpingDown");
         StartCoroutine(Move(map.StartCell().position, 1.0f));
         StartCoroutine(MoveCamera(map.StartCell().position + camOffset, 1.0f));
     }
