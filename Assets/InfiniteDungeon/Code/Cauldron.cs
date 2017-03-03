@@ -4,11 +4,10 @@ using UnityEngine;
 
 public class Cauldron : Agent 
 {
-    private Animation animations;
+    private AnimatedObject anim;
     Cell targetCell;
 
-    private int spawnTimer = 3;
-    private Slime lastSlime;
+    private int spawnTimer = 6;
 
     public override void Damage(int damage)
     {
@@ -25,8 +24,8 @@ public class Cauldron : Agent
         cell.enemy = null;
         Game.RemoveEnemy(this);
 
-        PlayAnimation("Cauldron_Death");
-        StartCoroutine(DelayedDestruction(animations.GetClip("Cauldron_Death").length));
+        anim.PlayAnimation("Cauldron_Death");
+        StartCoroutine(DelayedDestruction(anim.GetClipLength("Cauldron_Death")));
     }
 
     public override void SetupEnemy(Cell c)
@@ -40,6 +39,7 @@ public class Cauldron : Agent
     {
         BUILDING_MOVE_TYPE type = DecideMove(turn);
         ExecuteMove(type);
+        VisualTurn(type);
     }
 
     public BUILDING_MOVE_TYPE DecideMove(int turn)
@@ -66,7 +66,7 @@ public class Cauldron : Agent
                 break;
 
             case BUILDING_MOVE_TYPE.SPAWN:
-                lastSlime = map.SpawnSlime(cell);
+                Game.CauldronAddSlime(cell, targetCell);
                 break;
 
             case BUILDING_MOVE_TYPE.INVALID:
@@ -82,9 +82,8 @@ public class Cauldron : Agent
                 break;
 
             case BUILDING_MOVE_TYPE.SPAWN:
-                PlayAnimation("Cauldron_Spawn");
+                anim.PlayAnimation("Cauldron_Spawn");
                 //FX.Emit(transform.position, Helper.QDIR(Vector3.up), FX.VFX.SlimeSpawn, 5);
-                lastSlime.CauldronSpawn(targetCell);
                 break;
 
             case BUILDING_MOVE_TYPE.INVALID:
@@ -92,18 +91,13 @@ public class Cauldron : Agent
         }
     }
 
-    private void PlayAnimation(string anim)
-    {
-        animations.Stop();
-        animations.Play(anim);
-    }
-
     private void Start()
     {
         map = Map.FindMap();
         barbarian = Barbarian.FindBarbarian();
-        animations = GetComponent<Animation>();
-        PlayAnimation("Cauldron_Idle");
+        anim = GetComponent<AnimatedObject>();
+        anim.Initialize();
+        anim.PlayAnimation("Cauldron_Idle");
     }
 
 

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Slime : Agent
 {
-    private Animation animations;
+    private AnimatedObject anim;
 
     Cell targetCell;
 
@@ -24,8 +24,8 @@ public class Slime : Agent
         Game.RemoveEnemy(this);
         //Destroy(gameObject);
 
-        PlayAnimation("Slime_Death");
-        StartCoroutine(DelayedDestruction(animations.GetClip("Slime_Death").length));
+        anim.PlayAnimation("Slime_Death");
+        StartCoroutine(DelayedDestruction(anim.GetClipLength("Slime_Death")));
     }
 
     public override void SetupEnemy(Cell c)
@@ -33,6 +33,8 @@ public class Slime : Agent
         c.enemy = this;
         c.occupant = 1;
         cell = c;
+
+        Initialize();
     }
 
     public override void NextTurn(int turn)
@@ -90,13 +92,13 @@ public class Slime : Agent
         switch(type)
         {
             case MELEE_MOVE_TYPE.MOVE:
-                PlayAnimation("Slime_Move");
+                anim.PlayAnimation("Slime_Move");
                 StartCoroutine(Move(targetCell.position, 0.2f));
                 StartCoroutine(Rotate(Helper.QDIR(targetCell.position - transform.position), 0.1f));
                 break;
 
             case MELEE_MOVE_TYPE.ATTACK:
-                PlayAnimation("Slime_Attack");
+                anim.PlayAnimation("Slime_Attack");
                 StartCoroutine(Rotate(Helper.QDIR(targetCell.position - transform.position), 0.1f));
                 break;
 
@@ -106,32 +108,20 @@ public class Slime : Agent
         }
     }
 
-    public void CauldronSpawn(Cell c)
+    public void CauldronVisualSpawn(Cell c)
     {
-        cell.occupant = 0;
-        cell.enemy = null;
-        cell = c;
-        cell.occupant = 1;
-        cell.enemy = this;
-
-        PlayAnimation("Slime_Jump");
-        StartCoroutine(Move(c.position, 0.2f));
+        anim.PlayAnimation("Slime_Jump");
+        StartCoroutine(Move(c.position, 1.0f));
         StartCoroutine(Rotate(Helper.QDIR(c.position - transform.position), 0.2f));
     }
 
-    private void PlayAnimation(string anim)
-    {
-        animations.Stop();
-        animations.Play(anim);
-    }
-
-
-    private void Start()
+    private void Initialize()
     {
         map = Map.FindMap();
         barbarian = Barbarian.FindBarbarian();
-        animations = GetComponent<Animation>();
-        PlayAnimation("Slime_Idle");
+        anim = GetComponent<AnimatedObject>();
+        anim.Initialize();
+        anim.PlayAnimation("Slime_Idle");
     }
     
     private void Update() { }

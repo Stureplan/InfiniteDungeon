@@ -11,7 +11,7 @@ public class Barbarian : MonoBehaviour, IDamageable<int>
 
 
     private Vector3 camOffset;
-    private Animation animations;
+    private AnimatedObject anim;
     private int currentDamage = 1;
     private int currentHealth = MAX_HEALTH;
     private Agent currentAgent;
@@ -160,13 +160,13 @@ public class Barbarian : MonoBehaviour, IDamageable<int>
         switch (type)
         {
             case BARBARIAN_MOVE_TYPE.MOVE:
-                PlayAnimation("Barbarian_Move");
+                anim.PlayAnimation("Barbarian_Move");
                 StartCoroutine(Move(c.position, 0.5f));
                 StartCoroutine(MoveCamera(c.position + camOffset, 0.5f));
                 StartCoroutine(Rotate(Helper.QDIR(c.position - transform.position), 0.1f));
                 break;
             case BARBARIAN_MOVE_TYPE.ATTACK:
-                PlayAnimation("Barbarian_Attack1");
+                anim.PlayAnimation("Barbarian_Attack1");
                 StartCoroutine(Rotate(Helper.QDIR(c.position - transform.position), 0.1f));
                 break;
 
@@ -194,23 +194,13 @@ public class Barbarian : MonoBehaviour, IDamageable<int>
     }
 
 
-    private void PlayAnimation(string anim)
-    {
-        animations.Stop();
-        animations.Play(anim);
-    }
-
-    private void FadeAnimation(string anim)
-    {
-        animations.CrossFade(anim, 0.1f);
-    }
 
     public void InitiateLevel()
     {
         map.AnimateMap();
 
         // Barbarian has jumped off the first platform!
-        PlayAnimation("Barbarian_JumpingDown");
+        anim.PlayAnimation("Barbarian_JumpingDown");
         StartCoroutine(Move(map.StartCell().position, 1.0f));
         StartCoroutine(MoveCamera(map.StartCell().position + camOffset, 1.0f));
     }
@@ -219,7 +209,7 @@ public class Barbarian : MonoBehaviour, IDamageable<int>
     {
         // Barbarian has landed!
         cell = map.StartCell();
-        PlayAnimation("Barbarian_Land");
+        anim.PlayAnimation("Barbarian_Land");
         ui.FadePanelsIn();
         ui.SetMinimap(map.GetMinimap());
     }
@@ -227,8 +217,9 @@ public class Barbarian : MonoBehaviour, IDamageable<int>
     private void Start()
     {
         camOffset = cam.transform.position - transform.position;
-        animations = GetComponent<Animation>();
-        PlayAnimation("Barbarian_LookingDown");
+        anim = GetComponent<AnimatedObject>();
+        anim.Initialize();
+        anim.PlayAnimation("Barbarian_LookingDown");
 
 
         map.Generate(); // <-- initiates the animation sequence

@@ -88,6 +88,7 @@ public class Map : MonoBehaviour
     public GameObject endPrefab;
     public GameObject slimePrefab;
     public GameObject warlockPrefab;
+    public GameObject cauldronPrefab;
 
 
     Miner settler;
@@ -377,11 +378,11 @@ public class Map : MonoBehaviour
         {
             int r = RNG.Range(0, openCells.Length);
 
-            SpawnEnemy<Slime>(slimePrefab, openCells[r]);
+            SpawnEnemy<Warlock>(warlockPrefab, openCells[r]);
             ArrayUtility.RemoveAt(ref openCells, r);
         }
 
-        //SpawnEnemy<Warlock>(warlockPrefab, grid[sizeX / 2, sizeY - 3]);
+        SpawnEnemy<Cauldron>(cauldronPrefab, openCells[0]);
     }
 
     public void SpawnEnemy<T>(GameObject prefab, Cell c)
@@ -391,16 +392,18 @@ public class Map : MonoBehaviour
         a.SetupEnemy(c);
 
         allSceneEnemies.Add(a);
+        ArrayUtility.Remove(ref openCells, c);
     }
 
-    public Slime SpawnSlime(Cell c)
+    public Slime SpawnSlime(Cell cauldron, Cell target)
     {
-        GameObject go = Instantiate(slimePrefab, c.position, Quaternion.identity);
+        GameObject go = Instantiate(slimePrefab, cauldron.position, Quaternion.identity);
         Slime s = (Slime)go.AddComponent(typeof(Slime));
-        s.SetupEnemy(c);
+        s.SetupEnemy(target);
+        s.CauldronVisualSpawn(target);
 
         allSceneEnemies.Add(s);
-
+        ArrayUtility.Remove(ref openCells, target);
         return s;
     }
 
@@ -893,6 +896,7 @@ public class MapEditor : Editor
         // Enemies
         map.slimePrefab = EditorGUILayout.ObjectField("Slime Prefab", map.slimePrefab, typeof(GameObject), false) as GameObject;
         map.warlockPrefab = EditorGUILayout.ObjectField("Warlock Prefab", map.warlockPrefab, typeof(GameObject), false) as GameObject;
+        map.cauldronPrefab = EditorGUILayout.ObjectField("Cauldron Prefab", map.cauldronPrefab, typeof(GameObject), false) as GameObject;
 
 
         if (GUILayout.Button("Generate"))

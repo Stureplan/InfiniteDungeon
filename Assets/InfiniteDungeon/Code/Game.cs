@@ -36,6 +36,13 @@ public class Game : MonoBehaviour
 
 	}
 
+    public static Slime CauldronAddSlime(Cell cauldron, Cell target)
+    {
+        Slime s = Map.FindMap().SpawnSlime(cauldron, target);
+
+        return s;
+    }
+
     public void NextTurn(int dir)
     {
         if (TURN_READY)

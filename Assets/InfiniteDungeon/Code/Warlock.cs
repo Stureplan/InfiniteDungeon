@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Warlock : Agent
 {
-    private Animation animations;
+    private AnimatedObject anim;
 
 
     private Cell targetCell;
@@ -24,10 +24,10 @@ public class Warlock : Agent
         cell.enemy = null;
         Game.RemoveEnemy(this);
 
-        PlayAnimation("Warlock_Death");
+        anim.PlayAnimation("Warlock_Death");
         FX.Emit(transform.localPosition + Game.HALF_Y, Quaternion.identity, FX.VFX.Bats, 15);
 
-        StartCoroutine(DelayedDestruction(animations.GetClip("Warlock_Death").length));
+        StartCoroutine(DelayedDestruction(anim.GetClipLength("Warlock_Death")));
     }
 
     public override void SetupEnemy(Cell c)
@@ -107,19 +107,19 @@ public class Warlock : Agent
         switch (type)
         {
             case WARLOCK_MOVE_TYPE.MOVE:
-                PlayAnimation("Warlock_Move");
+                anim.PlayAnimation("Warlock_Move");
                 StartCoroutine(Move(cell.position, 0.2f));
                 StartCoroutine(Rotate(Helper.QDIR(cell.position - transform.position), 0.1f));
                 break;
 
             case WARLOCK_MOVE_TYPE.ATTACK:
                 Debug.Log("Attack");
-                PlayAnimation("Warlock_Attack");
+                anim.PlayAnimation("Warlock_Attack");
                 StartCoroutine(Rotate(Helper.QDIR(targetCell.position - transform.position), 0.1f));
                 break;
 
             case WARLOCK_MOVE_TYPE.SPELL1:
-                PlayAnimation("Warlock_Spell1");
+                anim.PlayAnimation("Warlock_Spell1");
                 StartCoroutine(Rotate(Helper.QDIR(targetCell.position - transform.position), 0.1f));
                 break;
 
@@ -129,18 +129,13 @@ public class Warlock : Agent
         }
     }
 
-    private void PlayAnimation(string anim)
-    {
-        animations.Stop();
-        animations.Play(anim);
-    }
-
     private void Start()
     {
         map = Map.FindMap();
         barbarian = Barbarian.FindBarbarian();
-        animations = GetComponent<Animation>();
-        PlayAnimation("Warlock_Idle");
+        anim = GetComponent<AnimatedObject>();
+        anim.Initialize();
+        anim.PlayAnimation("Warlock_Idle");
     }
 
 
