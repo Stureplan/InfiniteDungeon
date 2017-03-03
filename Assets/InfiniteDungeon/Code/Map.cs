@@ -378,11 +378,18 @@ public class Map : MonoBehaviour
         {
             int r = RNG.Range(0, openCells.Length);
 
-            SpawnEnemy<Warlock>(warlockPrefab, openCells[r]);
+            if (i == 0)
+            {
+                SpawnEnemy<Cauldron>(cauldronPrefab, openCells[r]);
+            }
+            else
+            {
+                SpawnEnemy<Warlock>(warlockPrefab, openCells[r]);
+            }
+
             ArrayUtility.RemoveAt(ref openCells, r);
         }
 
-        SpawnEnemy<Cauldron>(cauldronPrefab, openCells[0]);
     }
 
     public void SpawnEnemy<T>(GameObject prefab, Cell c)

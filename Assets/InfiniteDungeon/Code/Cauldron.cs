@@ -114,9 +114,7 @@ public class Cauldron : Agent
             yield return null;
         }
 
-        FX.Emit(transform.localPosition + Game.HALF_Y, Quaternion.identity, FX.VFX.SlimeDeath, 30);
         Destroy(gameObject);
-
     }
 }
 
