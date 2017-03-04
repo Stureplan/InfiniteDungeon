@@ -29,6 +29,8 @@ public class Game : MonoBehaviour
 
         barbarian = FindObjectOfType<Barbarian>();
         enemies = map.Enemies();
+
+        GameObject go = MeshGenerator.GenerateCube(1, 1, 1, 1, 1, Color.black);
 	}
 	
 	void Update ()

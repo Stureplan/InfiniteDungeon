@@ -388,7 +388,26 @@ public class Map : MonoBehaviour
             }
 
             ArrayUtility.RemoveAt(ref openCells, r);
-            int b = 1;
+            //TODO: Implement this instead: System.Array.Resize<Cell>(ref openCells, 1 + 1); (ArrayUtility is an EDITOR class.. nowherein the Build)
+            
+            /*
+             public static void RemoveAt<T>(ref T[] arr, int index)
+             {
+                 for (int a = index; a < arr.Length - 1; a++)
+                 {
+                     // moving elements downwards, to fill the gap at [index]
+                     arr[a] = arr[a + 1];
+                 }
+                 // finally, let's decrement Array's size by one
+                 Array.Resize(ref arr, arr.Length - 1);
+             }
+             RemoveAt(ref colors, 2); // removes Color.white.
+             */
+
+
+
+
+            
         }
 
     }
