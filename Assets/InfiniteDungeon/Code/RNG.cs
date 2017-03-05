@@ -32,6 +32,18 @@ public static class RNG
         return q;
     }
 
+    public static Quaternion Q5f(Vector3 axis)
+    {
+        Quaternion q = Quaternion.identity;
+        int r = Random.Range(0, 5);
+
+        int rng = Random.Range(0, 2);
+        if (rng == 0) { q = Quaternion.AngleAxis((float)r, axis); }
+        if (rng == 1) { q = Quaternion.AngleAxis((float)r * -1, axis); }
+
+        return q;
+    }
+
 
     public static T RandomFromArray<T>(T[] arr)
     {

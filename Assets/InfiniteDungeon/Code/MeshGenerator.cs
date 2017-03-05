@@ -9,10 +9,12 @@ public static class MeshGenerator
 
     }
 
-    public static GameObject GenerateCube(int x, int y, int xMax, int yMax, int size, Color c)
+    public static GameObject GenerateCube(Vector3 pos, int size, int type, Color c1, Color c2)
     {
         GameObject go = new GameObject("Cube");
-        Mesh mesh = GenerateMesh(size);
+        Mesh mesh = GenerateMesh(size,type, c1, c2);
+        go.transform.localPosition = pos;
+        if (type > 2) { go.transform.localRotation = RNG.Q5f(Vector3.up); }
 
         MeshRenderer mr = go.AddComponent<MeshRenderer>();
         MeshFilter mf = go.AddComponent<MeshFilter>();
@@ -22,7 +24,7 @@ public static class MeshGenerator
         return go;
     }
 
-    static Mesh GenerateMesh(int size)
+    static Mesh GenerateMesh(int size, int type, Color c1, Color c2)
     {
         Mesh mesh = new Mesh();
 
@@ -30,23 +32,69 @@ public static class MeshGenerator
         mesh.Clear();
 
         #region Vertices
-        float offset = (float)size / 2;
+
+        Vector3 o0 = Vector3.zero; //bottom left
+        Vector3 o1 = Vector3.zero;
+        Vector3 o2 = Vector3.zero;
+        Vector3 o3 = Vector3.zero; //bottom right
+        
+
+        switch (type)
+        {
+            case 0:
+                //nothing
+                break;
+
+            case 1:
+                //slight up
+                o0 = new Vector3(0.0f, 0.05f, 0.0f);
+                o1 = new Vector3(0.0f, 0.05f, 0.0f);
+                o2 = new Vector3(0.0f, 0.05f, 0.0f);
+                o3 = new Vector3(0.0f, 0.05f, 0.0f);
+                break;
+
+            case 2:
+                //slight down
+                o0 = new Vector3(0.0f, -0.05f, 0.0f);
+                o1 = new Vector3(0.0f, -0.05f, 0.0f);
+                o2 = new Vector3(0.0f, -0.05f, 0.0f);
+                o3 = new Vector3(0.0f, -0.05f, 0.0f);
+                break;
+
+            case 3:
+                //slight lean left
+                o0 = new Vector3(0.0f, -0.05f, 0.0f);
+                o1 = new Vector3(0.0f,  0.0f, 0.0f);
+                o2 = new Vector3(0.0f,  0.0f, 0.0f);
+                o3 = new Vector3(0.0f, -0.05f, 0.0f);
+                break;
+
+            case 4:
+                //slight lean right
+                o0 = new Vector3(0.0f,  0.0f, 0.0f);
+                o1 = new Vector3(0.0f, -0.05f, 0.0f);
+                o2 = new Vector3(0.0f, -0.05f, 0.0f);
+                o3 = new Vector3(0.0f,  0.0f, 0.0f);
+                break;
+
+        }
+
+        float offset = ((float)size + Mathf.Max(o0.y, o1.y, o2.y, o3.y)) / 2;
+
 
         Vector3 p0 = new Vector3(-size * .5f, -size * .5f - offset,  size * .5f);
         Vector3 p1 = new Vector3( size * .5f, -size * .5f - offset,  size * .5f);
         Vector3 p2 = new Vector3( size * .5f, -size * .5f - offset, -size * .5f);
         Vector3 p3 = new Vector3(-size * .5f, -size * .5f - offset, -size * .5f);
 
-        Vector3 p4 = new Vector3(-size * .5f,  size * .5f - offset,  size * .5f);
-        Vector3 p5 = new Vector3( size * .5f,  size * .5f - offset,  size * .5f);
-        Vector3 p6 = new Vector3( size * .5f,  size * .5f - offset, -size * .5f);
-        Vector3 p7 = new Vector3(-size * .5f,  size * .5f - offset, -size * .5f);
+        Vector3 p4 = new Vector3(-size * .5f,  size * .5f - offset,  size * .5f) + o3;
+        Vector3 p5 = new Vector3( size * .5f,  size * .5f - offset,  size * .5f) + o2;
+        Vector3 p6 = new Vector3( size * .5f,  size * .5f - offset, -size * .5f) + o1;
+        Vector3 p7 = new Vector3(-size * .5f,  size * .5f - offset, -size * .5f) + o0;
+
 
         Vector3[] vertices = new Vector3[]
         {
-	        // Bottom
-	        p0, p1, p2, p3,
- 
 	        // Left
 	        p7, p4, p0, p3,
  
@@ -67,56 +115,46 @@ public static class MeshGenerator
         #region Triangles
         int[] triangles = new int[]
         {
-	        // Bottom
+	        // Left
 	        3, 1, 0,
             3, 2, 1,			
  
-	        // Left
+	        // Front
 	        3 + 4 * 1, 1 + 4 * 1, 0 + 4 * 1,
             3 + 4 * 1, 2 + 4 * 1, 1 + 4 * 1,
  
-	        // Front
+	        // Back
 	        3 + 4 * 2, 1 + 4 * 2, 0 + 4 * 2,
             3 + 4 * 2, 2 + 4 * 2, 1 + 4 * 2,
  
-	        // Back
+	        // Right
 	        3 + 4 * 3, 1 + 4 * 3, 0 + 4 * 3,
             3 + 4 * 3, 2 + 4 * 3, 1 + 4 * 3,
  
-	        // Right
+	        // Top
 	        3 + 4 * 4, 1 + 4 * 4, 0 + 4 * 4,
             3 + 4 * 4, 2 + 4 * 4, 1 + 4 * 4,
- 
-	        // Top
-	        3 + 4 * 5, 1 + 4 * 5, 0 + 4 * 5,
-            3 + 4 * 5, 2 + 4 * 5, 1 + 4 * 5,
         };
         #endregion
 
         #region Colors
 
-        Color y = Color.yellow;
-        Color g = Color.green;
-
-        Color[] colors = new Color[24]
+        Color[] colors = new Color[20]
         {
-            // Bottom
-	        y, y, y, y,
- 
 	        // Left
-	        y, y, y, y,
+	        c2, c2, c2, c2,
  
 	        // Front
-	        y, y, y, y,
+	        c2, c2, c2, c2,
  
 	        // Back
-	        y, y, y, y,
+	        c2, c2, c2, c2,
  
 	        // Right
-	        y, y, y, y,
+	        c2, c2, c2, c2,
  
 	        // Top
-	        g, g, g, g
+	        c1, c1, c1, c1
         };
 
         #endregion

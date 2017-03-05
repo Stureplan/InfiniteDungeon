@@ -12,6 +12,9 @@ public class Game : MonoBehaviour
     public const float BARBARIAN_TIMER = 0.2f;
     static bool TURN_READY = true;
 
+    public Color c1;
+    public Color c2;
+
     Map map;
 
     static List<Agent> enemies = new List<Agent>();
@@ -30,10 +33,12 @@ public class Game : MonoBehaviour
         barbarian = FindObjectOfType<Barbarian>();
         enemies = map.Enemies();
 
-        GameObject go = MeshGenerator.GenerateCube(1, 1, 1, 1, 1, Color.black);
-	}
-	
-	void Update ()
+        //GameObject go = MeshGenerator.GenerateCube(1, 1, 1, 3, c1, c2);
+        //GameObject go2 = MeshGenerator.GenerateCube(1, 1, 1, 4, c1, c2);
+
+    }
+
+    void Update ()
     {
 
 	}
