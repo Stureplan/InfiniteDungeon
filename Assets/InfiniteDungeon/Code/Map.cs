@@ -162,6 +162,8 @@ public class Map : MonoBehaviour
         CleanupCrew(cleanupIterations);
         CreateCriticalPath();
 
+        //SetValues();
+        
         SpawnPrefabs();
         SpawnEnemies();
 
@@ -298,7 +300,10 @@ public class Map : MonoBehaviour
                     Vector3 pos = new Vector3((x - sizeX / 2) * space, 0, (y - sizeY / 2) * space);
                     //GameObject c = Instantiate(groundPrefabs[Random.Range(0, 2)], pos, Quaternion.identity);
 
-                    GameObject c = MeshGenerator.GenerateCube(pos, 1, Random.Range(0, 5), c1, c2);
+                    int neighbors = 0;
+                    if (!CellIsEdge(x, y)) { neighbors = Obstacles3x3(x, y, 1); }
+                    else { neighbors = 10; }
+                    GameObject c = MeshGenerator.GenerateCube(pos, neighbors, 1, Random.Range(0, 5), c1, c2);
                     c.transform.SetParent(transform, false);
 
                     allSceneObjects.Add(c);
@@ -473,6 +478,16 @@ public class Map : MonoBehaviour
         }
 
         return Cell.NoCell();
+    }
+
+    public bool CellIsSafe(int x, int y)
+    {
+        if (x < 0 || x > sizeX - 1 || y < 0 || y > sizeY - 1)
+        {
+            return false;
+        }
+
+        return true;
     }
 
     public int CellSafeCheck(int x, int y)

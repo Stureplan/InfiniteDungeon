@@ -9,12 +9,12 @@ public static class MeshGenerator
 
     }
 
-    public static GameObject GenerateCube(Vector3 pos, int size, int type, Color c1, Color c2)
+    public static GameObject GenerateCube(Vector3 pos, int neighbors, int size, int type, Color c1, Color c2)
     {
         GameObject go = new GameObject("Cube");
         Mesh mesh = GenerateMesh(size,type, c1, c2);
         go.transform.localPosition = pos;
-        if (type > 2) { go.transform.localRotation = RNG.Q5f(Vector3.up); }
+        if (type > 2) { go.transform.localRotation = RNG.Qf(Vector3.up, 5 + neighbors); }
 
         MeshRenderer mr = go.AddComponent<MeshRenderer>();
         MeshFilter mf = go.AddComponent<MeshFilter>();
@@ -47,18 +47,22 @@ public static class MeshGenerator
 
             case 1:
                 //slight up
+                /*
                 o0 = new Vector3(0.0f, 0.05f, 0.0f);
                 o1 = new Vector3(0.0f, 0.05f, 0.0f);
                 o2 = new Vector3(0.0f, 0.05f, 0.0f);
                 o3 = new Vector3(0.0f, 0.05f, 0.0f);
+                */
                 break;
 
             case 2:
                 //slight down
+                /*
                 o0 = new Vector3(0.0f, -0.05f, 0.0f);
                 o1 = new Vector3(0.0f, -0.05f, 0.0f);
                 o2 = new Vector3(0.0f, -0.05f, 0.0f);
                 o3 = new Vector3(0.0f, -0.05f, 0.0f);
+                */
                 break;
 
             case 3:
