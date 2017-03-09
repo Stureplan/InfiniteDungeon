@@ -78,10 +78,6 @@ public class Map : MonoBehaviour
     public int seed;
     public bool randomSeed = false;
 
-    public Color c1;
-    public Color c2;
-    public Color c3;
-
     Cell[,] grid;
     Cell[] openCells;
     int enemyAmount = 5;
@@ -304,7 +300,7 @@ public class Map : MonoBehaviour
                     int neighbors = 0;
                     if (!CellIsEdge(x, y)) { neighbors = Obstacles3x3(x, y, 1); }
                     else { neighbors = 10; }
-                    GameObject c = TileMaker.MakeGrass(grid[x,y],pos, neighbors, 1, Random.Range(0, 5), c1, c2, c3);
+                    GameObject c = TileMaker.MakeGrass(grid[x,y],pos, neighbors, 1, Random.Range(0, 5));
                     c.transform.SetParent(transform, false);
 
                     allSceneObjects.Add(c);
@@ -926,12 +922,6 @@ public class MapEditor : Editor
         map.cleanupIterations = EditorGUILayout.IntField("Cleanup Iterations", map.cleanupIterations);
         Mathf.Clamp(map.seed = EditorGUILayout.IntField("Seed", map.seed), 0, 10000);
         map.randomSeed = EditorGUILayout.Toggle("Random Seed", map.randomSeed);
-
-        // Ground colors
-        map.c1 = EditorGUILayout.ColorField("Color 1", map.c1);
-        map.c2 = EditorGUILayout.ColorField("Color 2", map.c2);
-        map.c3 = EditorGUILayout.ColorField("Color 3", map.c3);
-
 
 
         // Regular ground

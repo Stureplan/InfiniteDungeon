@@ -63,10 +63,10 @@ public static class TileMaker
         }
     }
 
-    public static GameObject MakeGrass(Cell c, Vector3 pos, int neighbors, float size, int type, Color c1, Color c2, Color c3)
+    public static GameObject MakeGrass(Cell c, Vector3 pos, int neighbors, float size, int type)
     {
         GameObject go = new GameObject("Cube");
-        Mesh mesh = GrassMesh(size,type, c1, c2, c3);
+        Mesh mesh = GrassMesh(size,type);
         go.transform.localPosition = pos;
         if (type > 2) { go.transform.localRotation = RNG.Qf(Vector3.up, neighbors*2); }
 
@@ -181,7 +181,7 @@ public static class TileMaker
         return mesh;
     }
 
-    static Mesh GrassMesh(float size, int type, Color c1, Color c2, Color c3)
+    static Mesh GrassMesh(float size, int type)
     {
         Mesh mesh = new Mesh();
 
@@ -304,26 +304,26 @@ public static class TileMaker
 
         #region Colors
 
-        Color grassColor;
+        Color GRASS;
         int r = Random.Range(0, 2);
-        if (r == 0) { grassColor = c1; }
-        else        { grassColor = c3; }
+        if (r == 0) { GRASS = GRASS_1; }
+        else        { GRASS = GRASS_2; }
         Color[] colors = new Color[20]
         {
 	        // Left
-	        c2, c2, c2, c2,
+	        DIRT, DIRT, DIRT, DIRT,
  
 	        // Front
-	        c2, c2, c2, c2,
+	        DIRT, DIRT, DIRT, DIRT,
  
 	        // Back
-	        c2, c2, c2, c2,
+	        DIRT, DIRT, DIRT, DIRT,
  
 	        // Right
-	        c2, c2, c2, c2,
+	        DIRT, DIRT, DIRT, DIRT,
  
 	        // Top
-	        grassColor, grassColor, grassColor, grassColor
+	        GRASS, GRASS, GRASS, GRASS
         };
 
         #endregion
