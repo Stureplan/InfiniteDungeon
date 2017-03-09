@@ -64,7 +64,7 @@ public class Warlock : Agent
         if (cells.Length > 2 && cells.Length < 6) // If Barb is in spell range
         {
             // If the path lines up either horizontally or vertically
-                if (Map.CellsAreAlignedH(cells, cell.x) || Map.CellsAreAlignedV(cells, cell.y))
+            if (Map.CellsAreAlignedH(cells, cell.x) || Map.CellsAreAlignedV(cells, cell.y))
             {
                 // We're gonna cast a Shadow Bolt
                 targetCell = barbarian.cell;
