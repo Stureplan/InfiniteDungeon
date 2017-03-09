@@ -55,10 +55,18 @@ public class Warlock : Agent
             targetCell = cells[0];
             move = WARLOCK_MOVE_TYPE.MOVE;
         }
-        else                 // Else we're in range of melee attack
+        else                 // Else we're in range of melee attack or blocked and isolated
         {
-            targetCell = barbarian.cell;
-            move = WARLOCK_MOVE_TYPE.ATTACK;
+            if (cells[0] == cell)
+            {
+                //We're blocked
+                move = WARLOCK_MOVE_TYPE.NOTHING;
+            }
+            else
+            {
+                targetCell = barbarian.cell;
+                move = WARLOCK_MOVE_TYPE.ATTACK;
+            }
         }
 
         if (cells.Length > 2 && cells.Length < 6) // If Barb is in spell range
@@ -96,7 +104,7 @@ public class Warlock : Agent
                 go.AddComponent<ShadowBolt>().Init(targetCell);
                 break;  
 
-            case WARLOCK_MOVE_TYPE.INVALID:
+            case WARLOCK_MOVE_TYPE.NOTHING:
 
                 break;
         }
@@ -123,7 +131,7 @@ public class Warlock : Agent
                 StartCoroutine(Rotate(Helper.QDIR(targetCell.position - transform.position), 0.1f));
                 break;
 
-            case WARLOCK_MOVE_TYPE.INVALID:
+            case WARLOCK_MOVE_TYPE.NOTHING:
 
                 break;
         }

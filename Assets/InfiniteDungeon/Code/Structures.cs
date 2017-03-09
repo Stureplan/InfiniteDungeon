@@ -35,8 +35,8 @@ public enum MELEE_MOVE_TYPE
 
 public enum BUILDING_MOVE_TYPE
 {
-    NOTHING,
     SPAWN,
+    NOTHING,
     INVALID
 }
 
@@ -45,6 +45,7 @@ public enum WARLOCK_MOVE_TYPE
     MOVE,
     ATTACK,
     SPELL1,
+    NOTHING,
     INVALID
 }
 

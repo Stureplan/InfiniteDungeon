@@ -32,6 +32,8 @@ public static class Pathfinder
 
         openSet.Add(start);
 
+       // start.parent = start;
+
         while(openSet.Count > 0)
         {
             Cell currentCell = openSet[0];
@@ -78,6 +80,11 @@ public static class Pathfinder
         }
 
         //return;
+        if (openSet.Count == 0)
+        {
+            Cell[] c = { start };
+            return c;
+        }
         return RetracePath(start, target).ToArray();
     }
 }
