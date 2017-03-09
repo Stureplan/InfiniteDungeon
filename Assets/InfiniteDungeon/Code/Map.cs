@@ -387,7 +387,7 @@ public class Map : MonoBehaviour
 
         for (int i = 0; i < enemyAmount; i++)
         {
-            int r = RNG.Range(0, openCells.Length);
+            int r = RNG.Range(0, openCells.Length-1);
 
             if (i == 0)
             {
