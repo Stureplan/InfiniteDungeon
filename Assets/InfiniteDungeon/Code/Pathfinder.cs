@@ -4,30 +4,12 @@ using UnityEngine;
 
 public static class Pathfinder
 {
-	//void Update ()
-   // {
-     //   if (Input.GetKeyDown(KeyCode.Space))
-       // {
-            /*int x1 = Random.Range(0, map.sizeX);
-            int y1 = Random.Range(0, map.sizeY);
-
-            int x2 = Random.Range(0, map.sizeY);
-            int y2 = Random.Range(0, map.sizeY);
-            */
-            //path = FindPath(map.CellAt(x1, y1), map.CellAt(x2, y2));
-
-            //debugPos1 = map.PositionAt(x1, y1);
-            //debugPos2 = map.PositionAt(x2, y2);
-      //  }
-	//}
-    //path = FindPath(map.CellAtPoint(0, 0), tCell);
-
     static List<Cell> RetracePath(Cell start, Cell end)
     {
         List<Cell> retracedPath = new List<Cell>();
         Cell currentNode = end;
 
-        while (currentNode != start)
+        while (!currentNode.IsCell(start))
         {
             retracedPath.Add(currentNode);
             currentNode = currentNode.parent;
@@ -67,7 +49,8 @@ public static class Pathfinder
 
             if (currentCell == target)
             {
-                return RetracePath(start, target).ToArray();
+                break;
+                //return RetracePath(start, target).ToArray();
             }
 
             foreach (Cell neighbor in map.Neighbors(currentCell))

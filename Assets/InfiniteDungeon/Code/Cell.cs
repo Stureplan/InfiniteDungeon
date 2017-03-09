@@ -24,6 +24,30 @@ public class Cell
         return cell;
     }
 
+    public bool IsCell(int _x, int _y)
+    {
+        if (_x == x && _y == y)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    public bool IsCell(Cell c)
+    {
+        if (c.x == x && c.y == y)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
 
     public Cell(Vector3 _position, int _type, int _x, int _y)
     {

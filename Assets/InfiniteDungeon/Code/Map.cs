@@ -381,9 +381,20 @@ public class Map : MonoBehaviour
 
         allSceneEnemies.Add(a);*/
 
+        int x = sizeX / 2;
+        int y = sizeY / 2;
+
+        SpawnEnemy<Cauldron>(cauldronPrefab, grid[x,y]);
+        SpawnEnemy<Warlock>(warlockPrefab, grid[x - 1, y]);
+        SpawnEnemy<Warlock>(warlockPrefab, grid[x + 1, y]);
+
+        SpawnEnemy<Warlock>(warlockPrefab, grid[x, y - 1]);
+        SpawnEnemy<Warlock>(warlockPrefab, grid[x, y - 2]);
+
+
         for (int i = 0; i < enemyAmount; i++)
         {
-            int r = RNG.Range(0, openCells.Length-1);
+            /*int r = RNG.Range(0, openCells.Length-1);
 
             if (i == 0)
             {
@@ -394,7 +405,7 @@ public class Map : MonoBehaviour
                 SpawnEnemy<Warlock>(warlockPrefab, openCells[r]);
             }
 
-            ArrayUtility.RemoveAt(ref openCells, r);
+            ArrayUtility.RemoveAt(ref openCells, r);*/
             //TODO: Implement this instead: System.Array.Resize<Cell>(ref openCells, 1 + 1); (ArrayUtility is an EDITOR class.. nowherein the Build)
             
             /*
@@ -410,13 +421,7 @@ public class Map : MonoBehaviour
              }
              RemoveAt(ref colors, 2); // removes Color.white.
              */
-
-
-
-
-            
         }
-
     }
 
     public void SpawnEnemy<T>(GameObject prefab, Cell c)
