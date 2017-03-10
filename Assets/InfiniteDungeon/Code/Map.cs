@@ -310,11 +310,16 @@ public class Map : MonoBehaviour
                 {
                     // OBSTACLE I (EMPTY)
                     grid[x, y].occupant = 0;
-                    //Vector3 pos = new Vector3((x - sizeX / 2) * space, 0, (y - sizeY / 2) * space);
-                    //GameObject c = TileMaker.MakeObstacle(grid[x, y], pos, 1.0f, 25);
-                    //c.transform.SetParent(transform, false);
 
-                    //allSceneObjects.Add(c);
+                    int r = Random.Range(0, 10);
+                    if (r < 4)
+                    {
+                        Vector3 pos = new Vector3((x - sizeX / 2) * space, 0, (y - sizeY / 2) * space);
+                        GameObject c = TileMaker.ObstacleTile(grid[x, y], pos, 1.0f);
+                        c.transform.SetParent(transform, false);
+
+                        allSceneObjects.Add(c);
+                    }
                 }
                 if (grid[x, y].type == 2)
                 {

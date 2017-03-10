@@ -45,17 +45,17 @@ public static class TileMaker
         return GRASS_MATERIAL;
     }
 
-    private static GameObject[] OBSTACLES;
-    private static GameObject RandomObstacle()
+    private static GameObject[] PROPS;
+    private static GameObject RandomProp()
     {
-        if (OBSTACLES == null)
+        if (PROPS == null)
         {
-            OBSTACLES = Resources.LoadAll<GameObject>("Obstacles");
+            PROPS = Resources.LoadAll<GameObject>("Props");
         }
 
-        int r = RNG.Range(0,OBSTACLES.Length);
+        int r = RNG.Range(0, PROPS.Length);
 
-        return OBSTACLES[r];
+        return PROPS[r];
     }
 
     public static GameObject GrassTile(Cell c, Vector3 pos, float size)
@@ -64,12 +64,42 @@ public static class TileMaker
         Mesh mesh = GrassVariation(size);
         go.transform.localPosition = pos;
 
+
+
         MeshRenderer mr = go.AddComponent<MeshRenderer>();
         MeshFilter mf = go.AddComponent<MeshFilter>();
-        mr.material = Resources.Load<Material>("Materials/Grass");
+        mr.material = GrassMaterial();
         mf.sharedMesh = mesh;
 
         return go;
+    }
+
+    public static GameObject ObstacleTile(Cell c, Vector3 pos, float size)
+    {
+        GameObject empty = new GameObject("Obstacle");
+        GameObject model = new GameObject("Model");
+        model.transform.SetParent(empty.transform, false);
+
+        Mesh mesh = GrassVariation(size);
+        empty.transform.localPosition = pos + Game.HALF_Y;
+        empty.transform.localRotation = RNG.Qf(Vector3.up, Random.Range(0, 10));
+
+        Animation a = model.AddComponent<Animation>();
+        a.AddClip(Resources.Load<AnimationClip>("Animations/HoverSlow"), "Hover");
+        a.Play("Hover");
+
+        // Place prop
+        GameObject prop = GameObject.Instantiate(RandomProp());
+        prop.transform.SetParent(model.transform, false);
+
+
+
+        MeshRenderer mr = model.AddComponent<MeshRenderer>();
+        MeshFilter mf = model.AddComponent<MeshFilter>();
+        mr.material = GrassMaterial();
+        mf.sharedMesh = mesh;
+
+        return empty;
     }
 
     static Mesh GrassMesh(Color GRASS, float size)

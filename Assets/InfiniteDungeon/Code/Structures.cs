@@ -49,12 +49,6 @@ public enum WARLOCK_MOVE_TYPE
     INVALID
 }
 
-public struct VISUAL_TILE_STATS
-{
-	int neighbors;
-	Color color;
-}
-
 public static class QHelp
 {
 }

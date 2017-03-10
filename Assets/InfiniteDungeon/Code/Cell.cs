@@ -13,7 +13,6 @@ public class Cell
     public Agent enemy;
     public Cell parent;
 
-
     public int gCost;
     public int hCost;
     public int fCost { get { return gCost + hCost; } }
