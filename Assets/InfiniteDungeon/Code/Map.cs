@@ -300,7 +300,7 @@ public class Map : MonoBehaviour
                     int neighbors = 0;
                     if (!CellIsEdge(x, y)) { neighbors = Obstacles3x3(x, y, 1); }
                     else { neighbors = 10; }
-                    GameObject c = TileMaker.MakeGrass(grid[x,y],pos, neighbors, 1, Random.Range(0, 5));
+                    GameObject c = TileMaker.GrassTile(grid[x,y],pos, space);
                     c.transform.SetParent(transform, false);
 
                     allSceneObjects.Add(c);
@@ -310,11 +310,11 @@ public class Map : MonoBehaviour
                 {
                     // OBSTACLE I (EMPTY)
                     grid[x, y].occupant = 0;
-                    Vector3 pos = new Vector3((x - sizeX / 2) * space, 0, (y - sizeY / 2) * space);
-                    GameObject c = TileMaker.MakeObstacle(grid[x, y], pos, 1.0f, 25);
-                    c.transform.SetParent(transform, false);
+                    //Vector3 pos = new Vector3((x - sizeX / 2) * space, 0, (y - sizeY / 2) * space);
+                    //GameObject c = TileMaker.MakeObstacle(grid[x, y], pos, 1.0f, 25);
+                    //c.transform.SetParent(transform, false);
 
-                    allSceneObjects.Add(c);
+                    //allSceneObjects.Add(c);
                 }
                 if (grid[x, y].type == 2)
                 {
