@@ -44,6 +44,17 @@ public static class RNG
         return q;
     }
 
+    public static Vector3 VXZf(float min, float max)
+    {
+        Vector3 r;
+
+        r.x = Random.Range(min, max);
+        r.y = 0.0f;
+        r.z = Random.Range(min, max);
+
+        return r;
+    }
+
 
     public static T RandomFromArray<T>(T[] arr)
     {

@@ -65,7 +65,8 @@ public static class TileMaker
         go.transform.localPosition = pos;
 
 
-
+        BoxCollider bc = go.AddComponent<BoxCollider>();
+        bc.center -= Game.HALF_Y;
         MeshRenderer mr = go.AddComponent<MeshRenderer>();
         MeshFilter mf = go.AddComponent<MeshFilter>();
         mr.material = GrassMaterial();
@@ -91,8 +92,8 @@ public static class TileMaker
         // Place prop
         GameObject prop = GameObject.Instantiate(RandomProp());
         prop.transform.SetParent(model.transform, false);
-
-
+        prop.transform.localPosition += RNG.VXZf(-0.4f, 0.4f);
+        prop.transform.localRotation = RNG.Q90f(Vector3.up);
 
         MeshRenderer mr = model.AddComponent<MeshRenderer>();
         MeshFilter mf = model.AddComponent<MeshFilter>();
