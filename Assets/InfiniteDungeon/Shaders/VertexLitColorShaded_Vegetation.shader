@@ -1,4 +1,8 @@
-﻿Shader "InfiniteDungeon/VertexLitColorShaded_Vegetation"
+﻿// Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
+
+// Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
+
+Shader "InfiniteDungeon/VertexLitColorShaded_Vegetation"
 {
 	Properties
 	{
@@ -102,30 +106,21 @@
 			{
 				v2f o;
 
-				// v.vertex = Object Space (Base is (0, 0, 0))
-				fixed localDistance = distance(v.vertex.xyz, fixed3(0, 0, 0));
+				// Distance from vertex to model origin.
+				fixed localDistance = distance(v.vertex, fixed4(0,0,0,1));
 				
-				
-				
+				// Some displacement values.
 				fixed s = sin(_Time.y * _WindY + v.vertex.x);
 				fixed c = cos(_Time.y * _WindY + v.vertex.z);
-
-				fixed sy = sin(_Time.y + v.vertex.y);
-				fixed cy = cos(_Time.y + v.vertex.y);
-
-
-				v.vertex.y += (rand(v.vertex.xyz) * _Shakiness) * s * c * localDistance * 0.2;
+				
+				// Add the values to the Y of the vertex.
+				v.vertex.y += _Shakiness * s * c * localDistance * 0.2;
+				o.vertex = UnityObjectToClipPos(v.vertex);
 
 
 				// Vertex in WORLD space.
-				fixed3 pos = mul(unity_ObjectToWorld, v.vertex);
+				fixed3 pos = mul(unity_ObjectToWorld, v.vertex.xyz);
 
-				fixed3 dir = normalize(pos - GLOBAL_PLAYER_POS);
-				fixed d = length(dir);
-
-
-
-				o.vertex = UnityObjectToClipPos(v.vertex);
 				fixed3 normal = v.normal;
 
 				// Apply lighting.

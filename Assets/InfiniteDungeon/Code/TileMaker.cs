@@ -58,6 +58,19 @@ public static class TileMaker
         return PROPS[r];
     }
 
+    private static AnimationClip[] ANIMATIONS;
+    private static AnimationClip RandomAnimation()
+    {
+        if (ANIMATIONS == null)
+        {
+            ANIMATIONS = Resources.LoadAll<AnimationClip>("Animations");
+        }
+
+        int r = RNG.Range(0, ANIMATIONS.Length);
+
+        return ANIMATIONS[r];
+    }
+
     public static GameObject GrassTile(Cell c, Vector3 pos, float size)
     {
         GameObject go = new GameObject("Cube");
@@ -83,16 +96,15 @@ public static class TileMaker
 
         Mesh mesh = GrassVariation(size);
         empty.transform.localPosition = pos + Game.HALF_Y;
-        empty.transform.localRotation = RNG.Qf(Vector3.up, Random.Range(0, 10));
 
         Animation a = model.AddComponent<Animation>();
-        a.AddClip(Resources.Load<AnimationClip>("Animations/HoverSlow"), "Hover");
+        a.AddClip(RandomAnimation(), "Hover");
         a.Play("Hover");
 
         // Place prop
         GameObject prop = GameObject.Instantiate(RandomProp());
         prop.transform.SetParent(model.transform, false);
-        prop.transform.localPosition += RNG.VXZf(-0.4f, 0.4f);
+        prop.transform.localPosition += RNG.VXZf(-size/4, size/4);
         prop.transform.localRotation = RNG.Q90f(Vector3.up);
 
         MeshRenderer mr = model.AddComponent<MeshRenderer>();
