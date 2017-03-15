@@ -97,9 +97,9 @@ public static class TileMaker
         Mesh mesh = GrassVariation(size);
         empty.transform.localPosition = pos + Game.HALF_Y;
 
-        Animation a = model.AddComponent<Animation>();
-        a.AddClip(RandomAnimation(), "Hover");
-        a.Play("Hover");
+        //Animation a = model.AddComponent<Animation>();
+        //a.AddClip(RandomAnimation(), "Hover");
+        //a.Play("Hover");
 
         // Place prop
         GameObject prop = GameObject.Instantiate(RandomProp());

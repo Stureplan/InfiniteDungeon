@@ -13,7 +13,7 @@ Shader "InfiniteDungeon/VertexLitColorShaded_Vegetation"
 
 	SubShader
 	{
-		Tags{ "LightMode" = "ForwardBase" }
+		Tags{ "LightMode" = "ForwardBase" "DisableBatching" = "True" }
 
 		Pass
 		{
@@ -114,7 +114,7 @@ Shader "InfiniteDungeon/VertexLitColorShaded_Vegetation"
 				fixed c = cos(_Time.y * _WindY + v.vertex.z);
 				
 				// Add the values to the Y of the vertex.
-				v.vertex.y += _Shakiness * s * c * localDistance * 0.2;
+				v.vertex.y += _Shakiness * s * c * localDistance * 0.2 * v.uv.x;
 				o.vertex = UnityObjectToClipPos(v.vertex);
 
 
