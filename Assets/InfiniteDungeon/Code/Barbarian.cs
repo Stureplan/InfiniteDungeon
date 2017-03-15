@@ -15,6 +15,7 @@ public class Barbarian : MonoBehaviour, IDamageable<int>
     private int currentDamage = 1;
     private int currentHealth = MAX_HEALTH;
     private Agent currentAgent;
+    private int currentCoins = 0;
 
     private int frame = 0;
     private int vegetationUpdate = 1;
@@ -48,6 +49,12 @@ public class Barbarian : MonoBehaviour, IDamageable<int>
     public void DamageAgents()
     {
         currentAgent.Damage(currentDamage);
+    }
+
+    public void AddMoney(int c)
+    {
+        currentCoins += c;
+        ui.SetCoins(currentCoins);
     }
     
     public float NextTurn(int d, int turn)

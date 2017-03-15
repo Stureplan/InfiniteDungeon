@@ -122,6 +122,8 @@ public class Slime : Agent
         anim = GetComponent<AnimatedObject>();
         anim.Initialize();
         anim.PlayAnimation("Slime_Idle");
+
+        value = 3;
     }
     
     private void Update() { }
@@ -166,6 +168,7 @@ public class Slime : Agent
         }
 
         FX.Emit(transform.localPosition + Game.HALF_Y, Quaternion.identity, FX.VFX.SlimeDeath, 30);
+        HandleMoney();
         Destroy(gameObject);
 
     }

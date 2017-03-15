@@ -35,6 +35,8 @@ public class Warlock : Agent
         c.enemy = this;
         c.occupant = 1;
         cell = c;
+
+        Initialize();
     }
 
     public override void NextTurn(int turn)
@@ -137,13 +139,15 @@ public class Warlock : Agent
         }
     }
 
-    private void Start()
+    private void Initialize()
     {
         map = Map.FindMap();
         barbarian = Barbarian.FindBarbarian();
         anim = GetComponent<AnimatedObject>();
         anim.Initialize();
         anim.PlayAnimation("Warlock_Idle");
+
+        value = 5;
     }
 
 
@@ -185,7 +189,7 @@ public class Warlock : Agent
             yield return null;
         }
 
+        HandleMoney();
         Destroy(gameObject);
-
     }
 }

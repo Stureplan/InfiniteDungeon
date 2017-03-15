@@ -6,14 +6,21 @@ public class Agent : MonoBehaviour, IDamageable<int>
 {
     public int maxHealth;
     public int health;
+    public int value;
     //public bool dead;
     public Map map;
     public Cell cell;
-    public Barbarian barbarian; 
+    public Barbarian barbarian;
 
     public virtual void Damage(int damage) { }
     public virtual void Kill() { }
 
     public virtual void SetupEnemy(Cell c) { }
     public virtual void NextTurn(int turn) { }
+
+    public void HandleMoney()
+    {
+        FX.Emit(transform.localPosition + Vector3.up, Quaternion.identity, FX.VFX.Coins, value);
+        barbarian.AddMoney(value);
+    }
 }

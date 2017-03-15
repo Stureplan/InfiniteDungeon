@@ -8,7 +8,8 @@ public static class FX
     {
         SlimeDeath = 0,
         ShadowBoltHit,
-        Bats
+        Bats,
+        Coins
     }
 
     struct PS
@@ -34,6 +35,7 @@ public static class FX
     static PS slimeDeath;
     static PS shadowBoltHit;
     static PS bats;
+    static PS coins;
 
 
     static PROJECTILE shadowBolt = new PROJECTILE(null, false);
@@ -49,6 +51,8 @@ public static class FX
         shadowBoltHit.go = Resources.Load<GameObject>("FX/ShadowBoltHit");
         shadowBoltHit.go.transform.position = Game.HIDDEN;
         shadowBoltHit.loaded = false;
+
+        
 
         bats.loaded = false;
     }
@@ -103,6 +107,21 @@ public static class FX
                 bats.go.transform.localPosition = point;
                 bats.go.transform.localRotation = rotation;
                 bats.ps.Play();
+
+                break;
+
+            case VFX.Coins:
+                if (coins.loaded == false)
+                {
+                    coins.go = Resources.Load<GameObject>("FX/Coins");
+                    coins.go = GameObject.Instantiate(coins.go);
+                    coins.ps = coins.go.GetComponent<ParticleSystem>();
+                    coins.loaded = true;
+                }
+
+                coins.go.transform.localPosition = point;
+                coins.go.transform.localRotation = rotation;
+                coins.ps.Emit(amount);
 
                 break;
         }

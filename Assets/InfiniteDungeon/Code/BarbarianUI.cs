@@ -14,6 +14,7 @@ public class BarbarianUI : MonoBehaviour
     public Sprite attack, moveLeft, moveForward, moveRight, moveBack;
     public Text health;
     public Text damageText;
+    public Text coinsText;
     public Animation damageTextAnim;
 
     public RawImage minimap;
@@ -45,6 +46,11 @@ public class BarbarianUI : MonoBehaviour
     {
         healthBar.fillAmount = (float)h / (float)Barbarian.MAX_HEALTH;
         health.text = h.ToString();
+    }
+
+    public void SetCoins(int c)
+    {
+        coinsText.text = c.ToString();
     }
 
     public void FloatingDamageText(int dmg)
