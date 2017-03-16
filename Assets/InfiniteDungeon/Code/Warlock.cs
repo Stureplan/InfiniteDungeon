@@ -30,6 +30,26 @@ public class Warlock : Agent
         StartCoroutine(DelayedDestruction(anim.GetClipLength("Warlock_Death")));
     }
 
+    public override void PushBack(Cell c)
+    {
+        int x = cell.x - c.x;
+        int y = cell.y - c.y;
+
+        Cell target = map.CellAtPoint(cell.x + x, cell.y + y);
+
+        if (target.type == 0 && target.occupant == 0)
+        {
+            cell.occupant = 0;
+            cell.enemy = null;
+            cell = target;
+            cell.occupant = 1;
+            cell.enemy = this;
+
+            anim.PlayAnimation("Warlock_Move");
+            StartCoroutine(Move(target.position, 0.2f));
+        }
+    }
+
     public override void SetupEnemy(Cell c)
     {
         c.enemy = this;

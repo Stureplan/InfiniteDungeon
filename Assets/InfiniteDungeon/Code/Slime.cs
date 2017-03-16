@@ -28,6 +28,26 @@ public class Slime : Agent
         StartCoroutine(DelayedDestruction(anim.GetClipLength("Slime_Death")));
     }
 
+    public override void PushBack(Cell c)
+    {
+        int x = cell.x - c.x;
+        int y = cell.y - c.y;
+
+        Cell target = map.CellAtPoint(x, y);
+
+        if (target.type == 0 && target.occupant == 0)
+        {
+            cell.occupant = 0;
+            cell.enemy = null;
+            cell = map.CellAtPoint(x, y);
+            cell.occupant = 1;
+            cell.enemy = this;
+
+            anim.PlayAnimation("Slime_Move");
+            StartCoroutine(Move(target.position, 0.2f));
+        }
+    }
+
     public override void SetupEnemy(Cell c)
     {
         c.enemy = this;

@@ -14,6 +14,7 @@ public class Agent : MonoBehaviour, IDamageable<int>
 
     public virtual void Damage(int damage) { }
     public virtual void Kill() { }
+    public virtual void PushBack(Cell c) { }
 
     public virtual void SetupEnemy(Cell c) { }
     public virtual void NextTurn(int turn) { }

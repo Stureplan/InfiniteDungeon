@@ -60,33 +60,37 @@ public class Barbarian : MonoBehaviour, IDamageable<int>
     public float NextTurn(int d, int turn)
     {
         Cell c;
-        MOVE_DIR dir = (MOVE_DIR)d;
+        MOVELIST dir = (MOVELIST)d;
         BARBARIAN_MOVE_TYPE type = DecideMove(dir, out c);
         ExecuteMove(c, type);
 
-        if (type == BARBARIAN_MOVE_TYPE.INVALID) { return 666.6f; }
+        if (type == BARBARIAN_MOVE_TYPE.INVALID) { return 0.01f; }
         return VisualTurn(type, c, turn);
     }
 
-    private BARBARIAN_MOVE_TYPE DecideMove(MOVE_DIR dir, out Cell c)
+    private BARBARIAN_MOVE_TYPE DecideMove(MOVELIST dir, out Cell c)
     {
         switch (dir)
         {
-            case MOVE_DIR.LEFT:
+            case MOVELIST.M_LEFT:
                 c = map.CellAtPoint(cell.x - 1, cell.y);
                 break;
 
-            case MOVE_DIR.FORWARD:
+            case MOVELIST.M_FORWARD:
                 c = map.CellAtPoint(cell.x, cell.y+1);
                 break;
 
-            case MOVE_DIR.RIGHT:
+            case MOVELIST.M_RIGHT:
                 c = map.CellAtPoint(cell.x + 1, cell.y);
                 break;
 
-            case MOVE_DIR.BACK:
+            case MOVELIST.M_BACK:
                 c = map.CellAtPoint(cell.x, cell.y-1);
                 break;
+
+            case MOVELIST.S_STOMP:
+                c = cell;
+                return BARBARIAN_MOVE_TYPE.SPELL_STOMP;
 
             default:
                 c = cell;
@@ -143,6 +147,14 @@ public class Barbarian : MonoBehaviour, IDamageable<int>
                 currentAgent = c.enemy;
                 break;
 
+            case BARBARIAN_MOVE_TYPE.SPELL_STOMP:
+                Agent[] enemies = map.Agents3x3(cell.x, cell.y);
+                for (int i = 0; i < enemies.Length; i++)
+                {
+                    enemies[i].PushBack(cell);
+                }
+                break;
+
             case BARBARIAN_MOVE_TYPE.INVALID:
                 break;
 
@@ -177,6 +189,10 @@ public class Barbarian : MonoBehaviour, IDamageable<int>
                 StartCoroutine(Rotate(Helper.QDIR(c.position - transform.position), 0.1f));
                 break;
 
+            case BARBARIAN_MOVE_TYPE.SPELL_STOMP:
+                anim.PlayAnimation("Barbarian_Move");
+                break;
+
             case BARBARIAN_MOVE_TYPE.FINISH:
                 //Here goes jump down animations and map lerps
                 break;
@@ -196,7 +212,7 @@ public class Barbarian : MonoBehaviour, IDamageable<int>
         int[] occupants = map.SurroundingOccupants(cell.x, cell.y);
         for (int i = 0; i < occupants.Length; i++)
         {
-            ui.ChangeSprite((MOVE_DIR)i, occupants[i]);
+            ui.ChangeSprite((MOVELIST)i, occupants[i]);
         }
     }
 

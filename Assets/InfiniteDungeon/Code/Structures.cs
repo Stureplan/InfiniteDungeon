@@ -8,12 +8,14 @@ public interface IDamageable<T>
     void Kill();
 }
 
-public enum MOVE_DIR
+public enum MOVELIST
 {
-    LEFT    = 0,
-    FORWARD = 1,
-    RIGHT   = 2,
-    BACK    = 3,
+    M_LEFT    = 0,
+    M_FORWARD = 1,
+    M_RIGHT   = 2,
+    M_BACK    = 3,
+
+    S_STOMP   = 4
 }
 
 // Player moves
@@ -21,6 +23,7 @@ public enum BARBARIAN_MOVE_TYPE
 {
     MOVE,
     ATTACK,
+    SPELL_STOMP,
     INVALID,
     FINISH
 }

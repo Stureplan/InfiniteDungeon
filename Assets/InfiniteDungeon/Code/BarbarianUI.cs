@@ -60,14 +60,14 @@ public class BarbarianUI : MonoBehaviour
         damageTextAnim.Play("CombatText1");
     }
 
-    public void ChangeSprite(MOVE_DIR dir, int occupant)
+    public void ChangeSprite(MOVELIST dir, int occupant)
     {
         Sprite currentGraphic = new Sprite();
 
 
         switch(dir)
         {
-            case MOVE_DIR.LEFT:
+            case MOVELIST.M_LEFT:
                 currentGraphic = moveLeft;
                 if (occupant == 1)
                 {
@@ -76,7 +76,7 @@ public class BarbarianUI : MonoBehaviour
                 butLeft.image.sprite = currentGraphic;
                 break;
 
-            case MOVE_DIR.FORWARD:
+            case MOVELIST.M_FORWARD:
                 currentGraphic = moveForward;
                 if (occupant == 1)
                 {
@@ -85,7 +85,7 @@ public class BarbarianUI : MonoBehaviour
                 butForward.image.sprite = currentGraphic;
                 break;
 
-            case MOVE_DIR.RIGHT:
+            case MOVELIST.M_RIGHT:
                 currentGraphic = moveRight;
                 if (occupant == 1)
                 {
@@ -94,13 +94,17 @@ public class BarbarianUI : MonoBehaviour
                 butRight.image.sprite = currentGraphic;
                 break;
 
-            case MOVE_DIR.BACK:
+            case MOVELIST.M_BACK:
                 currentGraphic = moveBack;
                 if (occupant == 1)
                 {
                     currentGraphic = attack;
                 }
                 butBack.image.sprite = currentGraphic;
+                break;
+
+            case MOVELIST.S_STOMP:
+                //TODO: Implement stomp UI
                 break;
         }
 

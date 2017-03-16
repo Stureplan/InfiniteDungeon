@@ -605,6 +605,24 @@ public class Map : MonoBehaviour
         return o;
     }
 
+    public Agent[] Agents3x3(int x, int y)
+    {
+        List<Agent> agents = new List<Agent>();
+
+        for (int h = -1; h < 2; h++)
+        {
+            for (int v = -1; v < 2; v++)
+            {
+                if (grid[x + h, y + v].occupant == 1)
+                {
+                    agents.Add(grid[x + h, y + v].enemy);
+                }
+            }
+        }
+
+        return agents.ToArray();
+    }
+
     public static bool CellsAreAlignedH(Cell[] c, int x)
     {
         int amount = c.Length;
