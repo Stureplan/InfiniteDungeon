@@ -33,7 +33,7 @@ public enum MELEE_MOVE_TYPE
 {
     MOVE,
     ATTACK,
-    INVALID
+    NOTHING
 }
 
 public enum BUILDING_MOVE_TYPE
@@ -50,6 +50,12 @@ public enum WARLOCK_MOVE_TYPE
     SPELL1,
     NOTHING,
     INVALID
+}
+
+public enum CURRENT_STATUS
+{
+    STUNNED,
+    NONE
 }
 
 public static class QHelp

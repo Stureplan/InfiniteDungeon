@@ -7,6 +7,7 @@ public class Agent : MonoBehaviour, IDamageable<int>
     public int maxHealth;
     public int health;
     public int value;
+    public CURRENT_STATUS status = CURRENT_STATUS.NONE;
     //public bool dead;
     public Map map;
     public Cell cell;

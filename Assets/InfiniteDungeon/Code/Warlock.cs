@@ -6,7 +6,6 @@ public class Warlock : Agent
 {
     private AnimatedObject anim;
 
-
     private Cell targetCell;
 
     public override void Damage(int damage)
@@ -34,7 +33,8 @@ public class Warlock : Agent
     {
         int x = cell.x - c.x;
         int y = cell.y - c.y;
-
+        x = Mathf.Clamp(x, -1, 1);
+        y = Mathf.Clamp(y, -1, 1);
         Cell target = map.CellAtPoint(cell.x + x, cell.y + y);
 
         if (target.type == 0 && target.occupant == 0)
@@ -47,6 +47,8 @@ public class Warlock : Agent
 
             anim.PlayAnimation("Warlock_Move");
             StartCoroutine(Move(target.position, 0.2f));
+
+            status = CURRENT_STATUS.STUNNED;
         }
     }
 
@@ -71,7 +73,11 @@ public class Warlock : Agent
         Cell[] cells = Pathfinder.FindPath(barbarian.cell, cell);
         WARLOCK_MOVE_TYPE move;
 
-        
+        if (status == CURRENT_STATUS.STUNNED)
+        {
+            return WARLOCK_MOVE_TYPE.NOTHING;
+        }
+
         if (cells.Length > 1) // If we're further than 1 tile away
         {
             targetCell = cells[0];
@@ -127,7 +133,8 @@ public class Warlock : Agent
                 break;  
 
             case WARLOCK_MOVE_TYPE.NOTHING:
-
+                // Reset debuff to none
+                if (status == CURRENT_STATUS.STUNNED) status = CURRENT_STATUS.NONE;
                 break;
         }
     }

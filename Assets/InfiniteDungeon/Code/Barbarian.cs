@@ -148,7 +148,8 @@ public class Barbarian : MonoBehaviour, IDamageable<int>
                 break;
 
             case BARBARIAN_MOVE_TYPE.SPELL_STOMP:
-                Agent[] enemies = map.Agents3x3(cell.x, cell.y);
+                //Agent[] enemies = map.Agents3x3(cell.x, cell.y);
+                Agent[] enemies = Game.AllEnemies();
                 for (int i = 0; i < enemies.Length; i++)
                 {
                     enemies[i].PushBack(cell);

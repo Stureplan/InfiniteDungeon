@@ -6,7 +6,7 @@ public class Slime : Agent
 {
     private AnimatedObject anim;
 
-    Cell targetCell;
+    private Cell targetCell;
 
     public override void Damage(int damage)
     {
@@ -32,19 +32,22 @@ public class Slime : Agent
     {
         int x = cell.x - c.x;
         int y = cell.y - c.y;
-
-        Cell target = map.CellAtPoint(x, y);
+        x = Mathf.Clamp(x, -1, 1);
+        y = Mathf.Clamp(y, -1, 1);
+        Cell target = map.CellAtPoint(cell.x + x, cell.y + y);
 
         if (target.type == 0 && target.occupant == 0)
         {
             cell.occupant = 0;
             cell.enemy = null;
-            cell = map.CellAtPoint(x, y);
+            cell = target;
             cell.occupant = 1;
             cell.enemy = this;
 
             anim.PlayAnimation("Slime_Move");
             StartCoroutine(Move(target.position, 0.2f));
+
+            status = CURRENT_STATUS.STUNNED;
         }
     }
 
@@ -70,6 +73,11 @@ public class Slime : Agent
     {
         Cell[] cells = Pathfinder.FindPath(barbarian.cell, cell);
         MELEE_MOVE_TYPE move;
+
+        if (status == CURRENT_STATUS.STUNNED)
+        {
+            return MELEE_MOVE_TYPE.NOTHING;
+        }
 
         if (cells.Length > 1)
         {
@@ -101,8 +109,9 @@ public class Slime : Agent
                 barbarian.Damage(5);
                 break;
 
-            case MELEE_MOVE_TYPE.INVALID:
-                
+            case MELEE_MOVE_TYPE.NOTHING:
+                // Reset debuff to none
+                if (status == CURRENT_STATUS.STUNNED) status = CURRENT_STATUS.NONE;
                 break;
         }
     }
@@ -122,7 +131,7 @@ public class Slime : Agent
                 StartCoroutine(Rotate(Helper.QDIR(targetCell.position - transform.position), 0.1f));
                 break;
 
-            case MELEE_MOVE_TYPE.INVALID:
+            case MELEE_MOVE_TYPE.NOTHING:
 
                 break;
         }

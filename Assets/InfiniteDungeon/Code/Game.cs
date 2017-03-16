@@ -115,7 +115,10 @@ public class Game : MonoBehaviour
     }
 
 
-
+    public static Agent[] AllEnemies()
+    {
+        return enemies.ToArray();
+    }
 
     public static void RemoveEnemy(Agent a)
     {
