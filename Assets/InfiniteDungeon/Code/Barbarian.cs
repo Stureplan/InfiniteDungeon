@@ -191,7 +191,8 @@ public class Barbarian : MonoBehaviour, IDamageable<int>
                 break;
 
             case BARBARIAN_MOVE_TYPE.SPELL_STOMP:
-                anim.PlayAnimation("Barbarian_Move");
+                anim.PlayAnimation("Barbarian_Stomp");
+                FX.Emit(transform.localPosition + (Game.HALF_Y * 0.01f), Quaternion.identity, FX.VFX.Stomp, 1);
                 break;
 
             case BARBARIAN_MOVE_TYPE.FINISH:

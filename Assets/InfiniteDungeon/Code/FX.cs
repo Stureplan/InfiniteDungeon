@@ -9,7 +9,8 @@ public static class FX
         SlimeDeath = 0,
         ShadowBoltHit,
         Bats,
-        Coins
+        Coins,
+        Stomp
     }
 
     struct PS
@@ -36,6 +37,7 @@ public static class FX
     static PS shadowBoltHit;
     static PS bats;
     static PS coins;
+    static PS stomp;
 
 
     static PROJECTILE shadowBolt = new PROJECTILE(null, false);
@@ -122,6 +124,21 @@ public static class FX
                 coins.go.transform.localPosition = point;
                 coins.go.transform.localRotation = rotation;
                 coins.ps.Emit(amount);
+
+                break;
+
+            case VFX.Stomp:
+                if (stomp.loaded == false)
+                {
+                    stomp.go = Resources.Load<GameObject>("FX/StompParticle");
+                    stomp.go = GameObject.Instantiate(stomp.go);
+                    stomp.ps = stomp.go.GetComponent<ParticleSystem>();
+                    stomp.loaded = true;
+                }
+
+                stomp.go.transform.localPosition = point;
+                stomp.go.transform.localRotation = rotation;
+                stomp.ps.Play();
 
                 break;
         }
